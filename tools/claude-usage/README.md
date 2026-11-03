@@ -44,7 +44,9 @@ Its data is usually up to about 4 hours behind.
 1. Create a key:
    - **Claude Console:** an Admin API key (`sk-ant-admin01-...`) on the
      [Admin keys](https://platform.claude.com/settings/admin-keys) page. You need an organization (not
-     an individual account) and the admin role. **These keys can manage your whole organization** (members,
+     an individual account) and the admin role. With a personal account, set up an organization first on
+     the [Organization](https://platform.claude.com/settings/organization) page, or skip API spend and
+     show only your plan limits (`usage -plan`). **These keys can manage your whole organization** (members,
      API keys), not just read costs. Make one just for HelCLI, give it a short expiration date, and revoke
      it if you lose the phone.
    - **Claude Enterprise:** a key with only the `read:analytics` scope (claude.ai > Organization settings > API).
