@@ -6,14 +6,19 @@
     <!-- <overlay_color value="#b0101010"/> -->
     <!-- <input_color value="#ff00ff00"/> -->
     <!-- <output_color value="#ffffffff"/> -->
-    <!-- <device_color value="#ffff9800"/> -->
-    <!-- <time_color value="#ff03a9f4"/> -->
-    <!-- <ram_color value="#fff44336"/> -->
-    <!-- <battery_color_high value="#ff4caf50"/> -->
     <!-- <link_color value="#ff40c4ff"/> -->
-    <!-- <claude_color value="#ffd97757"/> -->
-    <!-- <alarm_color value="#ff03a9f4"/> -->
-    <!-- <music_color value="#ff1de9b6"/> -->
+
+    <!-- Top of the home screen, one color per item -->
+    <time_color value="#ff03a9f4"/>
+    <battery_color_high value="#ff4caf50"/>
+    <alarm_color value="#ff81d4fa"/>
+    <network_info_color value="#ffffca28"/>
+    <weather_color value="#fffff59d"/>
+    <ram_color value="#fff44336"/>
+    <storage_color value="#ffba68c8"/>
+    <claude_color value="#ffd97757"/>
+    <calendar_color value="#fff48fb1"/>
+    <music_color value="#ff1de9b6"/>
     <!-- <statusbar_color value="#ff000000"/> -->
     <!-- <navigationbar_color value="#ff000000"/> -->
 </THEME>

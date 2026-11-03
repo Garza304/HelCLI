@@ -2,6 +2,8 @@ package ohi.andre.consolelauncher.managers.claude;
 
 import org.junit.Test;
 
+import ohi.andre.consolelauncher.tuils.StatusBars;
+
 import java.util.TimeZone;
 
 import static org.junit.Assert.assertEquals;
@@ -80,14 +82,20 @@ public class ClaudeUsageTest {
         long now = 1738421000L * 1000;
 
         String both = ClaudeUsage.defaultFormat(true, true, true);
-        assertEquals("Claude 5h 24% · week 41%  API $12.40 of $50.00 (25%)",
-                ClaudeUsage.format(both, p, 12.40, 50, now, UTC));
+        assertEquals("Claude · 5h resets 16:00\n"
+                        + "5h    24% [##------]\n"
+                        + "week  41% [###-----]\n"
+                        + "API   25% [##------]",
+                StatusBars.render(ClaudeUsage.format(both, p, 12.40, 50, now, UTC), 20, "[#-]"));
 
         assertEquals("Claude API $3.10 this month",
                 ClaudeUsage.format(ClaudeUsage.defaultFormat(false, true, false), null, 3.10, 0, now, UTC));
 
         assertEquals("5h resets 16:00 · week resets Thu 16:00 · 16m ago",
                 ClaudeUsage.format("5h resets %5hreset · week resets %7dreset · %updated", p, null, 0, now, UTC));
+
+        assertEquals("5h resets 4:00 PM · week Thu 4:00 PM",
+                ClaudeUsage.format("5h resets %5hreset · week %7dreset", p, null, 0, now, UTC, false));
 
         assertEquals("plan - / API -",
                 ClaudeUsage.format("plan %5h / API %api", null, null, 0, now, UTC));

@@ -101,7 +101,7 @@ public enum Theme implements XMLPrefsSave {
     storage_color {
         @Override
         public String defaultValue() {
-            return "#9C27B0";
+            return "#BA68C8";
         }
 
         @Override
@@ -310,7 +310,7 @@ public enum Theme implements XMLPrefsSave {
     weather_color {
         @Override
         public String defaultValue() {
-            return ram_color.defaultValue();
+            return "#FFF59D";
         }
 
         @Override
@@ -546,7 +546,7 @@ public enum Theme implements XMLPrefsSave {
     alarm_color {
         @Override
         public String defaultValue() {
-            return "#ff03a9f4";
+            return "#ff81d4fa";
         }
 
         @Override
@@ -564,9 +564,24 @@ public enum Theme implements XMLPrefsSave {
         public String info() {
             return "Now playing color";
         }
+    },
+    calendar_color {
+        @Override
+        public String defaultValue() {
+            return "#F48FB1";
+        }
+
+        @Override
+        public String info() {
+            return "The next calendar event color";
+        }
+
+        @Override
+        public String type() {
+            return XMLPrefsSave.COLOR;
+        }
     }
     ;
-
     @Override
     public XMLPrefsElement parent() {
         return XMLPrefsManager.XMLPrefsRoot.THEME;

@@ -18,21 +18,30 @@ import java.util.regex.Pattern;
  */
 public class StatusBars {
 
-    /** Private use characters around a marker: START percent "," width END. Width 0 = fill. */
+    /**
+     * Private use characters around a marker: START percent "," width [";" style] END. Width 0 = fill.
+     * A marker with its own style ignores the line's bar_style (the music line has its own).
+     */
     public static final char START = '', END = '';
     public static final String DEFAULT_STYLE = "[█░]";
     public static final int MIN_WIDTH = 6;
     /** A filling bar when the line width isn't known yet. */
     public static final int FALLBACK_WIDTH = 12;
 
-    private static final Pattern MARKER = Pattern.compile(START + "(-|\\d{1,3}),(\\d{1,3})" + END);
+    private static final Pattern MARKER = Pattern.compile(START + "(-|\\d{1,3}),(\\d{1,3})(?:;([^" + END + "]{1,16}))?" + END);
 
     private StatusBars() {}
 
     /** A marker for a bar. percent can be NaN when the value isn't known (the bar is drawn empty). */
     public static String marker(double percent, int width) {
+        return marker(percent, width, null);
+    }
+
+    /** A marker drawn with its own style (null or "" = the line's style). */
+    public static String marker(double percent, int width, String style) {
         String p = Double.isNaN(percent) ? "-" : String.valueOf(clamp((int) Math.round(percent), 0, 100));
-        return START + p + "," + clamp(width, 0, 200) + END;
+        String st = style == null || style.length() == 0 || style.indexOf(END) >= 0 ? "" : ";" + style;
+        return START + p + "," + clamp(width, 0, 200) + st + END;
     }
 
     /**
@@ -40,12 +49,17 @@ public class StatusBars {
      * For example replaceCode("RAM %bar:10", "bar", 42).
      */
     public static String replaceCode(String text, String code, double percent) {
+        return replaceCode(text, code, percent, null);
+    }
+
+    /** Like {@link #replaceCode(String, String, double)}, with a style for these bars only. */
+    public static String replaceCode(String text, String code, double percent, String style) {
         if (text == null || text.indexOf('%') < 0) return text;
         Matcher m = Pattern.compile("%" + Pattern.quote(code) + "(?::(\\d{1,3}))?").matcher(text);
         StringBuffer out = new StringBuffer();
         while (m.find()) {
             int width = m.group(1) != null ? Integer.parseInt(m.group(1)) : 0;
-            m.appendReplacement(out, Matcher.quoteReplacement(marker(percent, width)));
+            m.appendReplacement(out, Matcher.quoteReplacement(marker(percent, width, style)));
         }
         m.appendTail(out);
         return out.toString();
@@ -90,11 +104,13 @@ public class StatusBars {
             Matcher m = MARKER.matcher(line);
 
             List<int[]> markers = new ArrayList<>();   // start, end, percent (-1 unknown), width
+            List<String> styles = new ArrayList<>();
             int markerChars = 0, fixed = 0, fills = 0;
             while (m.find()) {
                 int percent = m.group(1).equals("-") ? -1 : Integer.parseInt(m.group(1));
                 int width = Integer.parseInt(m.group(2));
                 markers.add(new int[] {m.start(), m.end(), percent, width});
+                styles.add(m.group(3) != null ? m.group(3) : style);
                 markerChars += m.end() - m.start();
                 if (width > 0) fixed += width;
                 else fills++;
@@ -106,9 +122,10 @@ public class StatusBars {
                 if (widthChars > 0 && fills > 0) {
                     fillWidth = Math.max(MIN_WIDTH, (widthChars - visible - fixed) / fills);
                 }
-                for (int[] mk : markers) {
+                for (int i = 0; i < markers.size(); i++) {
+                    int[] mk = markers.get(i);
                     int width = mk[3] > 0 ? mk[3] : fillWidth;
-                    out.add(new Replacement(lineStart + mk[0], lineStart + mk[1], bar(mk[2], width, style)));
+                    out.add(new Replacement(lineStart + mk[0], lineStart + mk[1], bar(mk[2], width, styles.get(i))));
                 }
             }
 
@@ -118,7 +135,7 @@ public class StatusBars {
     }
 
     /** Applies {@link #layout} to plain text. */
-    public static String render(String text, int widthChars, String style) {
+    private static String renderBars(String text, int widthChars, String style) {
         List<Replacement> rs = layout(text, widthChars, style);
         StringBuilder b = new StringBuilder(text);
         for (int i = rs.size() - 1; i >= 0; i--) {
@@ -129,14 +146,20 @@ public class StatusBars {
     }
 
     /**
-     * One bar. The style is the characters to draw with: 4 characters are left end, filled, empty,
-     * right end ("[█░]", "[#-]", "|=.|"); 2 characters are filled and empty, with no ends ("█░").
+     * One bar. The style is the characters to draw with:
+     * <ul>
+     *   <li>4 characters: left end, filled, empty, right end ("[█░]", "[#-]", "|=.|")</li>
+     *   <li>2 characters: filled and empty, with no ends ("█░")</li>
+     *   <li>3 characters: played, marker, left to play ("~♫·"): a marker that moves along the bar</li>
+     *   <li>5 characters: the same with ends ("[=>-]" is left end, played, marker, left, right end)</li>
+     * </ul>
      *
      * @param percent 0 to 100, or below 0 when unknown (drawn empty)
      */
     public static String bar(int percent, int width, String style) {
         String st = style == null ? DEFAULT_STYLE : style;
         int[] cps = codePoints(st);
+        if (cps.length == 3 || cps.length == 5) return marked(percent, width, cps);
         String left = "", right = "", full, empty;
         if (cps.length >= 4) {
             left = new String(cps, 0, 1);
@@ -157,6 +180,109 @@ public class StatusBars {
 
         StringBuilder b = new StringBuilder(left);
         for (int i = 0; i < inner; i++) b.append(i < filled ? full : empty);
+        return b.append(right).toString();
+    }
+
+    /**
+     * Text that may be shortened with "…" when its line is too long for the screen, such as a city,
+     * an event title or a song. Lines are shortened from their longest such text first; other text
+     * is never cut, so it's only used where shortening is better than wrapping onto a new line.
+     */
+    public static final char SHRINK_START = '\ue002', SHRINK_END = '\ue003';
+    private static final Pattern SHRINK = Pattern.compile(SHRINK_START + "([^" + SHRINK_END + "]*)" + SHRINK_END);
+    public static final String ELLIPSIS = "…";
+
+    public static String shrinkable(String s) {
+        return s == null || s.length() == 0 ? s : SHRINK_START + s + SHRINK_END;
+    }
+
+    /** Removes the shrink marks without shortening anything. */
+    public static String plain(String s) {
+        return s == null ? null : s.replace(String.valueOf(SHRINK_START), "").replace(String.valueOf(SHRINK_END), "");
+    }
+
+    /**
+     * Shortens shrinkable text on lines wider than widthChars and removes the marks. Bars that fill
+     * count as {@link #MIN_WIDTH}. Apply the replacements from the last one to the first.
+     *
+     * @param widthChars how many characters fit on a line, or 0 or less if not known (nothing is shortened)
+     */
+    public static List<Replacement> fit(CharSequence text, int widthChars) {
+        List<Replacement> out = new ArrayList<>();
+        String s = text.toString();
+
+        int lineStart = 0;
+        while (lineStart <= s.length()) {
+            int lineEnd = s.indexOf('\n', lineStart);
+            if (lineEnd < 0) lineEnd = s.length();
+            String line = s.substring(lineStart, lineEnd);
+
+            List<int[]> segs = new ArrayList<>();   // start, end (marks included)
+            List<String> texts = new ArrayList<>();
+            Matcher m = SHRINK.matcher(line);
+            int marks = 0;
+            while (m.find()) {
+                segs.add(new int[] {m.start(), m.end()});
+                texts.add(m.group(1));
+                marks += 2;
+            }
+
+            if (!segs.isEmpty()) {
+                int visible = line.length() - marks;
+                Matcher b = MARKER.matcher(line);
+                while (b.find()) {
+                    int w = Integer.parseInt(b.group(2));
+                    visible += (w > 0 ? w : MIN_WIDTH) - (b.end() - b.start());
+                }
+
+                int over = widthChars > 0 ? visible - widthChars : 0;
+                while (over > 0) {
+                    int longest = -1;
+                    for (int i = 0; i < texts.size(); i++) {
+                        if (texts.get(i).length() > 2 && (longest < 0 || texts.get(i).length() > texts.get(longest).length())) longest = i;
+                    }
+                    if (longest < 0) break;
+                    String t = texts.get(longest);
+//                    shorten this one by what's over, but leave others something to give if it gets too short
+                    int keep = Math.max(2, t.length() - over);
+                    String shorter = t.substring(0, keep - 1).replaceAll("[\\s·,—-]+$", "") + ELLIPSIS;
+                    if (shorter.length() >= t.length()) break;
+                    over -= t.length() - shorter.length();
+                    texts.set(longest, shorter);
+                }
+
+                for (int i = 0; i < segs.size(); i++) {
+                    out.add(new Replacement(lineStart + segs.get(i)[0], lineStart + segs.get(i)[1], texts.get(i)));
+                }
+            }
+
+            lineStart = lineEnd + 1;
+        }
+        return out;
+    }
+
+    /** Applies {@link #fit} and then {@link #layout} to plain text. */
+    public static String render(String text, int widthChars, String style) {
+        List<Replacement> rs = fit(text, widthChars);
+        StringBuilder b = new StringBuilder(text);
+        for (int i = rs.size() - 1; i >= 0; i--) {
+            Replacement r = rs.get(i);
+            b.replace(r.start, r.end, r.bar);
+        }
+        return renderBars(b.toString(), widthChars, style);
+    }
+
+    /** A bar with a marker at the current position: played cells before it, the rest after. */
+    private static String marked(int percent, int width, int[] cps) {
+        int o = cps.length == 5 ? 1 : 0;
+        String left = o == 1 ? new String(cps, 0, 1) : "", right = o == 1 ? new String(cps, 4, 1) : "";
+        String played = new String(cps, o, 1), mark = new String(cps, o + 1, 1), rest = new String(cps, o + 2, 1);
+
+        int inner = Math.max(1, width - left.length() - right.length());
+        int at = percent < 0 ? 0 : clamp((int) Math.round((inner - 1) * percent / 100.0), 0, inner - 1);
+
+        StringBuilder b = new StringBuilder(left);
+        for (int i = 0; i < inner; i++) b.append(i < at ? played : i == at ? mark : rest);
         return b.append(right).toString();
     }
 

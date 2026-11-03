@@ -71,6 +71,38 @@ breaking the launcher. Pulls `theme.xml`, `ui.xml`, `behavior.xml`, `suggestions
 to get started. Works with any public repository and no account. It isn't full git: it
 downloads the files at the newest commit.
 
+### The top of the home screen
+
+New installs start with this layout, one color per item:
+
+```
+Tue Nov 3 · 9:41 PM  87% [███████████████░░]
+Alarm 6:45 AM (in 9h 4m)  HomeNet·5G·bt
+San Antonio 64°F clear ↑71 ↓52 · rain 10%
+ram   39% [████████████░░░░░░░░░░░░░░░░░░░░]
+disk  72% [███████████████████████░░░░░░░░░]
+Claude · 5h resets 11:20 PM
+5h    42% [█████████████░░░░░░░░░░░░░░░░░░░]
+week  18% [██████░░░░░░░░░░░░░░░░░░░░░░░░░░]
+Next: Dentist · Thu 2:30 PM (in 1d 16h)
+♪ Midnight City — M83
+2:41 ~~~~~~~~~~~~~~~~~~~~~~♫··········· 4:03
+```
+
+Lines with nothing to show take no space: no alarm set, no calendar event in the next 30 days,
+nothing playing (or paused). Long cities, event titles and song names are shortened with "…"
+instead of wrapping. Every setting behind it, with comments, is in
+[my-config/ui.xml](my-config/ui.xml), [behavior.xml](my-config/behavior.xml) and
+[theme.xml](my-config/theme.xml), so you can change it and `git pull`.
+
+* **Next calendar event**: `show_calendar`, `calendar_format` (codes `%title %t %end %day %date %in`),
+  `calendar_now_format` while it's happening, `calendar_days`. Run `cal` once to allow calendar access.
+* **Music bar**: `music_bar_style` gives the music line its own bar. Three characters draw a marker that
+  moves along it: played, marker, left to play (`~♫·`, `═╪─`, `=>-`).
+* **New codes**: `%used` in `ram_format` and `storage_format` (% in use); `%now %high %low %sky` in
+  `weather_format` (whole degrees, and clear/clouds/rain); `%left` and `%n` (new line) in `music_format`.
+* With `weather_location` unset, the city comes from the phone's location.
+
 ### Claude usage line
 
 Show your Claude usage at the top of the home screen: plan limits (claude.ai Pro/Max/Ultra 5-hour
@@ -122,11 +154,11 @@ Android doesn't let apps see other apps' memory, so `ram` has no per-app list.
 
 ### More home screen lines
 
-* **Next alarm**: `config -set show_alarm true`. Shows `Alarm 6:45 AM tomorrow (in 7h 20m)` on the clock's
-  line. Change it with `alarm_format` (codes `%t %day %date %in %app`).
-* **Now playing**: `config -set show_music true`. Shows the song playing in any app, like
-  `♪ Bohemian Rhapsody — Queen`. Needs notification access (`notifications -access`). Codes:
-  `%title %artist %album %app %state %pos %dur %bar` (the bar shows how far into the song you are).
+* **Next alarm**: `show_alarm`. Shows `Alarm 6:45 AM (in 7h 20m)`. Change it with `alarm_format`
+  (codes `%t %day %date %in %app`).
+* **Now playing**: `show_music`. Shows the song playing in any app. Needs notification access
+  (`notifications -access`). Codes: `%title %artist %album %app %state %pos %dur %left %bar %n`
+  (the bar shows how far into the song you are).
 * **More weather codes**: `%sunrise %sunset %daylight %rain_chance %uv %wind_dir %unit %wind_unit`,
   e.g. `%temp%unit %description · rain %rain_chance% · sunset %sunset`.
 

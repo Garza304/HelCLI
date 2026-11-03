@@ -56,6 +56,10 @@ public class OpenMeteoTest {
         assertEquals("SW", o.getString("wind_dir"));   // 245 degrees
         assertEquals("°C", o.getString("unit"));
         assertEquals("m/s", o.getString("wind_unit"));
+        assertEquals("rain", o.getString("sky"));
+        assertEquals(8, o.getInt("now"));      // 8.4, rounded
+        assertEquals(9, o.getInt("high"));     // 9.1
+        assertEquals(4, o.getInt("low"));      // 4.2
 
         JSONObject us = new JSONObject(OpenMeteo.toWeatherJson(FORECAST, "imperial", "", false));
         assertEquals("6:58 AM", us.getString("sunrise"));

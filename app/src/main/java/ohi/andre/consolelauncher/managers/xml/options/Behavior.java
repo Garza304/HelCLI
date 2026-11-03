@@ -242,7 +242,7 @@ public enum Behavior implements XMLPrefsSave {
     time_format {
         @Override
         public String defaultValue() {
-            return "d MMM yyyy HH:mm:ss@HH:mm:ss";
+            return "EEE MMM d · h:mm a@HH:mm:ss";
         }
 
         @Override
@@ -322,12 +322,12 @@ public enum Behavior implements XMLPrefsSave {
     ram_format {
         @Override
         public String defaultValue() {
-            return "Available RAM: %avgb GB of %totgb GB (%av%%)";
+            return "ram   %used% %bar";
         }
 
         @Override
         public String info() {
-            return "Define the RAM format. %bar draws a bar of RAM in use that fills the rest of the line (%bar:20 = 20 characters wide)";
+            return "Define the RAM format. %used is the percentage in use. %bar draws a bar of RAM in use that fills the rest of the line (%bar:20 = 20 characters wide)";
         }
 
         @Override
@@ -338,7 +338,7 @@ public enum Behavior implements XMLPrefsSave {
     battery_format {
         @Override
         public String defaultValue() {
-            return "%(Charging: /)%v%";
+            return "%v% %bar";
         }
 
         @Override
@@ -354,12 +354,12 @@ public enum Behavior implements XMLPrefsSave {
     storage_format {
         @Override
         public String defaultValue() {
-            return "Internal Storage: %iavgb GB / %itotgb GB (%iav%%)";
+            return "disk  %used% %bar";
         }
 
         @Override
         public String info() {
-            return "Define the storage format. %bar draws a bar of internal storage in use, %ebar of external storage; they fill the rest of the line (%bar:20 = 20 characters wide)";
+            return "Define the storage format. %used / %eused are the percentage of internal / external storage in use. %bar draws a bar of internal storage in use, %ebar of external storage; they fill the rest of the line (%bar:20 = 20 characters wide)";
         }
 
         @Override
@@ -370,7 +370,7 @@ public enum Behavior implements XMLPrefsSave {
     network_info_format {
         @Override
         public String defaultValue() {
-            return "%(WiFi - %wn/%[Mobile Data: %d3/No Internet access])";
+            return "%(%wn/)%[·%dt/]%{·bt/}";
         }
 
         @Override
@@ -1032,7 +1032,7 @@ public enum Behavior implements XMLPrefsSave {
     weather_format {
         @Override
         public String defaultValue() {
-            return "Weather: %main, Temp: %temp";
+            return "%name %now%unit %sky ↑%high ↓%low · rain %rain_chance%";
         }
 
         @Override
@@ -1288,7 +1288,7 @@ public enum Behavior implements XMLPrefsSave {
     alarm_format {
         @Override
         public String defaultValue() {
-            return "Alarm %t %day (in %in)";
+            return "Alarm %t (in %in)";
         }
 
         @Override
@@ -1304,12 +1304,12 @@ public enum Behavior implements XMLPrefsSave {
     music_format {
         @Override
         public String defaultValue() {
-            return "♪ %title — %artist";
+            return "♪ %title — %artist%n%pos %bar %dur";
         }
 
         @Override
         public String info() {
-            return "The now playing line. Codes: %title %artist %album %app %state (► or ||) %pos %dur, %bar (song progress, fills the line; %bar:20 = 20 wide)";
+            return "The now playing line. Codes: %title %artist %album %app %state (► or ||) %pos %dur %left (time left), %bar (song progress, fills the line; %bar:20 = 20 wide; its look is music_bar_style), %n (new line)";
         }
 
         @Override
@@ -1348,9 +1348,56 @@ public enum Behavior implements XMLPrefsSave {
         public String type() {
             return XMLPrefsSave.TEXT;
         }
+    },
+    calendar_format {
+        @Override
+        public String defaultValue() {
+            return "Next: %title · %day %t (in %in)";
+        }
+
+        @Override
+        public String info() {
+            return "The next calendar event line. Codes: %title, %t (start time or all day), %end (end time), %day (today, tomorrow, or Thu), %date (Nov 5), %in (time until it starts), %n (new line)";
+        }
+
+        @Override
+        public String type() {
+            return XMLPrefsSave.TEXT;
+        }
+    },
+    calendar_now_format {
+        @Override
+        public String defaultValue() {
+            return "Now: %title (until %end)";
+        }
+
+        @Override
+        public String info() {
+            return "The calendar line while an event is happening (same codes as calendar_format). Empty = use calendar_format";
+        }
+
+        @Override
+        public String type() {
+            return XMLPrefsSave.TEXT;
+        }
+    },
+    calendar_days {
+        @Override
+        public String defaultValue() {
+            return "30";
+        }
+
+        @Override
+        public String info() {
+            return "How many days ahead the next calendar event line looks";
+        }
+
+        @Override
+        public String type() {
+            return XMLPrefsSave.INTEGER;
+        }
     }
     ;
-
     @Override
     public XMLPrefsElement parent() {
         return XMLPrefsManager.XMLPrefsRoot.BEHAVIOR;

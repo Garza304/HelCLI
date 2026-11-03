@@ -2,25 +2,65 @@
 <!-- The text shown at the top of the home screen. To use a setting, remove the comment marks around it.
      On the phone, "config -info ram_format" (or any setting) explains the % codes. -->
 <BEHAVIOR>
-    <!-- Clock. Formats are separated by time_format_separator (@); the first one is shown. -->
-    <!-- <time_format value="d MMM yyyy HH:mm:ss@HH:mm:ss"/> -->
+    <!-- ============ Top of the home screen ============
+         The text of each item. Which items show, and where, is in ui.xml. -->
+
+    <!-- Tue Nov 3 · 9:41 PM. Formats are separated by time_format_separator (@); the first one is shown.
+         For a 24-hour clock: EEE MMM d · HH:mm -->
+    <time_format value="EEE MMM d · h:mm a@HH:mm:ss"/>
+
+    <!-- 87% [████░] -->
+    <battery_format value="%v% %bar"/>
+
+    <!-- Alarm 6:45 AM (in 9h 4m). Codes: %t time, %day (today, tomorrow, Wed), %date, %in (time left), %app -->
+    <alarm_format value="Alarm %t (in %in)"/>
+
+    <!-- HomeNet·5G·bt. %(on/off) is Wi-Fi, %[on/off] mobile data, %{on/off} Bluetooth;
+         %wn Wi-Fi name, %dt mobile network type (5G, 4G...), %ip4 IP address -->
+    <network_info_format value="%(%wn/)%[·%dt/]%{·bt/}"/>
+
+    <!-- San Antonio 64°F clear ↑71 ↓52 · rain 10%. A long city is shortened with "…".
+         Codes: %name %now %high %low (whole degrees) %unit %sky %description %rain_chance %humidity %uv
+         %feels_like %sunrise %sunset %daylight %wind_dir %speed %wind_unit -->
+    <weather_format value="%name %now%unit %sky ↑%high ↓%low · rain %rain_chance%"/>
+
+    <!-- ram   39% [████░░░░] and disk  72% [███████░]. %used = % in use -->
+    <ram_format value="ram   %used% %bar"/>
+    <storage_format value="disk  %used% %bar"/>
+
+    <!-- Claude usage: empty = automatic, which is
+           Claude · 5h resets 11:20 PM
+           5h    42% [████░░░░]
+           week  18% [██░░░░░░]
+         (more codes below) -->
+    <claude_format value=""/>
+
+    <!-- Next: Dentist · Thu 2:30 PM (in 1d 16h), and while it's happening: Now: Dentist (until 3:30 PM).
+         Codes: %title %t %end %day %date %in. A long title is shortened with "…". -->
+    <calendar_format value="Next: %title · %day %t (in %in)"/>
+    <calendar_now_format value="Now: %title (until %end)"/>
+    <calendar_days value="30"/>
+
+    <!-- ♪ Midnight City — M83
+         2:41 ~~~~~~~~~~~♫·········· 4:03
+         Codes: %title %artist %album %app %state (► or ||) %pos %dur %left (-1:22) %bar, %n new line -->
+    <music_format value="♪ %title — %artist%n%pos %bar %dur"/>
+
+    <!-- ============ More examples ============ -->
 
     <!-- Device name line: %d = device name, %u = username -->
     <!-- <device_format value="%d: %u"/> -->
 
     <!-- RAM. %bar draws a bar of RAM in use that fills the rest of the line; %bar:20 is 20 characters wide. -->
     <!-- <ram_format value="Available RAM: %avgb GB of %totgb GB (%av%%)"/> -->
-    <!-- <ram_format value="RAM %bar"/> -->
 
     <!-- Battery, and the levels (in %) where its color changes to medium and low -->
     <!-- <battery_format value="%(Charging: /)%v%"/> -->
-    <!-- <battery_format value="Battery %v% %bar"/> -->
     <!-- <battery_medium value="50"/> -->
     <!-- <battery_low value="15"/> -->
 
     <!-- Storage. %bar = internal storage in use, %ebar = external. -->
     <!-- <storage_format value="Internal Storage: %iavgb GB / %itotgb GB (%iav%%)"/> -->
-    <!-- <storage_format value="Storage %bar"/> -->
 
     <!-- WiFi / mobile data, and how often it refreshes (milliseconds) -->
     <!-- <network_info_format value="%(WiFi - %wn/%[Mobile Data: %d3/No Internet access])"/> -->
@@ -28,13 +68,11 @@
 
     <!-- Weather (turn it on with show_weather in ui.xml). Location: a city, lat,lon, or null for the phone's location.
          Units: metric, imperial or standard (Kelvin). -->
-    <!-- <weather_format value="Weather: %main, Temp: %temp"/> -->
-    <!-- More codes: %sunrise %sunset %daylight %rain_chance %uv %wind_dir %unit %wind_unit -->
-    <!-- <weather_format value="%temp%unit %description · rain %rain_chance% · sunset %sunset"/> -->
+    <!-- <weather_format value="%now%unit %description · rain %rain_chance% · sunset %sunset"/> -->
     <!-- <weather_location value="San Antonio, Texas"/> -->
     <!-- <weather_temperature_measure value="imperial"/> -->
 
-    <!-- Claude usage (turn it on with show_claude in ui.xml; see tools/claude-usage/README.md).
+    <!-- Claude usage (see tools/claude-usage/README.md).
          Format codes: %5h %7d plan used %, %5hreset %7dreset reset times, %updated age of the plan numbers,
          %spent %budget %api API dollars this month, budget, % of budget. Empty format = automatic.
          Bars: %5hbar %7dbar %apibar, or %bar for the highest. -->
@@ -44,11 +82,7 @@
     <!-- <claude_budget_usd value="50"/> -->
     <!-- <claude_update_time value="600"/> -->
 
-    <!-- Next alarm. Codes: %t time, %day (today, tomorrow, Wed), %date, %in (time left), %app -->
     <!-- <alarm_format value="Alarm %t %day (in %in)"/> -->
-
-    <!-- Now playing. Codes: %title %artist %album %app %state (► or ||) %pos %dur %bar (song progress) -->
-    <!-- <music_format value="♪ %title — %artist"/> -->
     <!-- <music_format value="%state %title %pos %bar %dur"/> -->
 
     <!-- ask: which Claude model answers, and how hard it thinks (low, medium, high, xhigh, max) -->

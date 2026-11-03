@@ -42,6 +42,7 @@ import ohi.andre.consolelauncher.managers.xml.options.Theme;
 import ohi.andre.consolelauncher.tuils.LongClickableSpan;
 import ohi.andre.consolelauncher.managers.weather.OpenMeteo;
 import ohi.andre.consolelauncher.tuils.Tuils;
+import ohi.andre.consolelauncher.tuils.StatusBars;
 import okhttp3.CacheControl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -508,13 +509,14 @@ public class HTMLExtractManager {
 
             int stopAt = Integer.parseInt(delay);
 
-            Pattern p = Pattern.compile("\"" + name + "\":(?:\"([^\"]+)\"|(-?\\d+\\.?\\d*))");
+            Pattern p = Pattern.compile("\"" + name + "\":(?:\"([^\"]*)\"|(-?\\d+\\.?\\d*))");
             Matcher m1 = p.matcher(json);
             int c = 1;
             while(m1.find()) {
                 if(c == stopAt) {
-                    String value = m1.group(1);
-                    if(value == null || value.length() == 0) value = m1.group(2);
+                    String value = m1.group(1) != null ? m1.group(1) : m1.group(2);
+//                    a long place name is shortened with "…" rather than wrapping the line
+                    if("name".equals(name) && value != null) value = StatusBars.shrinkable(value);
 
                     if(converter != null && converter.length() > 0) {
                         try {
@@ -535,6 +537,10 @@ public class HTMLExtractManager {
 
         o = replaceLinkColorReplace(context, o, url);
         o = removeDelimiter(o);
+//        no place name (weather from GPS without a city): don't start the line with a space
+        int start = 0;
+        while(start < o.length() && Character.isWhitespace(o.charAt(start))) start++;
+        if(start > 0) o = o.subSequence(start, o.length());
 
         Intent i = new Intent(UIManager.ACTION_WEATHER);
         i.putExtra(XMLPrefsManager.VALUE_ATTRIBUTE, o);
@@ -545,6 +551,37 @@ public class HTMLExtractManager {
         Intent i = new Intent(UIManager.ACTION_WEATHER);
         i.putExtra(XMLPrefsManager.VALUE_ATTRIBUTE, text);
         LocalBroadcastManager.getInstance(context.getApplicationContext()).sendBroadcast(i);
+    }
+
+    /** City names found for GPS positions (rounded to about 1 km), so the phone is asked once per place. */
+    private final java.util.Map<String, String> cityCache = new java.util.HashMap<>();
+
+    /** The city at a position, from the phone's own geocoder, or "" if it doesn't know. */
+    @SuppressWarnings("deprecation")
+    private String cityAt(Context context, double latitude, double longitude) {
+        String key = Math.round(latitude * 100) + "," + Math.round(longitude * 100);
+        synchronized (cityCache) {
+            String known = cityCache.get(key);
+            if (known != null) return known;
+        }
+        String city = Tuils.EMPTYSTRING;
+        try {
+            if (android.location.Geocoder.isPresent()) {
+                java.util.List<android.location.Address> found = new android.location.Geocoder(context, java.util.Locale.getDefault())
+                        .getFromLocation(latitude, longitude, 1);
+                if (found != null && !found.isEmpty()) {
+                    android.location.Address a = found.get(0);
+                    city = a.getLocality() != null ? a.getLocality() : a.getSubAdminArea() != null ? a.getSubAdminArea() : Tuils.EMPTYSTRING;
+                }
+            }
+        } catch (Exception e) {
+            Tuils.log(e);
+            return Tuils.EMPTYSTRING;
+        }
+        synchronized (cityCache) {
+            cityCache.put(key, city);
+        }
+        return city;
     }
 
     /** Coordinates found for place names, so the geocoder is asked only once per place. */
@@ -589,6 +626,7 @@ public class HTMLExtractManager {
                         displayName = place.name;
                     }
                     if (coordinates == null) return;
+                    if (placeName == null) displayName = cityAt(context, coordinates[0], coordinates[1]);
 
                     String forecast = get(OpenMeteo.forecastUrl(coordinates[0], coordinates[1], units));
                     if (forecast == null) return;

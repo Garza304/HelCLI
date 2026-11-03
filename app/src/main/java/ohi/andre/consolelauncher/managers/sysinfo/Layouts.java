@@ -200,7 +200,7 @@ public class Layouts {
     }
 
     /** The UTC date of an all-day event, as midnight of that date in the given zone. */
-    static long sameDateIn(long utcMillis, TimeZone zone) {
+    public static long sameDateIn(long utcMillis, TimeZone zone) {
         Calendar utc = Calendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.US);
         utc.setTimeInMillis(utcMillis);
         Calendar local = Calendar.getInstance(zone, Locale.US);
