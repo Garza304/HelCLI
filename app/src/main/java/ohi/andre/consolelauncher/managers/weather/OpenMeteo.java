@@ -17,7 +17,8 @@ import java.util.Locale;
  *
  * Supported placeholders: %main, %description, %temp, %feels_like, %temp_min, %temp_max,
  * %humidity, %pressure, %speed, %deg, %all (cloud cover %), %precipitation, %name (place), %id,
- * and (new in HelCLI) %sunrise, %sunset, %daylight, %rain_chance, %uv, %wind_dir, %unit, %wind_unit.
+ * and (new in HelCLI) %sunrise, %sunset, %daylight, %rain_chance, %uv, %wind_dir, %unit, %wind_unit,
+ * %sky (clear, clouds, rain...), and whole numbers for the temperature: %now, %high, %low.
  *
  * Plain Java (only org.json), so it can be unit tested.
  */
@@ -189,6 +190,12 @@ public class OpenMeteo {
         out.put("clouds", clouds);
         out.put("precipitation", round(current.optDouble("precipitation", 0), 1));
         out.put("name", placeName == null ? "" : placeName);
+        out.put("sky", words[0].toLowerCase(Locale.ROOT));
+        out.put("now", Math.round(temperature(current.optDouble("temperature_2m"), kelvin)));
+        if (daily != null) {
+            out.put("high", Math.round(temperature(first(daily, "temperature_2m_max"), kelvin)));
+            out.put("low", Math.round(temperature(first(daily, "temperature_2m_min"), kelvin)));
+        }
 
 //        extra codes: %sunrise %sunset %daylight %rain_chance %uv %wind_dir %unit %wind_unit
         boolean imperial = "imperial".equalsIgnoreCase(units);

@@ -8,29 +8,62 @@
     <!-- false = solid background in the theme's color (default); true = your wallpaper shows through -->
     <!-- <system_wallpaper value="false"/> -->
     <!-- <fullscreen value="false"/> -->
-    <!-- <show_ram value="true"/> -->
-    <!-- <show_battery value="true"/> -->
-    <!-- <show_time value="true"/> -->
-    <!-- <show_weather value="false"/> -->
     <!-- <show_enter_button value="true"/> -->
     <!-- <statusbar_light_icons value="true"/> -->
     <!-- <display_margin_mm value="0,0,0,0"/> -->
 
-    <!-- Space between items that share a line (empty = none), and the characters of %bar loading bars:
+    <!-- ============ Top of the home screen ============
+         Which items show (show_...) and where (..._index). Items with the same whole number share a line,
+         in order: 0 and 0.5 are both on the first line. Empty items (no alarm, nothing playing, no event
+         coming up) take no space. The text of each item is in behavior.xml, the colors in theme.xml. -->
+
+    <!-- line 0: date and time, battery with a bar -->
+    <show_time value="true"/>
+    <time_index value="0"/>
+    <show_battery value="true"/>
+    <battery_index value="0.5"/>
+
+    <!-- line 1: next alarm, then Wi-Fi / mobile data / Bluetooth -->
+    <show_alarm value="true"/>
+    <alarm_index value="1"/>
+    <show_network_info value="true"/>
+    <network_index value="1.5"/>
+
+    <!-- line 2: weather -->
+    <show_weather value="true"/>
+    <weather_index value="2"/>
+
+    <!-- lines 3 and 4: RAM and storage, with bars -->
+    <show_ram value="true"/>
+    <ram_index value="3"/>
+    <show_storage_info value="true"/>
+    <storage_index value="4"/>
+
+    <!-- line 5: Claude usage (3 lines of its own; see tools/claude-usage/README.md) -->
+    <show_claude value="true"/>
+    <claude_index value="5"/>
+
+    <!-- line 6: next calendar event (run cal once to allow calendar access) -->
+    <show_calendar value="true"/>
+    <calendar_index value="6"/>
+
+    <!-- line 7: now playing (needs notification access: notifications -access). Hidden while paused. -->
+    <show_music value="true"/>
+    <music_index value="7"/>
+    <music_show_paused value="false"/>
+
+    <!-- off -->
+    <show_device_name value="false"/>
+    <show_notes value="false"/>
+    <show_unlock_counter value="false"/>
+
+    <!-- Every line on the left (one number per line: -1 left, 0 center, 1 right) -->
+    <status_lines_alignment value="-1,-1,-1,-1,-1,-1,-1,-1,-1"/>
+
+    <!-- Space between items that share a line, and the characters of %bar loading bars:
          left end, filled, empty, right end. Other ideas: [#-]  |=.|  [▓░] -->
-    <!-- <status_lines_gap value="  "/> -->
-    <!-- <bar_style value="[█░]"/> -->
-
-    <!-- The next alarm (on the clock's line by default), and the song playing in any app
-         (now playing needs notification access: run notifications -access on the phone) -->
-    <!-- <show_alarm value="true"/> -->
-    <!-- <alarm_index value="3.5"/> -->
-    <!-- <show_music value="true"/> -->
-    <!-- <music_index value="9"/> -->
-    <!-- <music_show_paused value="true"/> -->
-
-    <!-- The Claude usage line (see tools/claude-usage/README.md) -->
-    <!-- <show_claude value="true"/> -->
-    <!-- <claude_index value="7.5"/> -->
-    <!-- <claude_size value="13"/> -->
+    <status_lines_gap value="  "/>
+    <bar_style value="[█░]"/>
+    <!-- The music bar's own look: played, moving marker, left to play. Other ideas: ═╪─  =>-  ▓▒░ -->
+    <music_bar_style value="~♫·"/>
 </UI>

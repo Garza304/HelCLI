@@ -164,7 +164,8 @@ public class ClaudeUsageUpdater {
             format = ClaudeUsage.defaultFormat(hasPlan, hasApi, budget > 0);
         }
 
-        String line = ClaudeUsage.format(format, plan, spent, budget, System.currentTimeMillis(), TimeZone.getDefault());
+        String line = ClaudeUsage.format(format, plan, spent, budget, System.currentTimeMillis(), TimeZone.getDefault(),
+                android.text.format.DateFormat.is24HourFormat(context));
         if (hasPlan && planProblem != null) line += "  (" + planProblem + ")";
         if (hasApi && apiProblem != null) line += "  (" + apiProblem + ")";
         return line;

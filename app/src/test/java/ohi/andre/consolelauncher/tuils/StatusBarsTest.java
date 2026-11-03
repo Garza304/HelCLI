@@ -9,6 +9,43 @@ import static org.junit.Assert.assertTrue;
 public class StatusBarsTest {
 
     @Test
+    public void movingMarkerBars() {
+        assertEquals("♫·········", StatusBars.bar(0, 10, "~♫·"));
+        assertEquals("~~~~~♫····", StatusBars.bar(50, 10, "~♫·"));
+        assertEquals("~~~~~~~~~♫", StatusBars.bar(100, 10, "~♫·"));
+        assertEquals("[==>--]", StatusBars.bar(50, 7, "[=>-]"));
+        assertEquals("♫·········", StatusBars.bar(-1, 10, "~♫·"));   // unknown position
+    }
+
+    @Test
+    public void aBarCanHaveItsOwnStyle() {
+        String text = "RAM " + StatusBars.marker(50, 6) + " ♪ " + StatusBars.marker(50, 7, "~♫·");
+        assertEquals("RAM [##--] ♪ ~~~♫···", StatusBars.render(text, 40, "[#-]"));
+        assertEquals("x [####]", StatusBars.render("x " + StatusBars.replaceCode("%bar:6", "bar", 100, "[#-]"), 40, "[█░]"));
+    }
+
+    @Test
+    public void shrinksMarkedTextToFitTheLine() {
+        String text = StatusBars.shrinkable("San Antonio de Bexar") + " 64°F clear";
+        assertEquals("San Anto… 64°F clear", StatusBars.render(text, 20, "[#-]"));
+        assertEquals("San Antonio de Bexar 64°F clear", StatusBars.render(text, 40, "[#-]"));
+//        width not known yet: only the marks go
+        assertEquals("San Antonio de Bexar 64°F clear", StatusBars.render(text, 0, "[#-]"));
+    }
+
+    @Test
+    public void shrinkingLeavesRoomForAFillingBar() {
+        String text = StatusBars.shrinkable("Very long song title here") + " " + StatusBars.marker(50, 0);
+        assertEquals("Very long so… [##--]", StatusBars.render(text, 20, "[#-]"));
+    }
+
+    @Test
+    public void shrinksTheLongestTextFirst() {
+        String text = StatusBars.shrinkable("Short") + " — " + StatusBars.shrinkable("A much longer piece");
+        assertEquals("Short — A much…", StatusBars.render(text, 15, "[#-]"));
+    }
+
+    @Test
     public void drawsBars() {
         assertEquals("[█████░░░░░]", StatusBars.bar(50, 12, "[█░]"));
         assertEquals("[##--]", StatusBars.bar(50, 6, "[#-]"));

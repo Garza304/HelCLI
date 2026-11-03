@@ -127,7 +127,8 @@ public class RepoSyncTest {
 
     @Test
     public void theStarterFolderInTheRepoChangesNothing() throws Exception {
-//        my-config/ ships with every example commented out, so a first pull is safe
+//        my-config/ spells out the default home screen layout so it's easy to change, but every active
+//        setting in it must be the app's own default: a first pull on a new install changes nothing
         java.io.File dir = new java.io.File("../my-config");
         if (!dir.isDirectory()) dir = new java.io.File("my-config");
         assertTrue(dir.isDirectory());
@@ -135,7 +136,29 @@ public class RepoSyncTest {
             XMLPrefsManager.XMLPrefsRoot root = RepoSync.prefsRootFor(f.getName());
             if (root == null) continue;
             String xml = new java.util.Scanner(f, "UTF-8").useDelimiter("\\A").next();
-            assertEquals(f.getName(), 0, RepoSync.readEntries(xml).size());
+            for (Map.Entry<String, String> e : RepoSync.readEntries(xml).entrySet()) {
+                String where = f.getName() + " " + e.getKey();
+                String def = defaultOf(f.getName(), e.getKey());
+                if (f.getName().equals("theme.xml")) assertEquals(where, argb(def), argb(e.getValue()));
+                else assertEquals(where, def, e.getValue());
+            }
         }
+    }
+
+    private static String defaultOf(String file, String key) {
+        switch (file) {
+            case "ui.xml": return ohi.andre.consolelauncher.managers.xml.options.Ui.valueOf(key).defaultValue();
+            case "behavior.xml": return ohi.andre.consolelauncher.managers.xml.options.Behavior.valueOf(key).defaultValue();
+            case "theme.xml": return ohi.andre.consolelauncher.managers.xml.options.Theme.valueOf(key).defaultValue();
+            case "suggestions.xml": return ohi.andre.consolelauncher.managers.xml.options.Suggestions.valueOf(key).defaultValue();
+            default: throw new AssertionError("no defaults for " + file);
+        }
+    }
+
+    /** #RRGGBB and #AARRGGBB as one number, so #03A9F4 and #ff03a9f4 are equal. */
+    private static long argb(String color) {
+        String hex = color.trim().substring(1);
+        if (hex.length() == 6) hex = "ff" + hex;
+        return Long.parseLong(hex, 16);
     }
 }

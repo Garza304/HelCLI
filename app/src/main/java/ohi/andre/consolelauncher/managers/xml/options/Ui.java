@@ -207,7 +207,7 @@ public enum Ui implements XMLPrefsSave {
     show_device_name {
         @Override
         public String defaultValue() {
-            return "true";
+            return "false";
         }
 
         @Override
@@ -271,7 +271,7 @@ public enum Ui implements XMLPrefsSave {
     show_notes {
         @Override
         public String defaultValue() {
-            return "true";
+            return "false";
         }
 
         @Override
@@ -384,7 +384,7 @@ public enum Ui implements XMLPrefsSave {
     device_index {
         @Override
         public String defaultValue() {
-            return "0";
+            return "8";
         }
 
         @Override
@@ -400,7 +400,7 @@ public enum Ui implements XMLPrefsSave {
     ram_index {
         @Override
         public String defaultValue() {
-            return "1";
+            return "3";
         }
 
         @Override
@@ -416,7 +416,7 @@ public enum Ui implements XMLPrefsSave {
     battery_index {
         @Override
         public String defaultValue() {
-            return "2";
+            return "0.5";
         }
 
         @Override
@@ -432,7 +432,7 @@ public enum Ui implements XMLPrefsSave {
     time_index {
         @Override
         public String defaultValue() {
-            return "3";
+            return "0";
         }
 
         @Override
@@ -464,7 +464,7 @@ public enum Ui implements XMLPrefsSave {
     network_index {
         @Override
         public String defaultValue() {
-            return "5";
+            return "1.5";
         }
 
         @Override
@@ -480,7 +480,7 @@ public enum Ui implements XMLPrefsSave {
     notes_index {
         @Override
         public String defaultValue() {
-            return "6";
+            return "9";
         }
 
         @Override
@@ -496,7 +496,7 @@ public enum Ui implements XMLPrefsSave {
     status_lines_alignment {
         @Override
         public String defaultValue() {
-            return "0,-1,-1,-1,-1,-1,-1,-1,-1";
+            return "-1,-1,-1,-1,-1,-1,-1,-1,-1";
         }
 
         @Override
@@ -720,7 +720,7 @@ public enum Ui implements XMLPrefsSave {
     show_weather {
         @Override
         public String defaultValue() {
-            return "false";
+            return "true";
         }
 
         @Override
@@ -736,7 +736,7 @@ public enum Ui implements XMLPrefsSave {
     weather_index {
         @Override
         public String defaultValue() {
-            return "7";
+            return "2";
         }
 
         @Override
@@ -768,7 +768,7 @@ public enum Ui implements XMLPrefsSave {
     show_unlock_counter {
         @Override
         public String defaultValue() {
-            return "true";
+            return "false";
         }
 
         @Override
@@ -784,7 +784,7 @@ public enum Ui implements XMLPrefsSave {
     unlock_index {
         @Override
         public String defaultValue() {
-            return "8";
+            return "10";
         }
 
         @Override
@@ -976,7 +976,7 @@ public enum Ui implements XMLPrefsSave {
     show_claude {
         @Override
         public String defaultValue() {
-            return "false";
+            return "true";
         }
 
         @Override
@@ -992,7 +992,7 @@ public enum Ui implements XMLPrefsSave {
     claude_index {
         @Override
         public String defaultValue() {
-            return "7.5";
+            return "5";
         }
 
         @Override
@@ -1056,7 +1056,7 @@ public enum Ui implements XMLPrefsSave {
     show_alarm {
         @Override
         public String defaultValue() {
-            return "false";
+            return "true";
         }
 
         @Override
@@ -1072,7 +1072,7 @@ public enum Ui implements XMLPrefsSave {
     alarm_index {
         @Override
         public String defaultValue() {
-            return "3.5";
+            return "1";
         }
 
         @Override
@@ -1104,7 +1104,7 @@ public enum Ui implements XMLPrefsSave {
     show_music {
         @Override
         public String defaultValue() {
-            return "false";
+            return "true";
         }
 
         @Override
@@ -1120,7 +1120,7 @@ public enum Ui implements XMLPrefsSave {
     music_index {
         @Override
         public String defaultValue() {
-            return "9";
+            return "7";
         }
 
         @Override
@@ -1152,7 +1152,7 @@ public enum Ui implements XMLPrefsSave {
     music_show_paused {
         @Override
         public String defaultValue() {
-            return "true";
+            return "false";
         }
 
         @Override
@@ -1164,9 +1164,72 @@ public enum Ui implements XMLPrefsSave {
         public String type() {
             return XMLPrefsSave.BOOLEAN;
         }
+    },
+    show_calendar {
+        @Override
+        public String defaultValue() {
+            return "true";
+        }
+
+        @Override
+        public String info() {
+            return "If true, your next calendar event (within calendar_days) is shown. Needs calendar access: run cal once";
+        }
+
+        @Override
+        public String type() {
+            return XMLPrefsSave.BOOLEAN;
+        }
+    },
+    calendar_index {
+        @Override
+        public String defaultValue() {
+            return "6";
+        }
+
+        @Override
+        public String info() {
+            return "This is used to order the labels on top of the screen";
+        }
+
+        @Override
+        public String type() {
+            return XMLPrefsSave.INTEGER;
+        }
+    },
+    calendar_size {
+        @Override
+        public String defaultValue() {
+            return "13";
+        }
+
+        @Override
+        public String info() {
+            return "Next calendar event size";
+        }
+
+        @Override
+        public String type() {
+            return XMLPrefsSave.INTEGER;
+        }
+    },
+    music_bar_style {
+        @Override
+        public String defaultValue() {
+            return "~\u266b\u00b7";
+        }
+
+        @Override
+        public String info() {
+            return "The characters of the music line's %bar, which can differ from bar_style. 3 characters draw a marker that moves along the bar: played, marker, left to play (\"~\u266b\u00b7\", \"\u2550\u256a\u2500\", \"=>-\"); 5 add ends (\"[=>-]\"). Empty = bar_style";
+        }
+
+        @Override
+        public String type() {
+            return XMLPrefsSave.TEXT;
+        }
     }
     ;
-
     @Override
     public XMLPrefsElement parent() {
         return XMLPrefsManager.XMLPrefsRoot.UI;

@@ -29,7 +29,7 @@ public class NowPlayingWatcher {
     private final Context context;
     private final Handler handler;
     private final Listener listener;
-    private final String format;
+    private final String format, barStyle;
     private final boolean showPaused;
     private final boolean ticks;
 
@@ -65,13 +65,15 @@ public class NowPlayingWatcher {
         }
     };
 
-    public NowPlayingWatcher(Context context, Handler handler, String format, boolean showPaused, Listener listener) {
+    /** @param barStyle the music bar's own style (music_bar_style), or null/"" for bar_style */
+    public NowPlayingWatcher(Context context, Handler handler, String format, String barStyle, boolean showPaused, Listener listener) {
         this.context = context.getApplicationContext();
         this.handler = handler;
         this.format = format;
+        this.barStyle = barStyle;
         this.showPaused = showPaused;
         this.listener = listener;
-        this.ticks = format.contains("%pos") || format.contains("%bar");
+        this.ticks = format.contains("%pos") || format.contains("%bar") || format.contains("%left");
     }
 
     public void start() {
@@ -161,7 +163,7 @@ public class NowPlayingWatcher {
             if (duration > 0) position = Math.min(position, duration);
         }
 
-        listener.onText(StatusFormats.nowPlaying(format, title, artist, album, appName(c.getPackageName()),
+        listener.onText(StatusFormats.nowPlaying(format, barStyle, title, artist, album, appName(c.getPackageName()),
                 playing, position, duration));
 
         if (playing && ticks) handler.postDelayed(tick, 1000);

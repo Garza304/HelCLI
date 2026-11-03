@@ -12,6 +12,14 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import java.util.Locale;
+import android.net.Uri;
+import android.Manifest;
+import android.content.ContentUris;
+import android.database.ContentObserver;
+import android.database.Cursor;
+import android.provider.CalendarContract;
+import ohi.andre.consolelauncher.managers.sysinfo.Layouts;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.location.Location;
@@ -122,7 +130,8 @@ public class UIManager implements OnTouchListener {
         unlock,
         claude,
         alarm,
-        music
+        music,
+        calendar
     }
 
     private final int RAM_DELAY = 3000;
@@ -353,6 +362,9 @@ public class UIManager implements OnTouchListener {
 
             copy = StatusBars.replaceCode(copy, "ebar", etot > 0 ? 100 - (eav * 100 / etot) : Double.NaN);
             copy = StatusBars.replaceCode(copy, "bar", itot > 0 ? 100 - (iav * 100 / itot) : Double.NaN);
+//            %used / %eused: the percentage of internal / external storage in use, like the bars
+            copy = copy.replace("%eused", etot > 0 ? String.valueOf(Math.round(100 - eav * 100 / etot)) : "-");
+            copy = copy.replace("%used", itot > 0 ? String.valueOf(Math.round(100 - iav * 100 / itot)) : "-");
             copy = storagePatterns.get(22).matcher(copy).replaceAll(Matcher.quoteReplacement(Tuils.NEWLINE));
 
             copy = storagePatterns.get(23).matcher(copy).replaceAll(Matcher.quoteReplacement(String.valueOf(Tuils.formatSize((long) iav, Tuils.GIGA))));
@@ -442,6 +454,8 @@ public class UIManager implements OnTouchListener {
 
             copy = ramPatterns.get(11).matcher(copy).replaceAll(Matcher.quoteReplacement(Tuils.NEWLINE));
             copy = StatusBars.replaceCode(copy, "bar", tot > 0 ? 100 - (av * 100 / tot) : Double.NaN);
+//            %used: the percentage in use, like the bar
+            copy = copy.replace("%used", tot > 0 ? String.valueOf(Math.round(100 - av * 100 / tot)) : "-");
 
             updateText(Label.ram, Tuils.span(mContext, copy, color, labelSizes[Label.ram.ordinal()]));
 
@@ -581,7 +595,9 @@ public class UIManager implements OnTouchListener {
             copy = w2.matcher(copy).replaceAll(wifiOn ? ON : OFF);
             copy = w3.matcher(copy).replaceAll(wifiOn ? _true : _false);
             copy = w4.matcher(copy).replaceAll(wifiOn ? TRUE : FALSE);
-            copy = wn.matcher(copy).replaceAll(wifiName != null ? wifiName.replaceAll("\"", Tuils.EMPTYSTRING) : "null");
+//            Android hides the Wi-Fi name from apps without location access
+            if (wifiName != null && wifiName.contains("unknown ssid")) wifiName = "wifi";
+            copy = wn.matcher(copy).replaceAll(Matcher.quoteReplacement(wifiName != null ? wifiName.replaceAll("\"", Tuils.EMPTYSTRING) : "null"));
             copy = d0.matcher(copy).replaceAll(mobileOn ? one : zero);
             copy = d1.matcher(copy).replaceAll(mobileOn ? on : off);
             copy = d2.matcher(copy).replaceAll(mobileOn ? ON : OFF);
@@ -594,8 +610,10 @@ public class UIManager implements OnTouchListener {
             copy = b4.matcher(copy).replaceAll(bluetoothOn ? TRUE : FALSE);
             copy = ip4.matcher(copy).replaceAll(NetworkUtils.getIPAddress(true));
             copy = ip6.matcher(copy).replaceAll(NetworkUtils.getIPAddress(false));
-            copy = dt.matcher(copy).replaceAll(mobileType);
+            copy = dt.matcher(copy).replaceAll(mobileType.equals("unknown") ? "data" : mobileType.toUpperCase(Locale.ROOT));
             copy = Tuils.patternNewline.matcher(copy).replaceAll(Tuils.NEWLINE);
+//            items joined with "·" that are off leave a "·" at either end
+            copy = copy.replaceAll("^[\\s·]+|[\\s·]+$", Tuils.EMPTYSTRING).replaceAll("·(\\s*·)+", "·");
 
             updateText(Label.network, Tuils.span(mContext, copy, color, labelSizes[Label.network.ordinal()]));
             handler.postDelayed(this, updateTime);
@@ -755,32 +773,38 @@ public class UIManager implements OnTouchListener {
             return;
         }
 
-        if(StatusBars.hasMarkers(sequence)) drawBars(view, sequence);
+//        long cities, event titles and songs are shortened with "…" instead of wrapping the line
+        if(TextUtils.indexOf(sequence, StatusBars.SHRINK_START) >= 0) {
+            apply(sequence, StatusBars.fit(sequence, widthChars(view, sequence, StatusBars.SHRINK_START)));
+        }
+        if(StatusBars.hasMarkers(sequence)) {
+            apply(sequence, StatusBars.layout(sequence, widthChars(view, sequence, StatusBars.START), barStyle));
+        }
 
         view.setVisibility(View.VISIBLE);
         view.setText(sequence);
     }
 
-//    turns %bar markers into bars as wide as the line allows
-    private void drawBars(TextView view, SpannableStringBuilder sequence) {
-        int widthChars = 0;
-        int width = view.getWidth() - view.getTotalPaddingLeft() - view.getTotalPaddingRight();
-        if(width > 0) {
-            TextPaint paint = new TextPaint(view.getPaint());
-//            measure at the size of the text the first bar belongs to (every label sets its own size)
-            int markerAt = TextUtils.indexOf(sequence, StatusBars.START);
-            AbsoluteSizeSpan[] sizes = markerAt >= 0 ? sequence.getSpans(markerAt, markerAt + 1, AbsoluteSizeSpan.class) : null;
-            if(sizes != null && sizes.length > 0) paint.setTextSize(sizes[sizes.length - 1].getSize());
-            float charWidth = paint.measureText("0");
-//            one character spare, so a full line never wraps
-            if(charWidth > 0) widthChars = (int) (width / charWidth) - 1;
-        }
-
-        List<StatusBars.Replacement> replacements = StatusBars.layout(sequence, widthChars, barStyle);
+    private static void apply(SpannableStringBuilder sequence, List<StatusBars.Replacement> replacements) {
         for(int i = replacements.size() - 1; i >= 0; i--) {
             StatusBars.Replacement r = replacements.get(i);
             sequence.replace(r.start, r.end, r.bar);
         }
+    }
+
+//    how many characters fit on a line of this view, measured at the size of the text at the first
+//    "at" character (every label sets its own size); 0 if the view isn't laid out yet
+    private int widthChars(TextView view, SpannableStringBuilder sequence, char at) {
+        int width = view.getWidth() - view.getTotalPaddingLeft() - view.getTotalPaddingRight();
+        if(width <= 0) return 0;
+
+        TextPaint paint = new TextPaint(view.getPaint());
+        int markerAt = TextUtils.indexOf(sequence, at);
+        AbsoluteSizeSpan[] sizes = markerAt >= 0 ? sequence.getSpans(markerAt, markerAt + 1, AbsoluteSizeSpan.class) : null;
+        if(sizes != null && sizes.length > 0) paint.setTextSize(sizes[sizes.length - 1].getSize());
+        float charWidth = paint.measureText("0");
+//        one character spare, so a full line never wraps
+        return charWidth > 0 ? (int) (width / charWidth) - 1 : 0;
     }
 
     private SuggestionsManager suggestionsManager;
@@ -820,6 +844,68 @@ public class UIManager implements OnTouchListener {
             handler.postDelayed(this, 60_000 - System.currentTimeMillis() % 60_000 + 50);
         }
     };
+
+    private String calendarFormat, calendarNowFormat;
+    private int calendarDays, calendarColor;
+    private ContentObserver calendarObserver;
+//    the next calendar event within calendar_days, redrawn every minute and when the calendar changes
+    private final Runnable calendarRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if(handler == null) return;
+            handler.removeCallbacks(this);
+            final long now = System.currentTimeMillis();
+            final Context context = mContext;
+            new Thread(() -> {
+                final String text = nextEventText(context, now);
+                if(handler != null) handler.post(() -> {
+                    if(handler != null) updateText(Label.calendar, Tuils.span(context, text, calendarColor, labelSizes[Label.calendar.ordinal()]));
+                });
+            }).start();
+            handler.postDelayed(this, 60_000 - System.currentTimeMillis() % 60_000 + 100);
+        }
+    };
+
+//    "" when there's nothing coming up
+    private String nextEventText(Context context, long now) {
+//        the cal command asks for access; the line picks it up within a minute
+        if(ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) return "Next event: run cal to allow calendar access";
+
+        Uri.Builder uri = CalendarContract.Instances.CONTENT_URI.buildUpon();
+//        a day back, so events that are happening now (and all-day events, stored in UTC) are found
+        ContentUris.appendId(uri, now - 86_400_000L);
+        ContentUris.appendId(uri, now + calendarDays * 86_400_000L);
+        String[] projection = {
+                CalendarContract.Instances.TITLE,
+                CalendarContract.Instances.BEGIN,
+                CalendarContract.Instances.END,
+                CalendarContract.Instances.ALL_DAY,
+                CalendarContract.Instances.SELF_ATTENDEE_STATUS,
+        };
+        TimeZone zone = TimeZone.getDefault();
+        try (Cursor cur = context.getContentResolver().query(uri.build(), projection,
+                CalendarContract.Instances.VISIBLE + " = 1", null, CalendarContract.Instances.BEGIN + " ASC")) {
+            if(cur == null) return Tuils.EMPTYSTRING;
+            while(cur.moveToNext()) {
+                if(cur.getInt(4) == CalendarContract.Attendees.ATTENDEE_STATUS_DECLINED) continue;
+                boolean allDay = cur.getInt(3) == 1;
+                long begin = cur.getLong(1), end = cur.getLong(2);
+                if(allDay) {
+                    begin = Layouts.sameDateIn(begin, zone);
+                    end = Layouts.sameDateIn(end, zone);
+                }
+                if(end <= now) continue;
+//                all-day events don't count as happening now: they'd hide the rest of the day
+                if(allDay && begin <= now) continue;
+                if(begin > now + calendarDays * 86_400_000L) break;
+                return StatusFormats.event(calendarFormat, calendarNowFormat, cur.getString(0), begin, end, allDay,
+                        now, zone, android.text.format.DateFormat.is24HourFormat(context));
+            }
+        } catch (Exception e) {
+            Tuils.log(e);
+        }
+        return Tuils.EMPTYSTRING;
+    }
 
     private TextView terminalView;
 
@@ -1067,6 +1153,7 @@ public class UIManager implements OnTouchListener {
         labelSizes[Label.claude.ordinal()] = XMLPrefsManager.getInt(Ui.claude_size);
         labelSizes[Label.alarm.ordinal()] = XMLPrefsManager.getInt(Ui.alarm_size);
         labelSizes[Label.music.ordinal()] = XMLPrefsManager.getInt(Ui.music_size);
+        labelSizes[Label.calendar.ordinal()] = XMLPrefsManager.getInt(Ui.calendar_size);
 
         labelViews = new TextView[] {
                 (TextView) rootView.findViewById(R.id.tv0),
@@ -1093,6 +1180,7 @@ public class UIManager implements OnTouchListener {
         show[Label.claude.ordinal()] = XMLPrefsManager.getBoolean(Ui.show_claude);
         show[Label.alarm.ordinal()] = XMLPrefsManager.getBoolean(Ui.show_alarm);
         show[Label.music.ordinal()] = XMLPrefsManager.getBoolean(Ui.show_music);
+        show[Label.calendar.ordinal()] = XMLPrefsManager.getBoolean(Ui.show_calendar);
 
         float[] indexes = new float[Label.values().length];
         indexes[Label.notes.ordinal()] = show[Label.notes.ordinal()] ? XMLPrefsManager.getFloat(Ui.notes_index) : Integer.MAX_VALUE;
@@ -1107,6 +1195,7 @@ public class UIManager implements OnTouchListener {
         indexes[Label.claude.ordinal()] = show[Label.claude.ordinal()] ? XMLPrefsManager.getFloat(Ui.claude_index) : Integer.MAX_VALUE;
         indexes[Label.alarm.ordinal()] = show[Label.alarm.ordinal()] ? XMLPrefsManager.getFloat(Ui.alarm_index) : Integer.MAX_VALUE;
         indexes[Label.music.ordinal()] = show[Label.music.ordinal()] ? XMLPrefsManager.getFloat(Ui.music_index) : Integer.MAX_VALUE;
+        indexes[Label.calendar.ordinal()] = show[Label.calendar.ordinal()] ? XMLPrefsManager.getFloat(Ui.calendar_index) : Integer.MAX_VALUE;
 
         int[] statusLineAlignments = getListOfIntValues(XMLPrefsManager.get(Ui.status_lines_alignment), 9, -1);
 
@@ -1340,9 +1429,32 @@ public class UIManager implements OnTouchListener {
         if(show[Label.music.ordinal()]) {
             final int musicColor = XMLPrefsManager.getColor(Theme.music_color);
             nowPlaying = new NowPlayingWatcher(mContext, handler, XMLPrefsManager.get(Behavior.music_format),
-                    XMLPrefsManager.getBoolean(Ui.music_show_paused),
+                    XMLPrefsManager.get(Ui.music_bar_style), XMLPrefsManager.getBoolean(Ui.music_show_paused),
                     text -> updateText(Label.music, Tuils.span(mContext, text, musicColor, labelSizes[Label.music.ordinal()])));
             nowPlaying.start();
+        }
+
+        if(show[Label.calendar.ordinal()]) {
+            calendarFormat = XMLPrefsManager.get(Behavior.calendar_format);
+            calendarNowFormat = XMLPrefsManager.get(Behavior.calendar_now_format);
+            calendarDays = Math.max(1, XMLPrefsManager.getInt(Behavior.calendar_days));
+            calendarColor = XMLPrefsManager.getColor(Theme.calendar_color);
+            calendarObserver = new ContentObserver(handler) {
+                @Override
+                public void onChange(boolean selfChange) {
+                    if(handler != null) {
+                        handler.removeCallbacks(calendarRunnable);
+                        handler.post(calendarRunnable);
+                    }
+                }
+            };
+            try {
+                mContext.getContentResolver().registerContentObserver(CalendarContract.Events.CONTENT_URI, true, calendarObserver);
+            } catch (Exception e) {
+//                no calendar provider, or no permission yet: the line still updates every minute
+                Tuils.log(e);
+            }
+            handler.post(calendarRunnable);
         }
 
         if(show[Label.claude.ordinal()]) {
@@ -1576,6 +1688,13 @@ public class UIManager implements OnTouchListener {
     }
 
     public void dispose() {
+        if(calendarObserver != null) {
+            try {
+                mContext.getContentResolver().unregisterContentObserver(calendarObserver);
+            } catch (Exception ignored) {}
+            calendarObserver = null;
+        }
+
         if(nowPlaying != null) {
             nowPlaying.stop();
             nowPlaying = null;

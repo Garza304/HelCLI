@@ -168,9 +168,10 @@ public class ClaudeUsage {
 
     /** What the line shows when claude_format is empty, depending on which sources are set up. */
     public static String defaultFormat(boolean hasPlan, boolean hasApi, boolean hasBudget) {
-        String plan = "Claude 5h %5h% · week %7d%";
+//        a heading with the reset time, then one line per limit; the bars line up with ram and disk
+        String plan = "Claude · 5h resets %5hreset%n5h    %5h% %5hbar%nweek  %7d% %7dbar";
         String api = hasBudget ? "API $%spent of $%budget (%api%)" : "API $%spent this month";
-        if (hasPlan && hasApi) return plan + "  " + api;
+        if (hasPlan && hasApi) return plan + (hasBudget ? "%nAPI   %api% %apibar" : "%nAPI   $%spent this month");
         if (hasApi) return "Claude " + api;
         if (hasPlan) return plan;
         return "Claude usage: not set up (run: usage)";
@@ -184,6 +185,11 @@ public class ClaudeUsage {
      * @param budgetUsd  0 or less means no budget
      */
     public static String format(String format, Plan plan, Double spentUsd, double budgetUsd, long nowMillis, TimeZone zone) {
+        return format(format, plan, spentUsd, budgetUsd, nowMillis, zone, true);
+    }
+
+    /** @param use24h reset times as 23:20 (true) or 11:20 PM (false), like the phone's clock */
+    public static String format(String format, Plan plan, Double spentUsd, double budgetUsd, long nowMillis, TimeZone zone, boolean use24h) {
 //        bars first: their codes start like the others (%5hbar would otherwise read as %5h + "bar")
         double fiveP = plan != null && plan.fiveHour != null ? plan.fiveHour : Double.NaN;
         double sevenP = plan != null && plan.sevenDay != null ? plan.sevenDay : Double.NaN;
@@ -196,8 +202,8 @@ public class ClaudeUsage {
 
         String five = plan != null && plan.fiveHour != null ? percent(plan.fiveHour) : "-";
         String seven = plan != null && plan.sevenDay != null ? percent(plan.sevenDay) : "-";
-        String fiveReset = plan != null && plan.fiveHourReset != null ? time(plan.fiveHourReset, "HH:mm", zone) : "-";
-        String sevenReset = plan != null && plan.sevenDayReset != null ? time(plan.sevenDayReset, "EEE HH:mm", zone) : "-";
+        String fiveReset = plan != null && plan.fiveHourReset != null ? time(plan.fiveHourReset, use24h ? "HH:mm" : "h:mm a", zone) : "-";
+        String sevenReset = plan != null && plan.sevenDayReset != null ? time(plan.sevenDayReset, use24h ? "EEE HH:mm" : "EEE h:mm a", zone) : "-";
         String updated = plan != null && plan.updatedAt != null ? age(nowMillis / 1000 - plan.updatedAt) : "-";
 
         String spent = spentUsd != null ? String.format(Locale.US, "%.2f", spentUsd) : "-";
@@ -213,7 +219,8 @@ public class ClaudeUsage {
                 .replace("%7d", seven)
                 .replace("%spent", spent)
                 .replace("%budget", budget)
-                .replace("%api", api);
+                .replace("%api", api)
+                .replace("%n", "\n");
     }
 
     /** The highest percentage on the line, for warning colors. -1 if none. */
