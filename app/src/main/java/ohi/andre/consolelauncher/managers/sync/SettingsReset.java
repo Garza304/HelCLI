@@ -26,7 +26,7 @@ import ohi.andre.consolelauncher.tuils.interfaces.Reloadable;
  * HelCLI writes every setting into its files the first time it runs, so after an update the files still
  * hold the old defaults; this is how to get the new ones. A few personal settings are kept (see KEEP),
  * and so are aliases, notes, apps and saved themes, which live in other files. The old files are copied
- * to "reset-backup" first, so "reset undo" can put them back.
+ * to "reset-backup" first, so "reset -undo" can put them back.
  */
 public class SettingsReset {
 
@@ -51,10 +51,10 @@ public class SettingsReset {
             if (kept.length() > 0) kept.append(", ");
             kept.append(s.label());
         }
-        return "reset now -> puts every setting back to HelCLI's defaults (theme, layout, text and colors at the top"
+        return "reset -now -> puts every setting back to HelCLI's defaults (theme, layout, text and colors at the top"
                 + " of the screen, suggestions, toolbar), then restarts HelCLI."
                 + Tuils.NEWLINE + "Kept as they are: " + kept + "; your aliases, notes, apps and saved themes."
-                + Tuils.NEWLINE + "A backup is saved first: reset undo puts your settings back.";
+                + Tuils.NEWLINE + "A backup is saved first: reset -undo puts your settings back.";
     }
 
     /** Resets the settings and restarts HelCLI. Returns a message, or null when the restart reports instead. */
@@ -100,7 +100,7 @@ public class SettingsReset {
 
         reloadable.addMessage("reset: " + reset + " settings files back to the defaults"
                 + (keep.isEmpty() ? "" : ", kept " + keep.size() + " personal " + (keep.size() == 1 ? "setting" : "settings"))
-                + " (reset undo puts them back)", null);
+                + " (reset -undo puts them back)", null);
         reloadable.reload();
         return null;
     }
@@ -118,12 +118,12 @@ public class SettingsReset {
                 copy(f, new File(folder, f.getName()));
                 restored++;
             } catch (IOException e) {
-                return "reset undo: couldn't restore " + f.getName() + " (" + e.getMessage() + ")";
+                return "reset -undo: couldn't restore " + f.getName() + " (" + e.getMessage() + ")";
             }
         }
         Tuils.delete(backup);
 
-        reloadable.addMessage("reset undo: restored " + restored + (restored == 1 ? " file" : " files") + " from before the reset", null);
+        reloadable.addMessage("reset -undo: restored " + restored + (restored == 1 ? " file" : " files") + " from before the reset", null);
         reloadable.reload();
         return null;
     }

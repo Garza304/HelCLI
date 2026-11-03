@@ -61,13 +61,13 @@ public class Updater {
             }
             out.line("HelCLI " + r.version + " is available (you have " + installed + ")"
                     + (r.headline().length() > 0 ? "\n  " + r.headline() : "")
-                    + "\n" + Breakdown.size(r.size, false) + " download. Install it with: update install");
+                    + "\n" + Breakdown.size(r.size, false) + " download. Install it with: update -install");
         } catch (Exception e) {
             out.line("update: couldn't check for updates (" + e.getMessage() + ")");
         }
     }
 
-    /** "update install": downloads, checks and opens Android's installer. */
+    /** "update -install": downloads, checks and opens Android's installer. */
     public static void install(Context c, OkHttpClient client, boolean evenIfCurrent, Output out) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !c.getPackageManager().canRequestPackageInstalls()) {
             Intent i = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, Uri.parse("package:" + c.getPackageName()));
@@ -76,7 +76,7 @@ public class Updater {
                 c.startActivity(i);
             } catch (Exception ignored) {
             }
-            out.line("Allow HelCLI to install apps (just this once), then run: update install");
+            out.line("Allow HelCLI to install apps (just this once), then run: update -install");
             return;
         }
 
@@ -88,7 +88,7 @@ public class Updater {
             return;
         }
         if (!evenIfCurrent && !r.newerThan(BuildConfig.VERSION_NAME)) {
-            out.line("HelCLI " + BuildConfig.VERSION_NAME + " is up to date. To reinstall it anyway: update reinstall");
+            out.line("HelCLI " + BuildConfig.VERSION_NAME + " is up to date. To reinstall it anyway: update -reinstall");
             return;
         }
 

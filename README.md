@@ -13,8 +13,8 @@ Download `helcli.apk` from the newest [release](https://github.com/Garza304/HelC
 open it on your phone. After that, update from inside HelCLI:
 
 ```
-update            check whether there's a newer version
-update install    download it, check it, and install it over yours (settings stay)
+update             check whether there's a newer version
+update -install    download it, check it, and install it over yours (settings stay)
 ```
 
 Every change merged into `master` becomes a release (version 1.0.*build number*), signed with the
@@ -78,13 +78,13 @@ downloads the files at the newest commit.
 ### `reset` to the defaults
 
 ```
-reset          # what it does and what it keeps
-reset now      # every setting back to the defaults, then restart
-reset undo     # put back the settings from before the reset
+reset           # what it does and what it keeps
+reset -now      # every setting back to the defaults, then restart
+reset -undo     # put back the settings from before the reset
 ```
 
 HelCLI saves every setting into its files the first time it runs, so after an update your phone
-keeps the old defaults. `reset now` gets the new ones: the theme, the layout, text and colors at the
+keeps the old defaults. `reset -now` gets the new ones: the theme, the layout, text and colors at the
 top of the screen, suggestions and the toolbar. It keeps your weather location and units, Claude
 usage setup and username, plus your aliases, notes, apps and saved themes.
 
@@ -128,7 +128,7 @@ and weekly %) and/or this month's Claude API spend against a budget.
 ```
 usage -show                 # show the line
 usage -plan you/gist_id     # plan limits, published by tools/claude-usage/helcli_usage.py
-usage -key                  # API spend: saves the Admin API key you copied (from the clipboard)
+usage -link                 # API spend: opens the Admin keys page; copy the key, come back, done
 usage -budget 50            # monthly API budget, to show a %
 usage -status               # what's set up
 ```
@@ -159,14 +159,14 @@ Breakdowns of the phone's memory and storage, drawn with the same loading bars a
 
 ```
 ram               in use, cached (freed when apps need it), free, swap
-storage           apps, images, videos, audio, other files, system, free, SD cards, biggest apps
-storage apps      the 20 biggest apps (storage apps all: every app)
-storage cache     apps with the most cache, which is safe to clear
-storage access    give HelCLI Usage access
+storage            apps, images, videos, audio, other files, system, free, SD cards, biggest apps
+storage -apps      the 20 biggest apps (storage -apps all: every app)
+storage -cache     apps with the most cache, which is safe to clear
+storage -access    give HelCLI Usage access
 ```
 
 App sizes and the image/video/audio split need **Usage access** (Android 8 and later), which you turn
-on once with `storage access`. HelCLI only reads sizes with it and doesn't send them anywhere.
+on once with `storage -access`. HelCLI only reads sizes with it and doesn't send them anywhere.
 Android doesn't let apps see other apps' memory, so `ram` has no per-app list.
 
 ### More home screen lines
@@ -184,21 +184,22 @@ Android doesn't let apps see other apps' memory, so `ram` has no per-app list.
 | Command | What it does |
 | --- | --- |
 | `sysinfo` | A neofetch-style summary: Android version, model, uptime, theme, CPU, RAM, storage, battery, and a row of the theme's colors |
-| `cal` | Your agenda from every calendar on the phone: `cal`, `cal today`, `cal tomorrow`, `cal 14` |
-| `ip` | WiFi or mobile, signal, addresses, gateway, DNS, and whether the internet works (`ip public` for the public address) |
+| `cal` | Your agenda from every calendar on the phone: `cal`, `cal -today`, `cal -tomorrow`, `cal 14` |
+| `ip` | WiFi or mobile, signal, addresses, gateway, DNS, and whether the internet works (`ip -public` for the public address) |
 | `ping` | `ping github.com`, or just `ping` to check your router and then the internet |
 | `dns` | `dns github.com`: the addresses, how long the lookup took, and which server answered |
-| `at` | Runs a command later: `at 22:00 theme -apply oled`, `at +30m flash`, `at daily 7am cal today`; `at` lists them |
+| `at` | Runs a command later: `at 22:00 theme -apply oled`, `at +30m flash`, `at daily 7am cal -today`; `at` lists them |
 | `qr` | Draws a QR code to scan with another phone: `qr https://...`, or `qr` for what you copied |
 | `ask` | Ask Claude: `ask how do I ...`. Follow-ups remember the conversation; `ask -new` starts over |
 
-`ask` needs a Claude API key (copy it, then `ask -key`; it's kept in HelCLI's private storage) and
+`ask` needs a Claude API key: `ask -link` opens the page where you make one; copy it and come back,
+and HelCLI saves it in its private storage. It's a different key from the usage line's Admin key. It needs
 Android 8 or later. Each question costs a little on your Claude API account. It uses Claude Opus 5.5
 with low effort for quick answers; change `ask_model` or `ask_effort` in behavior.xml. If Claude
 declines a question, Anthropic retries it on another model automatically (server-side fallback).
 
 `at` runs commands through the launcher: if Android closed it, the command runs the next time the
-home screen opens. On Android 12 and later, `at exact` lets jobs run on time instead of a few minutes late.
+home screen opens. On Android 12 and later, `at -exact` lets jobs run on time instead of a few minutes late.
 
 ### Weather
 
@@ -245,7 +246,7 @@ These updates ensure the launcher remains functional, secure, and performant on 
 ### ✨ Enhanced Features
 *   **Built-in BusyBox Manager:** Gain access to 300+ Linux commands (ls, grep, awk, top, etc.) via the new `bbman -install` command.
 *   **Theme Preset Shortcut Buttons:** Enhanced the `theme -preset` command to show interactive shortcut buttons for presets.
-*   **Synchronized Theme UI:** Applying a preset now automatically colors the shortcut buttons (suggestions) to match the overall theme.
+*   **Synchronized Theme UI:** Applying a preset -now automatically colors the shortcut buttons (suggestions) to match the overall theme.
 *   **One-Tap Application:** Shortcut buttons for theme presets execute immediately upon clicking.
 
 ---

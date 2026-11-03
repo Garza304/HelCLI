@@ -7,7 +7,9 @@ import android.content.SharedPreferences;
 import android.os.Build;
 
 import ohi.andre.consolelauncher.R;
-import ohi.andre.consolelauncher.commands.CommandAbstraction;
+import ohi.andre.consolelauncher.commands.main.specific.SimpleParamCommand;
+import ohi.andre.consolelauncher.managers.ask.AskKey;
+import ohi.andre.consolelauncher.managers.claude.KeyLink;
 import ohi.andre.consolelauncher.commands.ExecutePack;
 import ohi.andre.consolelauncher.managers.xml.XMLPrefsManager;
 import ohi.andre.consolelauncher.managers.xml.options.Behavior;
@@ -17,32 +19,44 @@ import ohi.andre.consolelauncher.tuils.Tuils;
  * ask [question]: an answer from Claude, in the terminal. Needs a Claude API key (ask -key);
  * each question costs a little on that account.
  */
-public class ask implements CommandAbstraction {
+public class ask extends SimpleParamCommand {
 
-    private static final String PREFS = "helcli_ask", KEY = "api_key", WARNED = "warned";
+    private static final String PREFS = "helcli_ask", WARNED = "warned";
 
-    @Override
-    public String exec(ExecutePack pack) {
-        final Context c = pack.context;
-        String input = pack.getString().trim();
-        String lower = input.toLowerCase();
-
-        if (lower.equals("-key") || lower.equals("key")) return saveKey(c);
-        if (lower.equals("-forget")) {
-            prefs(c).edit().remove(KEY).apply();
+    public ask() {
+        option("link", (pack, t) -> KeyLink.start(pack.context, KeyLink.Kind.API));
+        option("key", (pack, t) -> saveKey(pack.context));
+        option("forget", (pack, t) -> {
+            AskKey.forget(pack.context);
             return "Deleted the Claude API key from HelCLI";
-        }
-        if (lower.equals("-new") || lower.equals("new")) {
+        });
+        option("new", (pack, t) -> {
             if (Build.VERSION.SDK_INT >= 26) ohi.andre.consolelauncher.managers.ask.AskClaude.forgetConversation();
             return "Started a new conversation";
-        }
+        });
+    }
+
+//    the question is free text, so only "-words" are options ("ask new ideas?" is a question)
+    @Override
+    public boolean paramsNeedDash() {
+        return true;
+    }
+
+    @Override
+    public boolean takesText() {
+        return true;
+    }
+
+    @Override
+    public String onText(ExecutePack pack, String input) {
+        final Context c = pack.context;
 
 //        the SDK's JSON library needs Android 8
         if (Build.VERSION.SDK_INT < 26) return "ask needs Android 8 or later";
 
-        final String key = prefs(c).getString(KEY, null);
+        final String key = AskKey.get(c);
         if (key == null) {
-            return "ask needs a Claude API key. Create one at platform.claude.com/settings/keys, copy it, then run: ask -key";
+            return "ask needs a Claude API key. Run ask -link to make one in the Claude Console and link it.";
         }
 
         final String model = XMLPrefsManager.get(Behavior.ask_model).trim();
@@ -59,11 +73,6 @@ public class ask implements CommandAbstraction {
         return "Asking Claude..." + note;
     }
 
-    @Override
-    public String onNotArgEnough(ExecutePack pack, int nArgs) {
-        return pack.context.getString(R.string.help_ask);
-    }
-
     private static SharedPreferences prefs(Context c) {
         return c.getApplicationContext().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
     }
@@ -75,10 +84,10 @@ public class ask implements CommandAbstraction {
         String key = clip != null && clip.getItemCount() > 0 && clip.getItemAt(0).getText() != null
                 ? clip.getItemAt(0).getText().toString().trim() : null;
 
-        if (key == null || !key.matches("sk-ant-api\\d+-[A-Za-z0-9_-]{20,}")) {
-            return "Copy your Claude API key (sk-ant-api03-...) first, then run ask -key again. Create one at platform.claude.com/settings/keys";
+        if (!AskKey.looksLikeApiKey(key)) {
+            return "Copy your Claude API key (sk-ant-api03-...) first, then run ask -key again. Or run ask -link to make one.";
         }
-        prefs(c).edit().putString(KEY, key).apply();
+        AskKey.save(c, key);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             try {
                 clipboard.clearPrimaryClip();
@@ -90,10 +99,6 @@ public class ask implements CommandAbstraction {
                 + Tuils.NEWLINE + "Try: ask what's a good name for a terminal launcher?";
     }
 
-    @Override
-    public int[] argType() {
-        return new int[] {CommandAbstraction.PLAIN_TEXT};
-    }
 
     @Override
     public int priority() {
@@ -105,8 +110,4 @@ public class ask implements CommandAbstraction {
         return R.string.help_ask;
     }
 
-    @Override
-    public String onArgNotFound(ExecutePack info, int index) {
-        return null;
-    }
 }

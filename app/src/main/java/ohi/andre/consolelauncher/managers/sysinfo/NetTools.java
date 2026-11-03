@@ -94,7 +94,7 @@ public class NetTools {
                 b.append("  Private DNS ").append(lp.getPrivateDnsServerName() != null ? lp.getPrivateDnsServerName() : "on").append('\n');
             }
         }
-        b.append("Your public IP: ip public");
+        b.append("Your public IP: ip -public");
         return b.toString();
     }
 

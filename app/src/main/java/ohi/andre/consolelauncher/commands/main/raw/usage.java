@@ -15,6 +15,7 @@ import ohi.andre.consolelauncher.commands.main.MainPack;
 import ohi.andre.consolelauncher.commands.main.specific.ParamCommand;
 import ohi.andre.consolelauncher.managers.claude.ClaudeUsage;
 import ohi.andre.consolelauncher.managers.claude.ClaudeUsageUpdater;
+import ohi.andre.consolelauncher.managers.claude.KeyLink;
 import ohi.andre.consolelauncher.managers.xml.XMLPrefsManager;
 import ohi.andre.consolelauncher.managers.xml.classes.XMLPrefsSave;
 import ohi.andre.consolelauncher.managers.xml.options.Behavior;
@@ -46,7 +47,7 @@ public class usage extends ParamCommand {
 
                 return "Claude usage line: " + (XMLPrefsManager.getBoolean(Ui.show_claude) ? "shown" : "hidden (usage -show)") + Tuils.NEWLINE
                         + "Plan limits from: " + (source == null || source.length() == 0 ? "not set (usage -plan user/gist_id)" : source) + Tuils.NEWLINE
-                        + "API spend: " + (key == null ? "no key (usage -key)" : "key " + ClaudeUsage.maskKey(key)) + Tuils.NEWLINE
+                        + "API spend: " + (key == null ? "not linked (usage -link)" : "key " + ClaudeUsage.maskKey(key)) + Tuils.NEWLINE
                         + "Monthly API budget: " + (budget == null || budget.equals("0") ? "none (usage -budget 50)" : "$" + budget);
             }
         },
@@ -95,6 +96,12 @@ public class usage extends ParamCommand {
                 return write(pack, Behavior.claude_budget_usd, value);
             }
         },
+        link {
+            @Override
+            public String exec(ExecutePack pack) {
+                return KeyLink.start(pack.context, KeyLink.Kind.ADMIN);
+            }
+        },
         key {
             @Override
             public String exec(ExecutePack pack) {
@@ -105,7 +112,7 @@ public class usage extends ParamCommand {
                         ? clip.getItemAt(0).getText().toString().trim() : null;
 
                 if (!ClaudeUsage.looksLikeAdminKey(key)) {
-                    return "Copy the key first, then run usage -key again." + Tuils.NEWLINE
+                    return "Copy the key first, then run usage -key again (or run usage -link to make one and link it)." + Tuils.NEWLINE
                             + "Claude Console: an Admin API key (sk-ant-admin01-...) from platform.claude.com/settings/admin-keys."
                             + " It needs an organization and the admin role, and it can manage your whole organization,"
                             + " so give HelCLI its own key with a short expiration date." + Tuils.NEWLINE

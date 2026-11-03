@@ -237,7 +237,7 @@ public class Breakdown {
         }
 
         if (apps == null) {
-            b.append("\nTo see which apps use the most space,\ngive HelCLI Usage access: storage access");
+            b.append("\nTo see which apps use the most space,\ngive HelCLI Usage access: storage -access");
         } else if (top > 0 && !apps.isEmpty()) {
             b.append('\n').append(biggestApps(apps, top, false, style));
         }
@@ -262,7 +262,7 @@ public class Breakdown {
         }
         if (shown == 0) b.append("\n  (none)");
         if (sorted.size() > shown && top < sorted.size()) {
-            b.append('\n').append(byCache ? "Full list: storage cache all" : "Full list: storage apps all");
+            b.append('\n').append(byCache ? "Full list: storage -cache all" : "Full list: storage -apps all");
         }
         return b.toString();
     }

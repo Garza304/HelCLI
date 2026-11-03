@@ -114,6 +114,29 @@ public abstract class ParamCommand implements CommandAbstraction {
         return pack.context.getString(helpRes());
     }
 
+    /** Running the command with nothing after it. By default, its help. */
+    public String onEmpty(ExecutePack pack) {
+        return pack.context.getString(helpRes());
+    }
+
+    /** True if text that isn't one of the -params is handled by {@link #onText}, like "at 22:00 flash". */
+    public boolean takesText() {
+        return false;
+    }
+
+    /** Text after the command that isn't one of its -params (only when {@link #takesText()}). */
+    public String onText(ExecutePack pack, String text) {
+        return null;
+    }
+
+    /**
+     * If true, only a word that starts with "-" is read as a param. For commands that take free text,
+     * so "ask new ideas for dinner?" is a question and not "ask -new".
+     */
+    public boolean paramsNeedDash() {
+        return false;
+    }
+
     public abstract String[] params();
     protected abstract Param paramForString(MainPack pack, String param);
     protected abstract String doThings(ExecutePack pack);

@@ -61,11 +61,11 @@ public class AtJobsTest {
 
     @Test
     public void dailyJobs() {
-        AtJobs.Job j = ok("daily 7:30am cal today");
+        AtJobs.Job j = ok("daily 7:30am cal -today");
         assertTrue(j.daily);
         assertEquals(7, j.hour);
         assertEquals(30, j.minute);
-        assertEquals("cal today", j.command);
+        assertEquals("cal -today", j.command);
 //        after it runs, it moves to the next morning
         assertEquals(j.at + 24 * H, j.next(j.at, CHI).at);
     }
@@ -96,7 +96,7 @@ public class AtJobsTest {
     @Test
     public void listsJobs() {
         List<AtJobs.Job> jobs = Arrays.asList(ok("22:00 theme -apply oled"), AtJobs.parse("daily 7am cal", 2, NOW, CHI).job);
-        assertEquals("1  22:00  theme -apply oled  (in 2h 0m)\n2  07:00 daily  cal  (in 11h 0m)\nCancel one with: at cancel [number]",
+        assertEquals("1  22:00  theme -apply oled  (in 2h 0m)\n2  07:00 daily  cal  (in 11h 0m)\nCancel one with: at -cancel [number]",
                 AtJobs.list(jobs, NOW, CHI, true));
     }
 }

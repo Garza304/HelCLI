@@ -104,7 +104,7 @@ public class BreakdownTest {
         assertTrue(out.contains("SD card: 4.00 GB of 64.0 GB used"));
         assertTrue(out.contains("Biggest apps:\n  Spotify         10.0 GB  [##########]"));
         assertTrue(out.contains("  A game with a…  5.00 GB  [#####-----]"));
-        assertTrue(out.contains("Full list: storage apps all"));
+        assertTrue(out.contains("Full list: storage -apps all"));
         assertFalse(out.contains("Camera"));
         for (String line : out.split("\n")) assertTrue(line, line.length() <= 46);
     }
@@ -115,7 +115,7 @@ public class BreakdownTest {
         assertTrue(out.startsWith("Storage: 54.0 GB of 64.0 GB used (84%)"));
         assertTrue(out.contains("  Free            10.0 GB"));
         assertFalse(out.contains("System & other"));
-        assertTrue(out.endsWith("give HelCLI Usage access: storage access"));
+        assertTrue(out.endsWith("give HelCLI Usage access: storage -access"));
     }
 
     @Test

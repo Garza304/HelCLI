@@ -145,7 +145,7 @@ public class AskClaude {
             }
             return answer.length() > 0 ? answer : "(Claude didn't answer)";
         } catch (UnauthorizedException e) {
-            return "Your Claude API key was rejected. Copy a key and run: ask -key";
+            return "Your Claude API key was rejected. Make a new one with: ask -link";
         } catch (PermissionDeniedException e) {
             return "Your key can't use " + model + ": " + e.getMessage();
         } catch (NotFoundException e) {

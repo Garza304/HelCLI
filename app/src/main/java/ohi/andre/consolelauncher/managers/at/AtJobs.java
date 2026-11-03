@@ -181,6 +181,6 @@ public class AtJobs {
                     .append(j.daily ? " daily" : "").append("  ").append(j.command)
                     .append("  (in ").append(StatusFormats.duration(j.at - now)).append(')');
         }
-        return b.append("\nCancel one with: at cancel [number]").toString();
+        return b.append("\nCancel one with: at -cancel [number]").toString();
     }
 }
