@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="200" viewBox="0 0 360 200" role="img" aria-label="Cyberpunk theme preview">
+<rect width="360" height="200" rx="12" fill="#0d0615"/>
+<g font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="13">
+<text x="16" y="28"><tspan fill="#00f0ff">12:45</tspan><tspan fill="#39ff14">  Battery 87%</tspan><tspan fill="#bc00ff">  RAM 2.1 GB</tspan></text>
+<text x="16" y="66"><tspan fill="#ff003c">user@helcli</tspan><tspan fill="#00f0ff">: </tspan><tspan fill="#fcee09">$ ls</tspan></text>
+<text x="16" y="86" fill="#00f0ff">Documents  Music  notes.txt</text>
+<text x="16" y="110"><tspan fill="#ff003c">user@helcli</tspan><tspan fill="#00f0ff">: </tspan><tspan fill="#fcee09">$ open github.com</tspan></text>
+<text x="16" y="130" fill="#00f0ff">https://github.com</text>
+<rect x="16" y="156" width="64" height="26" rx="4" fill="#ff003c"/>
+<text x="24" y="174" fill="#ffffff">Camera</text>
+<rect x="88" y="156" width="48" height="26" rx="4" fill="#00f0ff"/>
+<text x="96" y="174" fill="#0d0615">help</text>
+<rect x="144" y="156" width="32" height="26" rx="4" fill="#fcee09"/>
+<text x="152" y="174" fill="#0d0615">ll</text>
+<rect x="184" y="156" width="56" height="26" rx="4" fill="#39ff14"/>
+<text x="192" y="174" fill="#0d0615">notes</text>
+</g>
+</svg>

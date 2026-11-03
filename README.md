@@ -1,10 +1,72 @@
-# T-UI Linux CLI Launcher
+# HelCLI
 
-Updated for compatibility with modern Android versions (API 34+) and enhanced with security hardening.
+A Linux-style command line launcher for Android. HelCLI is a fork of
+[T-UI Linux CLI Launcher](https://github.com/fandreuz/TUI-ConsoleLauncher) by Francesco Andreuzzi,
+picking up where it left off: the lost theme gallery is back, and settings and weather work
+again on modern Android.
+
+HelCLI has its own app ID (`com.garza304.helcli`), so it installs next to T-UI instead of replacing it.
+
+## What's new in HelCLI
+
+### 🎨 The theme gallery is back
+
+T-UI used to download themes from a community website that has since gone offline, so
+`theme -apply` stopped working. HelCLI keeps its gallery in this repository instead
+([browse it with pictures](themes/README.md)) and ships every theme inside the app, so it works offline.
+
+| Command | What it does |
+| --- | --- |
+| `theme -list` | Show every theme, including new ones added to the online gallery |
+| `theme -preview dracula` | See a theme before applying it |
+| `theme -apply dracula` | Apply a theme (or a `https://` link to a theme file) |
+| `theme -old` | Go back to the theme you had before |
+| `theme -export mytheme` | Save your current colors as a theme |
+| `theme -share mytheme` | Send a theme file to a friend or another app |
+| `theme -import` | Pick a theme file on your phone (or `theme -import https://...`) |
+| `theme -delete mytheme` | Delete a theme you saved |
+
+It starts with 24 themes: the original T-UI look, the six 2026 presets, retro monitors (amber, green
+phosphor), popular coding palettes (Dracula, Gruvbox, Nord, Solarized, Monokai, Tokyo Night,
+Catppuccin), and High Contrast, OLED Black, Paper, Ocean, Sakura, Forest and Vaporwave.
+Adding a theme is one JSON file: see [the gallery page](themes/README.md#theme-file-format).
+
+### 📝 Built-in config editor
+
+The 2026 update moved the config files into Android's private app storage, where most file
+managers can't reach them. `config -edit theme.xml` (or `ui.xml`, `behavior.xml`, ...) opens them in
+an editor inside HelCLI. It has find, undo and Ctrl+S, and it checks the XML before saving, pointing
+at the line with the mistake, so a typo can't break the launcher. HelCLI reloads when you close it.
+
+### Weather
+
+Weather now comes from [Open-Meteo](https://open-meteo.com): free, with no API key or account.
+
+* `tuiweather -location Berlin`, `tuiweather -location San Antonio, Texas`, or `tuiweather -location 29.42,-98.49`
+* `tuiweather -location auto` uses the phone's location
+* `tuiweather -update` refreshes it now
+
+Your existing `weather_format` keeps working: `%main`, `%description`, `%temp`, `%feels_like`,
+`%temp_min`, `%temp_max`, `%humidity`, `%pressure`, `%speed`, `%deg`, `%all` (clouds),
+`%precipitation` and `%name` are all filled in. `weather_temperature_measure` still picks
+`metric`, `imperial` or `standard` (Kelvin). Old OpenWeatherMap city IDs can't be used; switch to a
+city name or coordinates.
+
+### Building
+
+```
+./gradlew assembleFdroidDebug          # app/build/outputs/apk/fdroid/debug/
+./gradlew testFdroidDebugUnitTest      # unit tests
+python3 themes/tools/build_gallery.py  # after adding or changing a theme
+```
+
+Every push builds a debug APK on GitHub Actions (see the Actions tab, "helcli-debug-apk").
+Release signing is used only when a keystore is set up in `local.properties`
+(`storeFile`, `storePassword`, `keyAlias`, `keyPassword`).
 
 ---
 
-## 🚀 Recent Changes & Modernization
+## Earlier changes (the 2026 T-UI update)
 
 These updates ensure the launcher remains functional, secure, and performant on modern Android devices (Android 11 through Android 14+).
 
@@ -12,7 +74,7 @@ These updates ensure the launcher remains functional, secure, and performant on 
 
 ### ⌨️ New Commands
 *   **`username [user] [device]`**: Instantly customize your terminal prompt. Changes both the username and device name and reloads the UI to apply.
-*   **`theme -preset [name]`**: Rapidly switch between high-quality pre-configured themes.
+*   **`theme -preset [name]`**: Rapidly switch between high-quality pre-configured themes. (In HelCLI these are gallery themes, and `-preset` is the same as `-apply`.)
     *   **Available Presets:** `blue`, `red`, `green`, `pink`, `bw`, `cyberpunk`.
     *   **Smart Suggestions:** Applying a preset automatically colors the suggestion bar and shortcut buttons to match the aesthetic.
 *   **`bbman`**: The new BusyBox manager for installing and verifying Linux binaries.
@@ -61,7 +123,7 @@ This project has been audited and hardened following the **OWASP Mobile Applicat
 *   **Hardened Service Endpoints:** Internal services (Weather API, Connectivity checks) have been upgraded to secure HTTPS endpoints (MASVS-NETWORK-1).
 
 ### ⚙️ MASVS-PLATFORM: Platform Interaction
-*   **Signature-Level Protection:** Implemented a custom permission `ohi.andre.consolelauncher.permission.RECEIVE_CMD` with `protectionLevel="signature"`. This ensures only apps signed with the same developer key can programmatically send commands to the launcher.
+*   **Signature-Level Protection:** Implemented a custom permission `com.garza304.helcli.permission.RECEIVE_CMD` with `protectionLevel="signature"`. This ensures only apps signed with the same developer key can programmatically send commands to the launcher.
 *   **Intent Security:** All system-bound `PendingIntents` use the `FLAG_IMMUTABLE` flag to prevent intent redirection attacks (Android 12+ requirement).
 *   **Receiver Security:** All Broadcast Receivers are registered with appropriate export flags (`RECEIVER_EXPORTED` or `RECEIVER_NOT_EXPORTED`) to prevent unauthorized external triggers.
 
@@ -73,9 +135,9 @@ This project has been audited and hardened following the **OWASP Mobile Applicat
 
 ## 🔗 Useful links
 
-**Official community**&nbsp;&nbsp;-->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**[Reddit](https://www.reddit.com/r/tui_launcher/)**<br>
-**Official Group**&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**[Telegram](https://t.me/tuilauncher)**<br>
-**Wiki**&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**[GitHub.com](https://github.com/Andre1299/TUI-ConsoleLauncher/wiki)**<br>
+**Original T-UI community**&nbsp;&nbsp;-->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**[Reddit](https://www.reddit.com/r/tui_launcher/)**<br>
+**Original T-UI group**&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**[Telegram](https://t.me/tuilauncher)**<br>
+**Original T-UI wiki**&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**[GitHub.com](https://github.com/Andre1299/TUI-ConsoleLauncher/wiki)**<br>
 
 ## 📚 Open Source Libraries
 * [**CompareString2**](https://github.com/fAndreuzzi/CompareString2)

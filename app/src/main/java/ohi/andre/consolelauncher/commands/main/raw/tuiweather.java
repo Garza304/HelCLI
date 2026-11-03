@@ -29,8 +29,6 @@ public class tuiweather extends ParamCommand {
             public String exec(ExecutePack pack) {
                 if(!XMLPrefsManager.getBoolean(Ui.show_weather)) {
                     return pack.context.getString(R.string.weather_disabled);
-                } else if(!XMLPrefsManager.wasChanged(Behavior.weather_key, false)) {
-                    return pack.context.getString(R.string.weather_cant_update);
                 } else {
                     LocalBroadcastManager.getInstance(pack.context.getApplicationContext()).sendBroadcast(new Intent(UIManager.ACTION_WEATHER_MANUAL_UPDATE));
                 }
@@ -65,7 +63,24 @@ public class tuiweather extends ParamCommand {
         tutorial {
             @Override
             public String exec(ExecutePack pack) {
-                pack.context.startActivity(Tuils.webPage("https://github.com/Andre1299/TUI-ConsoleLauncher/wiki/Weather/_edit"));
+                pack.context.startActivity(Tuils.webPage("https://github.com/Garza304/HelCLI#weather"));
+                return null;
+            }
+        },
+        location {
+            @Override
+            public int[] args() {
+                return new int[] {CommandAbstraction.PLAIN_TEXT};
+            }
+
+            @Override
+            public String exec(ExecutePack pack) {
+                String where = pack.getString().trim();
+                if(where.equalsIgnoreCase("auto") || where.equalsIgnoreCase("gps")) where = "null";
+
+                Behavior.weather_location.parent().write(Behavior.weather_location, where);
+                ((Reloadable) pack.context).addMessage(Behavior.weather_location.parent().path(), Behavior.weather_location.label() + " -> " + where);
+                ((Reloadable) pack.context).reload();
                 return null;
             }
         },
@@ -77,8 +92,7 @@ public class tuiweather extends ParamCommand {
 
             @Override
             public String exec(ExecutePack pack) {
-                Behavior.weather_key.parent().write(Behavior.weather_key, pack.getString());
-                return null;
+                return "HelCLI gets the weather from Open-Meteo, which doesn't need a key";
             }
         };
 

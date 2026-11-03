@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="200" viewBox="0 0 360 200" role="img" aria-label="Sakura theme preview">
+<rect width="360" height="200" rx="12" fill="#1b1a23"/>
+<g font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="13">
+<text x="16" y="28"><tspan fill="#a8d8f0">12:45</tspan><tspan fill="#b5e8b0">  Battery 87%</tspan><tspan fill="#f7a8c4">  RAM 2.1 GB</tspan></text>
+<text x="16" y="66"><tspan fill="#c3a6ff">user@helcli</tspan><tspan fill="#f3e6ea">: </tspan><tspan fill="#f7a8c4">$ ls</tspan></text>
+<text x="16" y="86" fill="#f3e6ea">Documents  Music  notes.txt</text>
+<text x="16" y="110"><tspan fill="#c3a6ff">user@helcli</tspan><tspan fill="#f3e6ea">: </tspan><tspan fill="#f7a8c4">$ open github.com</tspan></text>
+<text x="16" y="130" fill="#a8d8f0">https://github.com</text>
+<rect x="16" y="156" width="64" height="26" rx="4" fill="#f7a8c4"/>
+<text x="24" y="174" fill="#1b1a23">Camera</text>
+<rect x="88" y="156" width="48" height="26" rx="4" fill="#b5e8b0"/>
+<text x="96" y="174" fill="#1b1a23">help</text>
+<rect x="144" y="156" width="32" height="26" rx="4" fill="#c3a6ff"/>
+<text x="152" y="174" fill="#1b1a23">ll</text>
+<rect x="184" y="156" width="56" height="26" rx="4" fill="#a8d8f0"/>
+<text x="192" y="174" fill="#1b1a23">notes</text>
+</g>
+</svg>

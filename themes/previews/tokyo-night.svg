@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="200" viewBox="0 0 360 200" role="img" aria-label="Tokyo Night theme preview">
+<rect width="360" height="200" rx="12" fill="#1a1b26"/>
+<g font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="13">
+<text x="16" y="28"><tspan fill="#7dcfff">12:45</tspan><tspan fill="#9ece6a">  Battery 87%</tspan><tspan fill="#f7768e">  RAM 2.1 GB</tspan></text>
+<text x="16" y="66"><tspan fill="#bb9af7">user@helcli</tspan><tspan fill="#c0caf5">: </tspan><tspan fill="#7aa2f7">$ ls</tspan></text>
+<text x="16" y="86" fill="#c0caf5">Documents  Music  notes.txt</text>
+<text x="16" y="110"><tspan fill="#bb9af7">user@helcli</tspan><tspan fill="#c0caf5">: </tspan><tspan fill="#7aa2f7">$ open github.com</tspan></text>
+<text x="16" y="130" fill="#7dcfff">https://github.com</text>
+<rect x="16" y="156" width="64" height="26" rx="4" fill="#7aa2f7"/>
+<text x="24" y="174" fill="#1a1b26">Camera</text>
+<rect x="88" y="156" width="48" height="26" rx="4" fill="#9ece6a"/>
+<text x="96" y="174" fill="#1a1b26">help</text>
+<rect x="144" y="156" width="32" height="26" rx="4" fill="#bb9af7"/>
+<text x="152" y="174" fill="#1a1b26">ll</text>
+<rect x="184" y="156" width="56" height="26" rx="4" fill="#7dcfff"/>
+<text x="192" y="174" fill="#1a1b26">notes</text>
+</g>
+</svg>

@@ -984,12 +984,12 @@ public enum Behavior implements XMLPrefsSave {
     weather_key {
         @Override
         public String defaultValue() {
-            return "1f798f99228596c20ccfda51b9771a86";
+            return "";
         }
 
         @Override
         public String info() {
-            return "The key of your account on OpenWeatherMap. You can keep the default one, or create your custom key (check the wiki)";
+            return "Not used anymore: HelCLI gets the weather from Open-Meteo, which doesn't need a key";
         }
 
         @Override
@@ -1021,7 +1021,7 @@ public enum Behavior implements XMLPrefsSave {
 
         @Override
         public String info() {
-            return "The ID of your country (check the wiki) or your coords separated by a comma (lat,lon)";
+            return "A city name (Berlin, or San Antonio, Texas), coordinates (lat,lon), or null to use the phone's location";
         }
 
         @Override
@@ -1165,7 +1165,7 @@ public enum Behavior implements XMLPrefsSave {
 
         @Override
         public String info() {
-            return "The weather update time in seconds. This can only be used if you\'re using a custom weather key";
+            return "How often the weather is updated, in seconds (at least 900)";
         }
 
         @Override

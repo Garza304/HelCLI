@@ -1,6 +1,6 @@
-# T-UI Launcher Development & Deployment Guide
+# HelCLI Development & Deployment Guide
 
-This document summarizes the essential commands for building, installing, and managing the T-UI Linux CLI Launcher fork.
+This document summarizes the essential commands for building, installing, and managing HelCLI, a fork of the T-UI Linux CLI Launcher.
 
 ## 🛠 Building the APK
 
@@ -38,7 +38,7 @@ adb install -r app/build/outputs/apk/fdroid/debug/app-fdroid-debug.apk
 The launcher now features a built-in BusyBox manager to enable standard Linux commands.
 
 ### Installation
-In the T-UI terminal, type:
+In the HelCLI terminal, type:
 ```bash
 bbman -install
 ```
@@ -63,14 +63,14 @@ bbman -remove
 ## 🔍 Useful ADB Debugging Commands
 
 ```bash
-# View real-time logs (filtered for T-UI)
+# View real-time logs (filtered for HelCLI)
 adb logcat | grep ohi.andre
 
 # Uninstall the launcher via ADB
-adb uninstall ohi.andre.consolelauncher
+adb uninstall com.garza304.helcli
 
 # Push a file to the launcher's internal storage
-adb push local_file.txt /data/user/0/ohi.andre.consolelauncher/files/
+adb push local_file.txt /data/user/0/com.garza304.helcli/files/
 ```
 
 ---

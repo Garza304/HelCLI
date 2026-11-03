@@ -1,0 +1,293 @@
+{
+  "version": 1,
+  "themes": [
+    {
+      "name": "amber",
+      "title": "Amber CRT",
+      "author": "HelCLI",
+      "description": "Warm monochrome, like an old amber monitor",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/amber.json",
+      "swatch": {
+        "bg": "#ff140b00",
+        "input": "#ffffcc00",
+        "output": "#ffffb000"
+      }
+    },
+    {
+      "name": "blue",
+      "title": "Blue",
+      "author": "HelCLI",
+      "description": "Deep navy with bright sky-blue text",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/blue.json",
+      "swatch": {
+        "bg": "#ff001221",
+        "input": "#ff00bfff",
+        "output": "#ffe0ffff"
+      }
+    },
+    {
+      "name": "bw",
+      "title": "Black & White",
+      "author": "HelCLI",
+      "description": "Pure black and white, nothing else",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/bw.json",
+      "swatch": {
+        "bg": "#ff000000",
+        "input": "#ffffffff",
+        "output": "#ffcccccc"
+      }
+    },
+    {
+      "name": "catppuccin-mocha",
+      "title": "Catppuccin Mocha",
+      "author": "HelCLI",
+      "description": "Soothing pastels on a deep mocha base",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/catppuccin-mocha.json",
+      "swatch": {
+        "bg": "#ff1e1e2e",
+        "input": "#ffa6e3a1",
+        "output": "#ffcdd6f4"
+      }
+    },
+    {
+      "name": "classic",
+      "title": "Classic",
+      "author": "HelCLI",
+      "description": "The original look: green prompt, white text, orange device name",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/classic.json",
+      "swatch": {
+        "bg": "#ff000000",
+        "input": "#ff00ff00",
+        "output": "#ffffffff"
+      }
+    },
+    {
+      "name": "cyberpunk",
+      "title": "Cyberpunk",
+      "author": "HelCLI",
+      "description": "Neon yellow, cyan and red on a dark violet night",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/cyberpunk.json",
+      "swatch": {
+        "bg": "#ff0d0615",
+        "input": "#fffcee09",
+        "output": "#ff00f0ff"
+      }
+    },
+    {
+      "name": "dracula",
+      "title": "Dracula",
+      "author": "HelCLI",
+      "description": "The dark purple palette loved by coders",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/dracula.json",
+      "swatch": {
+        "bg": "#ff282a36",
+        "input": "#ff50fa7b",
+        "output": "#fff8f8f2"
+      }
+    },
+    {
+      "name": "forest",
+      "title": "Forest",
+      "author": "HelCLI",
+      "description": "Moss green and bark brown, calm and earthy",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/forest.json",
+      "swatch": {
+        "bg": "#ff141a14",
+        "input": "#ff9bc53d",
+        "output": "#ffdfe6d5"
+      }
+    },
+    {
+      "name": "green",
+      "title": "Green",
+      "author": "HelCLI",
+      "description": "Hacker green on near-black",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/green.json",
+      "swatch": {
+        "bg": "#ff001b00",
+        "input": "#ff00ff41",
+        "output": "#ffd5f5e3"
+      }
+    },
+    {
+      "name": "gruvbox",
+      "title": "Gruvbox",
+      "author": "HelCLI",
+      "description": "Retro, warm and easy on the eyes",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/gruvbox.json",
+      "swatch": {
+        "bg": "#ff282828",
+        "input": "#ffb8bb26",
+        "output": "#ffebdbb2"
+      }
+    },
+    {
+      "name": "high-contrast",
+      "title": "High Contrast",
+      "author": "HelCLI",
+      "description": "Maximum readability: white and yellow on black",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/high-contrast.json",
+      "swatch": {
+        "bg": "#ff000000",
+        "input": "#ffffff00",
+        "output": "#ffffffff"
+      }
+    },
+    {
+      "name": "monokai",
+      "title": "Monokai",
+      "author": "HelCLI",
+      "description": "Bright pink, green and orange on charcoal",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/monokai.json",
+      "swatch": {
+        "bg": "#ff272822",
+        "input": "#ffa6e22e",
+        "output": "#fff8f8f2"
+      }
+    },
+    {
+      "name": "nord",
+      "title": "Nord",
+      "author": "HelCLI",
+      "description": "Cool arctic blues and soft frost",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/nord.json",
+      "swatch": {
+        "bg": "#ff2e3440",
+        "input": "#ff88c0d0",
+        "output": "#ffd8dee9"
+      }
+    },
+    {
+      "name": "ocean",
+      "title": "Ocean",
+      "author": "HelCLI",
+      "description": "Deep sea blue with teal and coral",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/ocean.json",
+      "swatch": {
+        "bg": "#ff0b1d2a",
+        "input": "#ff3ddbd9",
+        "output": "#ffcfe8ef"
+      }
+    },
+    {
+      "name": "oled",
+      "title": "OLED Black",
+      "author": "HelCLI",
+      "description": "True black to save battery, with gentle gray text",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/oled.json",
+      "swatch": {
+        "bg": "#ff000000",
+        "input": "#ff8c9eff",
+        "output": "#ffb0b0b0"
+      }
+    },
+    {
+      "name": "paper",
+      "title": "Paper",
+      "author": "HelCLI",
+      "description": "Dark ink on warm paper, for daylight",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/paper.json",
+      "swatch": {
+        "bg": "#fff5f1e8",
+        "input": "#ff1f4e79",
+        "output": "#ff2b2b2b"
+      }
+    },
+    {
+      "name": "phosphor",
+      "title": "Green Phosphor",
+      "author": "HelCLI",
+      "description": "Glowing green on black, like an 80s terminal",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/phosphor.json",
+      "swatch": {
+        "bg": "#ff020d02",
+        "input": "#ff66ff99",
+        "output": "#ff33ff66"
+      }
+    },
+    {
+      "name": "pink",
+      "title": "Pink",
+      "author": "HelCLI",
+      "description": "Plum background with candy-pink text",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/pink.json",
+      "swatch": {
+        "bg": "#ff1a0010",
+        "input": "#ffff69b4",
+        "output": "#fffce4ec"
+      }
+    },
+    {
+      "name": "red",
+      "title": "Red",
+      "author": "HelCLI",
+      "description": "Dark crimson with hot orange-red text",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/red.json",
+      "swatch": {
+        "bg": "#ff210000",
+        "input": "#ffff4500",
+        "output": "#ffffebee"
+      }
+    },
+    {
+      "name": "sakura",
+      "title": "Sakura",
+      "author": "HelCLI",
+      "description": "Cherry blossom pink on soft night blue",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/sakura.json",
+      "swatch": {
+        "bg": "#ff1b1a23",
+        "input": "#fff7a8c4",
+        "output": "#fff3e6ea"
+      }
+    },
+    {
+      "name": "solarized-dark",
+      "title": "Solarized Dark",
+      "author": "HelCLI",
+      "description": "The classic low-contrast palette, dark version",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/solarized-dark.json",
+      "swatch": {
+        "bg": "#ff002b36",
+        "input": "#ff859900",
+        "output": "#ff93a1a1"
+      }
+    },
+    {
+      "name": "solarized-light",
+      "title": "Solarized Light",
+      "author": "HelCLI",
+      "description": "The classic low-contrast palette, light version",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/solarized-light.json",
+      "swatch": {
+        "bg": "#fffdf6e3",
+        "input": "#ff859900",
+        "output": "#ff586e75"
+      }
+    },
+    {
+      "name": "tokyo-night",
+      "title": "Tokyo Night",
+      "author": "HelCLI",
+      "description": "City lights at night: soft blue and purple",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/tokyo-night.json",
+      "swatch": {
+        "bg": "#ff1a1b26",
+        "input": "#ff7aa2f7",
+        "output": "#ffc0caf5"
+      }
+    },
+    {
+      "name": "vaporwave",
+      "title": "Vaporwave",
+      "author": "HelCLI",
+      "description": "Pink and cyan neon on a purple sunset",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/vaporwave.json",
+      "swatch": {
+        "bg": "#ff1a0b2e",
+        "input": "#ffff71ce",
+        "output": "#fff2e9ff"
+      }
+    }
+  ]
+}

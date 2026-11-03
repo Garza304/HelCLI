@@ -10,21 +10,28 @@ android {
         keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
     }
 
+    // Release signing is only set up when a keystore is present (see local.properties).
+    // Without one, debug builds use the standard Android debug key so anyone can build.
+    def releaseKeystore = rootProject.file(keystoreProperties["storeFile"] ?: "release.jks")
+    def hasReleaseKeystore = releaseKeystore.exists()
+
     signingConfigs {
-        release {
-            storeFile file("../" + (keystoreProperties["storeFile"] ?: "release.jks"))
-            storePassword = keystoreProperties["storePassword"] ?: ""
-            keyAlias = keystoreProperties["keyAlias"] ?: "tui-alias"
-            keyPassword = keystoreProperties["keyPassword"] ?: ""
+        if (hasReleaseKeystore) {
+            release {
+                storeFile releaseKeystore
+                storePassword = keystoreProperties["storePassword"] ?: ""
+                keyAlias = keystoreProperties["keyAlias"] ?: "helcli"
+                keyPassword = keystoreProperties["keyPassword"] ?: ""
+            }
         }
     }
 
     defaultConfig {
-        applicationId "ohi.andre.consolelauncher"
+        applicationId "com.garza304.helcli"
         minSdk 21
         targetSdk 34
-        versionCode 301
-        versionName "v6.15.1-updated-v2"
+        versionCode 400
+        versionName "1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -35,13 +42,13 @@ android {
 
     buildTypes {
         debug {
-            signingConfig signingConfigs.release
+            if (hasReleaseKeystore) signingConfig signingConfigs.release
         }
         release {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
+            if (hasReleaseKeystore) signingConfig signingConfigs.release
         }
     }
 
@@ -63,7 +70,28 @@ android {
     lint {
         checkReleaseBuilds false
     }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+
+    // The theme gallery lives in /themes at the repo root. Its theme files are
+    // bundled into the APK so the built-in themes work offline.
+    sourceSets {
+        main {
+            assets.srcDirs += ["$buildDir/generated/themeGallery"]
+        }
+    }
 }
+
+tasks.register('copyThemeGallery', Copy) {
+    from(rootProject.file('themes')) {
+        include '*.json'
+        exclude 'index.json'
+    }
+    into "$buildDir/generated/themeGallery/themes"
+}
+preBuild.dependsOn copyThemeGallery
 
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
@@ -75,4 +103,7 @@ dependencies {
     implementation 'com.jayway.jsonpath:json-path:2.9.0'
     implementation 'org.jsoup:jsoup:1.17.2'
     implementation 'it.andreuzzi:CompareString2:1.0.9'
+
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.json:json:20231013'
 }

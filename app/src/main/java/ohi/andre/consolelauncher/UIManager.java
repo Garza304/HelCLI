@@ -76,6 +76,7 @@ import ohi.andre.consolelauncher.tuils.AllowEqualsSequence;
 import ohi.andre.consolelauncher.tuils.NetworkUtils;
 import ohi.andre.consolelauncher.tuils.OutlineEditText;
 import ohi.andre.consolelauncher.tuils.OutlineTextView;
+import ohi.andre.consolelauncher.managers.weather.OpenMeteo;
 import ohi.andre.consolelauncher.tuils.Tuils;
 import ohi.andre.consolelauncher.tuils.interfaces.CommandExecuter;
 import ohi.andre.consolelauncher.tuils.interfaces.OnBatteryUpdate;
@@ -641,63 +642,37 @@ public class UIManager implements OnTouchListener {
 
     private class WeatherRunnable implements Runnable {
 
-        String key;
         String url;
 
-        public WeatherRunnable() {
+        boolean fixedLocation() {
+            return fixedLocation;
+        }
 
-            if(XMLPrefsManager.wasChanged(Behavior.weather_key, false)) {
-                weatherDelay = XMLPrefsManager.getInt(Behavior.weather_update_time);
-                key = XMLPrefsManager.get(Behavior.weather_key);
-            } else {
-                key = Behavior.weather_key.defaultValue();
-                weatherDelay = 60 * 60;
-            }
-            weatherDelay *= 1000;
+        public WeatherRunnable() {
+//            Open-Meteo is free and needs no key. It updates about every 15 minutes, so asking more often is pointless
+            weatherDelay = Math.max(XMLPrefsManager.getInt(Behavior.weather_update_time), 15 * 60) * 1000;
 
             String where = XMLPrefsManager.get(Behavior.weather_location);
-            if(where == null || where.length() == 0 || (!Tuils.isNumber(where) && !where.contains(","))) {
-//                Tuils.location(mContext, new Tuils.ArgsRunnable() {
-//                    @Override
-//                    public void run() {
-//                        setUrl(
-//                                "lat=" + get(int.class, 0) + "&lon=" + get(int.class, 1),
-//                                finalKey,
-//                                XMLPrefsManager.get(Behavior.weather_temperature_measure));
-//                        WeatherRunnable.this.run();
-//                    }
-//                }, new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        updateText(Label.weather, Tuils.span(mContext, mContext.getString(R.string.location_error), XMLPrefsManager.getColor(Theme.weather_color), labelSizes[Label.weather.ordinal()]));
-//                    }
-//                }, handler);
+            if(where != null) where = where.trim();
+            double[] coordinates = OpenMeteo.parseCoordinates(where);
 
-//                Location l = Tuils.getLocation(mContext);
-//                if(l != null) {
-//                    setUrl(
-//                            "lat=" + l.getLatitude() + "&lon=" + l.getLongitude(),
-//                            finalKey,
-//                            XMLPrefsManager.get(Behavior.weather_temperature_measure));
-//                    WeatherRunnable.this.run();
-//                } else {
-//                    updateText(Label.weather, Tuils.span(mContext, mContext.getString(R.string.location_error), XMLPrefsManager.getColor(Theme.weather_color), labelSizes[Label.weather.ordinal()]));
-//                }
-
+            if(coordinates != null) {
+                fixedLocation = true;
+                url = OpenMeteo.request(coordinates[0], coordinates[1]);
+            } else if(where == null || where.length() == 0 || where.equalsIgnoreCase("null")) {
+//                use the phone's location
                 TuiLocationManager l = TuiLocationManager.instance(mContext);
                 l.add(ACTION_WEATHER_GOT_LOCATION);
-
+            } else if(Tuils.isNumber(where)) {
+//                an OpenWeatherMap city ID from an old config: Open-Meteo doesn't know those
+                fixedLocation = true;
+                url = null;
+                handler.post(() -> updateText(Label.weather, Tuils.span(mContext,
+                        "Weather: set weather_location to a city name or to lat,lon (city IDs aren't supported anymore)",
+                        weatherColor, labelSizes[Label.weather.ordinal()])));
             } else {
                 fixedLocation = true;
-
-                if(where.contains(",")) {
-                    String[] split = where.split(",");
-                    where = "lat=" + split[0] + "&lon=" + split[1];
-                } else {
-                    where = "id=" + where;
-                }
-
-                setUrl(where);
+                url = OpenMeteo.request(where);
             }
         }
 
@@ -720,12 +695,8 @@ public class UIManager implements OnTouchListener {
             LocalBroadcastManager.getInstance(mContext.getApplicationContext()).sendBroadcast(i);
         }
 
-        private void setUrl(String where) {
-            url = "https://api.openweathermap.org/data/2.5/weather?" + where + "&appid=" + key + "&units=" + XMLPrefsManager.get(Behavior.weather_temperature_measure);
-        }
-
         private void setUrl(double latitude, double longitude) {
-            url = "https://api.openweathermap.org/data/2.5/weather?" + "lat=" + latitude + "&lon=" + longitude + "&appid=" + key + "&units=" + XMLPrefsManager.get(Behavior.weather_temperature_measure);
+            url = OpenMeteo.request(latitude, longitude);
         }
     }
 
@@ -854,7 +825,7 @@ public class UIManager implements OnTouchListener {
 
                         location = Tuils.locationName(context, lastLatitude, lastLongitude);
 
-                        if(!weatherPerformedStartupRun || XMLPrefsManager.wasChanged(Behavior.weather_key, false)) {
+                        if(!weatherPerformedStartupRun) {
                             if (weatherRunnable != null) {
                                 handler.removeCallbacks(weatherRunnable);
                                 handler.post(weatherRunnable);
@@ -1232,8 +1203,7 @@ public class UIManager implements OnTouchListener {
 
             weatherColor = XMLPrefsManager.getColor(Theme.weather_color);
 
-            String where = XMLPrefsManager.get(Behavior.weather_location);
-            if(where.contains(",") || Tuils.isNumber(where)) handler.post(weatherRunnable);
+            if(weatherRunnable.fixedLocation()) handler.post(weatherRunnable);
 
             showWeatherUpdate = XMLPrefsManager.getBoolean(Behavior.show_weather_updates);
         }
