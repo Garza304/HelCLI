@@ -7,6 +7,20 @@ again on modern Android.
 
 HelCLI has its own app ID (`com.garza304.helcli`), so it installs next to T-UI instead of replacing it.
 
+## Installing and updating
+
+Download `helcli.apk` from the newest [release](https://github.com/Garza304/HelCLI/releases) and
+open it on your phone. After that, update from inside HelCLI:
+
+```
+update            check whether there's a newer version
+update install    download it, check it, and install it over yours (settings stay)
+```
+
+Every change merged into `master` becomes a release (version 1.0.*build number*), signed with the
+same permanent key, so updates install over the app you have. `git pull` is different: it only
+brings over settings and themes from `my-config/`, and needs no update. See [signing/](signing/README.md).
+
 ## What's new in HelCLI
 
 ### 🎨 The theme gallery is back
@@ -159,9 +173,10 @@ city name or coordinates.
 python3 themes/tools/build_gallery.py  # after adding or changing a theme
 ```
 
-Every push builds a debug APK on GitHub Actions (see the Actions tab, "helcli-debug-apk").
-Release signing is used only when a keystore is set up in `local.properties`
-(`storeFile`, `storePassword`, `keyAlias`, `keyPassword`).
+Every push builds a debug APK on GitHub Actions (see the Actions tab, "helcli-debug-apk"), and
+every build of `master` is published as a release. Builds are signed with HelCLI's permanent key
+when the `HELCLI_KEY_PASSWORD` secret is set (see [signing/](signing/README.md)); on your own
+computer, signing is used only when a keystore is set up in `local.properties`.
 
 ---
 
