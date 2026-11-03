@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- The suggestion buttons above the keyboard. To use a setting, remove the comment marks around it. -->
+<SUGGESTIONS>
+    <!-- <show_suggestions value="true"/> -->
+    <!-- <transparent_suggestions value="false"/> -->
+    <!-- <apps_bg_color value="#ff00897b"/> -->
+    <!-- <cmd_bg_color value="#ff76ff03"/> -->
+    <!-- <alias_bg_color value="#ffff5722"/> -->
+    <!-- <default_text_color value="#ff000000"/> -->
+</SUGGESTIONS>

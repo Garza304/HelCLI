@@ -38,6 +38,25 @@ managers can't reach them. `config -edit theme.xml` (or `ui.xml`, `behavior.xml`
 an editor inside HelCLI. It has find, undo and Ctrl+S, and it checks the XML before saving, pointing
 at the line with the mistake, so a typo can't break the launcher. HelCLI reloads when you close it.
 
+### 🔄 `git pull` your settings
+
+Keep your settings in a GitHub folder and pull them onto the phone. Change how HelCLI looks from
+any computer, then see it on the phone a few seconds later.
+
+```
+git remote Garza304/HelCLI/my-config   # once: where your settings live
+git pull                               # apply the newest version and reload
+git undo                               # put back the settings from before the last pull
+git status                             # remote and last pull
+```
+
+A file only needs the settings you want to control: a `ui.xml` with one line changes one setting.
+Every value is checked before it's applied, so a typo is skipped with a warning instead of
+breaking the launcher. Pulls `theme.xml`, `ui.xml`, `behavior.xml`, `suggestions.xml`,
+`toolbar.xml`, `cmd.xml`, `alias.txt` and `themes/*.json`. See [my-config/](my-config/README.md)
+to get started. Works with any public repository and no account. It isn't full git: it
+downloads the files at the newest commit.
+
 ### Weather
 
 Weather now comes from [Open-Meteo](https://open-meteo.com): free, with no API key or account.

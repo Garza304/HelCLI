@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Layout and text. To use a setting, remove the comment marks around it. -->
+<UI>
+    <!-- <input_output_size value="15"/> -->
+    <!-- <input_bottom value="true"/> -->
+    <!-- <input_prefix value="$"/> -->
+    <!-- <username value="user"/> -->
+    <!-- <system_wallpaper value="true"/> -->
+    <!-- <fullscreen value="false"/> -->
+    <!-- <show_ram value="true"/> -->
+    <!-- <show_battery value="true"/> -->
+    <!-- <show_time value="true"/> -->
+    <!-- <show_weather value="false"/> -->
+    <!-- <show_enter_button value="true"/> -->
+    <!-- <statusbar_light_icons value="true"/> -->
+    <!-- <display_margin_mm value="0,0,0,0"/> -->
+</UI>
