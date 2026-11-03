@@ -76,6 +76,7 @@ import ohi.andre.consolelauncher.tuils.AllowEqualsSequence;
 import ohi.andre.consolelauncher.tuils.NetworkUtils;
 import ohi.andre.consolelauncher.tuils.OutlineEditText;
 import ohi.andre.consolelauncher.tuils.OutlineTextView;
+import ohi.andre.consolelauncher.managers.claude.ClaudeUsageUpdater;
 import ohi.andre.consolelauncher.managers.weather.OpenMeteo;
 import ohi.andre.consolelauncher.tuils.Tuils;
 import ohi.andre.consolelauncher.tuils.interfaces.CommandExecuter;
@@ -109,7 +110,8 @@ public class UIManager implements OnTouchListener {
         network,
         notes,
         weather,
-        unlock
+        unlock,
+        claude
     }
 
     private final int RAM_DELAY = 3000;
@@ -732,6 +734,8 @@ public class UIManager implements OnTouchListener {
 
     private SuggestionsManager suggestionsManager;
 
+    private ClaudeUsageUpdater claudeUpdater;
+
     private TextView terminalView;
 
     private String doubleTapCmd;
@@ -757,6 +761,7 @@ public class UIManager implements OnTouchListener {
         filter.addAction(ACTION_WEATHER_GOT_LOCATION);
         filter.addAction(ACTION_WEATHER_DELAY);
         filter.addAction(ACTION_WEATHER_MANUAL_UPDATE);
+        filter.addAction(ClaudeUsageUpdater.ACTION_UPDATE);
 
         receiver = new BroadcastReceiver() {
             @Override
@@ -845,6 +850,8 @@ public class UIManager implements OnTouchListener {
                         handler.removeCallbacks(weatherRunnable);
                         handler.postDelayed(weatherRunnable, 1000 * 60);
                     }
+                } else if(action.equals(ClaudeUsageUpdater.ACTION_UPDATE)) {
+                    if(claudeUpdater != null) claudeUpdater.refresh();
                 } else if(action.equals(ACTION_WEATHER_MANUAL_UPDATE)) {
                     if (weatherRunnable != null) {
                         handler.removeCallbacks(weatherRunnable);
@@ -972,6 +979,7 @@ public class UIManager implements OnTouchListener {
         labelSizes[Label.device.ordinal()] = XMLPrefsManager.getInt(Ui.device_size);
         labelSizes[Label.weather.ordinal()] = XMLPrefsManager.getInt(Ui.weather_size);
         labelSizes[Label.unlock.ordinal()] = XMLPrefsManager.getInt(Ui.unlock_size);
+        labelSizes[Label.claude.ordinal()] = XMLPrefsManager.getInt(Ui.claude_size);
 
         labelViews = new TextView[] {
                 (TextView) rootView.findViewById(R.id.tv0),
@@ -995,6 +1003,7 @@ public class UIManager implements OnTouchListener {
         show[Label.storage.ordinal()] = XMLPrefsManager.getBoolean(Ui.show_storage_info);
         show[Label.weather.ordinal()] = XMLPrefsManager.getBoolean(Ui.show_weather);
         show[Label.unlock.ordinal()] = XMLPrefsManager.getBoolean(Ui.show_unlock_counter);
+        show[Label.claude.ordinal()] = XMLPrefsManager.getBoolean(Ui.show_claude);
 
         float[] indexes = new float[Label.values().length];
         indexes[Label.notes.ordinal()] = show[Label.notes.ordinal()] ? XMLPrefsManager.getFloat(Ui.notes_index) : Integer.MAX_VALUE;
@@ -1006,6 +1015,7 @@ public class UIManager implements OnTouchListener {
         indexes[Label.storage.ordinal()] = show[Label.storage.ordinal()] ? XMLPrefsManager.getFloat(Ui.storage_index) : Integer.MAX_VALUE;
         indexes[Label.weather.ordinal()] = show[Label.weather.ordinal()] ? XMLPrefsManager.getFloat(Ui.weather_index) : Integer.MAX_VALUE;
         indexes[Label.unlock.ordinal()] = show[Label.unlock.ordinal()] ? XMLPrefsManager.getFloat(Ui.unlock_index) : Integer.MAX_VALUE;
+        indexes[Label.claude.ordinal()] = show[Label.claude.ordinal()] ? XMLPrefsManager.getFloat(Ui.claude_index) : Integer.MAX_VALUE;
 
         int[] statusLineAlignments = getListOfIntValues(XMLPrefsManager.get(Ui.status_lines_alignment), 9, -1);
 
@@ -1072,6 +1082,8 @@ public class UIManager implements OnTouchListener {
         margins[5] = getListOfIntValues(XMLPrefsManager.get(Ui.suggestions_area_margin), 4, 0);
 
         AllowEqualsSequence sequence = new AllowEqualsSequence(indexes, Label.values());
+//        there are more labels than lines on screen: extra lines join the last one instead of disappearing
+        sequence.limitKeys(labelViews.length - 1);
 
         LinearLayout lViewsParent = (LinearLayout) labelViews[0].getParent();
 
@@ -1206,6 +1218,18 @@ public class UIManager implements OnTouchListener {
             if(weatherRunnable.fixedLocation()) handler.post(weatherRunnable);
 
             showWeatherUpdate = XMLPrefsManager.getBoolean(Behavior.show_weather_updates);
+        }
+
+        if(show[Label.claude.ordinal()]) {
+            final int claudeColor = XMLPrefsManager.getColor(Theme.claude_color);
+            final int warningColor = XMLPrefsManager.getColor(Theme.battery_color_low);
+            claudeUpdater = new ClaudeUsageUpdater(mContext, mainPack.client, handler, (line, highest) -> {
+                if (handler == null) return;
+                int color = highest >= 90 ? warningColor : claudeColor;
+                updateText(Label.claude, Tuils.span(mContext, line, color, labelSizes[Label.claude.ordinal()]));
+            });
+            updateText(Label.claude, Tuils.span(mContext, "Claude usage: loading...", claudeColor, labelSizes[Label.claude.ordinal()]));
+            claudeUpdater.start();
         }
 
         if(show[Label.unlock.ordinal()]) {
@@ -1427,6 +1451,11 @@ public class UIManager implements OnTouchListener {
     }
 
     public void dispose() {
+        if(claudeUpdater != null) {
+            claudeUpdater.stop();
+            claudeUpdater = null;
+        }
+
         if(handler != null) {
             handler.removeCallbacksAndMessages(null);
             handler = null;

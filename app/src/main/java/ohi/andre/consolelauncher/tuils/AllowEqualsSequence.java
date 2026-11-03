@@ -35,6 +35,13 @@ public class AllowEqualsSequence {
         }
     }
 
+    /** Puts every group past maxKey into the group maxKey, so no group needs more lines than there are. */
+    public void limitKeys(int maxKey) {
+        for(Entry entry : sequence) {
+            if(entry.key > maxKey) entry.key = maxKey;
+        }
+    }
+
     public Object[] get(int key) {
         List<Object> o = new ArrayList<>();
         for(Entry entry : sequence) {

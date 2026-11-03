@@ -531,6 +531,17 @@ public enum Theme implements XMLPrefsSave {
         public String[] invalidValues() {
             return new String[] {"#ff000000"};
         }
+    },
+    claude_color {
+        @Override
+        public String defaultValue() {
+            return "#ffd97757";
+        }
+
+        @Override
+        public String info() {
+            return "Claude usage color";
+        }
     }
     ;
 

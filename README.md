@@ -57,6 +57,23 @@ breaking the launcher. Pulls `theme.xml`, `ui.xml`, `behavior.xml`, `suggestions
 to get started. Works with any public repository and no account. It isn't full git: it
 downloads the files at the newest commit.
 
+### Claude usage line
+
+Show your Claude usage at the top of the home screen: plan limits (claude.ai Pro/Max/Ultra 5-hour
+and weekly %) and/or this month's Claude API spend against a budget.
+
+```
+usage -show                 # show the line
+usage -plan you/gist_id     # plan limits, published by tools/claude-usage/helcli_usage.py
+usage -key                  # API spend: saves the Admin API key you copied (from the clipboard)
+usage -budget 50            # monthly API budget, to show a %
+usage -status               # what's set up
+```
+
+Plan limits come from Claude Code's documented status line data, through a small script on your
+computer and a secret gist. API spend comes from Anthropic's Usage and Cost Analytics API.
+Setup, privacy notes and every setting: [tools/claude-usage/](tools/claude-usage/README.md).
+
 ### Weather
 
 Weather now comes from [Open-Meteo](https://open-meteo.com): free, with no API key or account.
