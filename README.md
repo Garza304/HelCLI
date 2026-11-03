@@ -106,6 +106,37 @@ App sizes and the image/video/audio split need **Usage access** (Android 8 and l
 on once with `storage access`. HelCLI only reads sizes with it and doesn't send them anywhere.
 Android doesn't let apps see other apps' memory, so `ram` has no per-app list.
 
+### More home screen lines
+
+* **Next alarm**: `config -set show_alarm true`. Shows `Alarm 6:45 AM tomorrow (in 7h 20m)` on the clock's
+  line. Change it with `alarm_format` (codes `%t %day %date %in %app`).
+* **Now playing**: `config -set show_music true`. Shows the song playing in any app, like
+  `♪ Bohemian Rhapsody — Queen`. Needs notification access (`notifications -access`). Codes:
+  `%title %artist %album %app %state %pos %dur %bar` (the bar shows how far into the song you are).
+* **More weather codes**: `%sunrise %sunset %daylight %rain_chance %uv %wind_dir %unit %wind_unit`,
+  e.g. `%temp%unit %description · rain %rain_chance% · sunset %sunset`.
+
+### More commands
+
+| Command | What it does |
+| --- | --- |
+| `sysinfo` | A neofetch-style summary: Android version, model, uptime, theme, CPU, RAM, storage, battery, and a row of the theme's colors |
+| `cal` | Your agenda from every calendar on the phone: `cal`, `cal today`, `cal tomorrow`, `cal 14` |
+| `ip` | WiFi or mobile, signal, addresses, gateway, DNS, and whether the internet works (`ip public` for the public address) |
+| `ping` | `ping github.com`, or just `ping` to check your router and then the internet |
+| `dns` | `dns github.com`: the addresses, how long the lookup took, and which server answered |
+| `at` | Runs a command later: `at 22:00 theme -apply oled`, `at +30m flash`, `at daily 7am cal today`; `at` lists them |
+| `qr` | Draws a QR code to scan with another phone: `qr https://...`, or `qr` for what you copied |
+| `ask` | Ask Claude: `ask how do I ...`. Follow-ups remember the conversation; `ask -new` starts over |
+
+`ask` needs a Claude API key (copy it, then `ask -key`; it's kept in HelCLI's private storage) and
+Android 8 or later. Each question costs a little on your Claude API account. It uses Claude Opus 5.5
+with low effort for quick answers; change `ask_model` or `ask_effort` in behavior.xml. If Claude
+declines a question, Anthropic retries it on another model automatically (server-side fallback).
+
+`at` runs commands through the launcher: if Android closed it, the command runs the next time the
+home screen opens. On Android 12 and later, `at exact` lets jobs run on time instead of a few minutes late.
+
 ### Weather
 
 Weather now comes from [Open-Meteo](https://open-meteo.com): free, with no API key or account.

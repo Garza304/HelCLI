@@ -67,6 +67,13 @@ limitations under the License.*/
 public class MainManager {
 
     public static String ACTION_EXEC = BuildConfig.APPLICATION_ID + ".main_exec";
+
+    private static volatile boolean running;
+
+    /** Whether the launcher is up and can run commands (used by "at"). */
+    public static boolean isRunning() {
+        return running;
+    }
     public static String CMD = "cmd", NEED_WRITE_INPUT = "writeInput", ALIAS_NAME = "aliasName", PARCELABLE = "parcelable", CMD_COUNT = "cmdCount", MUSIC_SERVICE = "musicService";
 
     private RedirectCommand redirect;
@@ -248,6 +255,7 @@ public class MainManager {
         };
 
         LocalBroadcastManager.getInstance(mContext.getApplicationContext()).registerReceiver(receiver, filter);
+        running = true;
     }
 
     private void updateServices(String cmd, boolean wasMusicService) {
@@ -350,6 +358,7 @@ public class MainManager {
     }
 
     public void dispose() {
+        running = false;
         mainPack.dispose();
     }
 

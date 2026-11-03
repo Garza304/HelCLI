@@ -25,3 +25,5 @@
 -dontwarn org.slf4j.**
 
 -dontwarn org.jdom2.**
+# The Claude SDK uses OpenTelemetry, which references AutoValue annotations that only exist at build time
+-dontwarn com.google.auto.value.AutoValue

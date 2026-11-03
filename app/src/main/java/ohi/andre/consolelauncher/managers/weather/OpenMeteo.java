@@ -16,7 +16,8 @@ import java.util.Locale;
  * Open-Meteo's answer is rewritten into the same shape: the same placeholders keep working.
  *
  * Supported placeholders: %main, %description, %temp, %feels_like, %temp_min, %temp_max,
- * %humidity, %pressure, %speed, %deg, %all (cloud cover %), %precipitation, %name (place), %id.
+ * %humidity, %pressure, %speed, %deg, %all (cloud cover %), %precipitation, %name (place), %id,
+ * and (new in HelCLI) %sunrise, %sunset, %daylight, %rain_chance, %uv, %wind_dir, %unit, %wind_unit.
  *
  * Plain Java (only org.json), so it can be unit tested.
  */
@@ -83,7 +84,8 @@ public class OpenMeteo {
         return FORECAST + "?latitude=" + format(latitude, 4) + "&longitude=" + format(longitude, 4)
                 + "&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,"
                 + "cloud_cover,surface_pressure,wind_speed_10m,wind_direction_10m"
-                + "&daily=temperature_2m_max,temperature_2m_min&forecast_days=1&timezone=auto"
+                + "&daily=temperature_2m_max,temperature_2m_min,sunrise,sunset,daylight_duration,uv_index_max,precipitation_probability_max"
+                + "&forecast_days=1&timezone=auto"
                 + "&temperature_unit=" + (imperial ? "fahrenheit" : "celsius")
                 + "&wind_speed_unit=" + (imperial ? "mph" : "ms");
     }
@@ -143,6 +145,13 @@ public class OpenMeteo {
      * @param units "metric" (Celsius), "imperial" (Fahrenheit) or "standard" (Kelvin)
      */
     public static String toWeatherJson(String forecastJson, String units, String placeName) throws JSONException {
+        return toWeatherJson(forecastJson, units, placeName, true);
+    }
+
+    /**
+     * @param use24h sunrise and sunset as 18:12 (true) or 6:12 PM (false), like the phone's clock
+     */
+    public static String toWeatherJson(String forecastJson, String units, String placeName, boolean use24h) throws JSONException {
         JSONObject forecast = new JSONObject(forecastJson);
         JSONObject current = forecast.getJSONObject("current");
         JSONObject daily = forecast.optJSONObject("daily");
@@ -180,6 +189,24 @@ public class OpenMeteo {
         out.put("clouds", clouds);
         out.put("precipitation", round(current.optDouble("precipitation", 0), 1));
         out.put("name", placeName == null ? "" : placeName);
+
+//        extra codes: %sunrise %sunset %daylight %rain_chance %uv %wind_dir %unit %wind_unit
+        boolean imperial = "imperial".equalsIgnoreCase(units);
+        out.put("unit", kelvin ? "K" : imperial ? "°F" : "°C");
+        out.put("wind_unit", imperial ? "mph" : "m/s");
+        out.put("wind_dir", compass(current.optDouble("wind_direction_10m", Double.NaN)));
+        if (daily != null) {
+            String sunrise = clock(firstString(daily, "sunrise"), use24h);
+            String sunset = clock(firstString(daily, "sunset"), use24h);
+            if (sunrise != null) out.put("sunrise", sunrise);
+            if (sunset != null) out.put("sunset", sunset);
+            double daylight = first(daily, "daylight_duration");
+            if (!Double.isNaN(daylight)) out.put("daylight", (long) daylight / 3600 + "h " + ((long) daylight % 3600) / 60 + "m");
+            double rain = first(daily, "precipitation_probability_max");
+            if (!Double.isNaN(rain)) out.put("rain_chance", Math.round(rain));
+            double uv = first(daily, "uv_index_max");
+            if (!Double.isNaN(uv)) out.put("uv", round(uv, 1));
+        }
         return out.toString();
     }
 
@@ -216,6 +243,33 @@ public class OpenMeteo {
             case 99: return new String[] {"Thunderstorm", "thunderstorm with heavy hail"};
             default: return new String[] {"Unknown", "unknown"};
         }
+    }
+
+    private static String firstString(JSONObject daily, String key) {
+        JSONArray a = daily.optJSONArray(key);
+        return a == null || a.length() == 0 ? null : a.optString(0, null);
+    }
+
+    /** "2026-11-03T18:12" (local time) to "18:12" or "6:12 PM". */
+    static String clock(String isoLocal, boolean use24h) {
+        if (isoLocal == null) return null;
+        int t = isoLocal.indexOf('T');
+        if (t < 0 || isoLocal.length() < t + 6) return null;
+        try {
+            int h = Integer.parseInt(isoLocal.substring(t + 1, t + 3));
+            String m = isoLocal.substring(t + 4, t + 6);
+            if (use24h) return String.format(Locale.US, "%02d:%s", h, m);
+            return (h % 12 == 0 ? 12 : h % 12) + ":" + m + (h < 12 ? " AM" : " PM");
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    /** 0-360 degrees (the direction the wind comes from) to N, NE, E, ... */
+    static String compass(double degrees) {
+        if (Double.isNaN(degrees)) return "-";
+        String[] names = {"N", "NE", "E", "SE", "S", "SW", "W", "NW"};
+        return names[(int) Math.round(((degrees % 360) + 360) % 360 / 45) % 8];
     }
 
     private static double first(JSONObject daily, String key) {

@@ -593,7 +593,8 @@ public class HTMLExtractManager {
                     String forecast = get(OpenMeteo.forecastUrl(coordinates[0], coordinates[1], units));
                     if (forecast == null) return;
 
-                    sendWeather(context, OpenMeteo.toWeatherJson(forecast, units, displayName), "https://open-meteo.com");
+                    sendWeather(context, OpenMeteo.toWeatherJson(forecast, units, displayName,
+                            android.text.format.DateFormat.is24HourFormat(context)), "https://open-meteo.com");
                 } catch (Exception e) {
                     Tuils.log(e);
                     sendWeatherText(context, "Weather: couldn't read the forecast");

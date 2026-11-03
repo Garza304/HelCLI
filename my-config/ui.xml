@@ -20,6 +20,14 @@
     <!-- <status_lines_gap value="  "/> -->
     <!-- <bar_style value="[█░]"/> -->
 
+    <!-- The next alarm (on the clock's line by default), and the song playing in any app
+         (now playing needs notification access: run notifications -access on the phone) -->
+    <!-- <show_alarm value="true"/> -->
+    <!-- <alarm_index value="3.5"/> -->
+    <!-- <show_music value="true"/> -->
+    <!-- <music_index value="9"/> -->
+    <!-- <music_show_paused value="true"/> -->
+
     <!-- The Claude usage line (see tools/claude-usage/README.md) -->
     <!-- <show_claude value="true"/> -->
     <!-- <claude_index value="7.5"/> -->

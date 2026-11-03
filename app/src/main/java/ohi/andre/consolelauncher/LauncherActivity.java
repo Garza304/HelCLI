@@ -74,6 +74,7 @@ public class LauncherActivity extends AppCompatActivity implements Reloadable {
     public static final int TUIXT_REQUEST = 10;
     public static final int THEME_IMPORT_REQUEST = 11;
     public static final int CONFIG_EDIT_REQUEST = 12;
+    public static final int CALENDAR_PERMISSION_REQUEST = 13;
 
     private UIManager ui;
     private MainManager main;
@@ -394,6 +395,9 @@ public class LauncherActivity extends AppCompatActivity implements Reloadable {
 
         in.in(Tuils.EMPTYSTRING);
         ui.focusTerminal();
+
+//        "at": run anything that was waiting or missed, and set the alarms again (also after a restart)
+        ohi.andre.consolelauncher.managers.at.AtScheduler.onLauncherStart(this);
 
         if(fullscreen) Assist.assistActivity(this);
 

@@ -1284,7 +1284,72 @@ public enum Behavior implements XMLPrefsSave {
         public String type() {
             return XMLPrefsSave.INTEGER;
         }
-    };
+    },
+    alarm_format {
+        @Override
+        public String defaultValue() {
+            return "Alarm %t %day (in %in)";
+        }
+
+        @Override
+        public String info() {
+            return "The next alarm line. Codes: %t time, %day (today, tomorrow, Wed), %date, %in (time left), %app (the app that set it)";
+        }
+
+        @Override
+        public String type() {
+            return XMLPrefsSave.TEXT;
+        }
+    },
+    music_format {
+        @Override
+        public String defaultValue() {
+            return "♪ %title — %artist";
+        }
+
+        @Override
+        public String info() {
+            return "The now playing line. Codes: %title %artist %album %app %state (► or ||) %pos %dur, %bar (song progress, fills the line; %bar:20 = 20 wide)";
+        }
+
+        @Override
+        public String type() {
+            return XMLPrefsSave.TEXT;
+        }
+    },
+    ask_model {
+        @Override
+        public String defaultValue() {
+            return "claude-opus-5-5";
+        }
+
+        @Override
+        public String info() {
+            return "The Claude model ask uses, e.g. claude-opus-5-5 (default), claude-sonnet-5-5, or claude-haiku-5-5 (cheapest)";
+        }
+
+        @Override
+        public String type() {
+            return XMLPrefsSave.TEXT;
+        }
+    },
+    ask_effort {
+        @Override
+        public String defaultValue() {
+            return "low";
+        }
+
+        @Override
+        public String info() {
+            return "How hard Claude thinks before answering: low (quick answers), medium, high, xhigh or max. Higher costs more";
+        }
+
+        @Override
+        public String type() {
+            return XMLPrefsSave.TEXT;
+        }
+    }
+    ;
 
     @Override
     public XMLPrefsElement parent() {

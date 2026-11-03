@@ -29,6 +29,8 @@
     <!-- Weather (turn it on with show_weather in ui.xml). Location: a city, lat,lon, or null for the phone's location.
          Units: metric, imperial or standard (Kelvin). -->
     <!-- <weather_format value="Weather: %main, Temp: %temp"/> -->
+    <!-- More codes: %sunrise %sunset %daylight %rain_chance %uv %wind_dir %unit %wind_unit -->
+    <!-- <weather_format value="%temp%unit %description · rain %rain_chance% · sunset %sunset"/> -->
     <!-- <weather_location value="San Antonio, Texas"/> -->
     <!-- <weather_temperature_measure value="imperial"/> -->
 
@@ -41,6 +43,17 @@
     <!-- <claude_plan_source value="yourname/gist_id"/> -->
     <!-- <claude_budget_usd value="50"/> -->
     <!-- <claude_update_time value="600"/> -->
+
+    <!-- Next alarm. Codes: %t time, %day (today, tomorrow, Wed), %date, %in (time left), %app -->
+    <!-- <alarm_format value="Alarm %t %day (in %in)"/> -->
+
+    <!-- Now playing. Codes: %title %artist %album %app %state (► or ||) %pos %dur %bar (song progress) -->
+    <!-- <music_format value="♪ %title — %artist"/> -->
+    <!-- <music_format value="%state %title %pos %bar %dur"/> -->
+
+    <!-- ask: which Claude model answers, and how hard it thinks (low, medium, high, xhigh, max) -->
+    <!-- <ask_model value="claude-opus-5-5"/> -->
+    <!-- <ask_effort value="low"/> -->
 
     <!-- The line under the output when the input is empty: %u = username, %d = device, %p = folder -->
     <!-- <session_info_format value="%u@%d:%p"/> -->

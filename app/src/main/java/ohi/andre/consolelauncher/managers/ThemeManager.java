@@ -378,8 +378,20 @@ public class ThemeManager {
             return;
         }
 
+        rememberName(context, spec.title);
         reloadable.addMessage(context.getString(R.string.theme_applied) + Tuils.SPACE + spec.title, null);
         reloadable.reload();
+    }
+
+    private static final String NAME_PREFS = "helcli_theme", NAME_KEY = "current";
+
+    private static void rememberName(Context context, String name) {
+        context.getSharedPreferences(NAME_PREFS, Context.MODE_PRIVATE).edit().putString(NAME_KEY, name).apply();
+    }
+
+    /** The name of the theme applied last, for sysinfo. */
+    public static String currentThemeName(Context context) {
+        return context.getSharedPreferences(NAME_PREFS, Context.MODE_PRIVATE).getString(NAME_KEY, "Classic");
     }
 
     /** Sets many entries of a config file in one write. Returns an error message, or null. */
@@ -451,6 +463,7 @@ public class ThemeManager {
         swap(oldSuggestions, new File(Tuils.getFolder(), XMLPrefsManager.XMLPrefsRoot.SUGGESTIONS.path), tmpDir);
         Tuils.delete(tmpDir);
 
+        rememberName(context, "previous theme");
         reloadable.addMessage(context.getString(R.string.theme_reverted), null);
         reloadable.reload();
     }
@@ -473,6 +486,7 @@ public class ThemeManager {
         themeFile.delete();
         suggestionsFile.delete();
 
+        rememberName(context, "Classic");
         reloadable.addMessage(context.getString(R.string.theme_applied) + Tuils.SPACE + "standard", null);
         reloadable.reload();
     }
