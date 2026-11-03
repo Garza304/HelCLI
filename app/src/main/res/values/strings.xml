@@ -456,6 +456,12 @@
         \n$ ask -forget -> delete the key from HelCLI
         \n\nNeeds a Claude API key from platform.claude.com, and Android 8 or later. Each question costs a little on that account.
         \nSettings: ask_model (default claude-opus-5-5) and ask_effort (default low) in behavior.xml.</string>
+    <string name="help_update">Updates HelCLI to the newest release on GitHub.
+        \n\nUsage:
+        \n$ update -> check whether there\'s a newer version
+        \n$ update install -> download it, check it, and open the installer
+        \n$ update reinstall -> the same, even if you have the newest version
+        \n\nBefore installing, HelCLI checks the download\'s size and checksum and that it\'s signed with the same key as yours. Your settings stay as they are. The first time, Android asks you to allow HelCLI to install apps.</string>
     <string name="help_weather">Weather comes from Open-Meteo: free, and no key or account needed.
         \n\n-update -> update the weather now
         \n-enable -> show the weather

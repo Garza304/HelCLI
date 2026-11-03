@@ -30,8 +30,11 @@ android {
         applicationId "com.garza304.helcli"
         minSdk 21
         targetSdk 34
-        versionCode 400
-        versionName "1.0.0"
+        // GitHub builds number themselves: 1.0.<build>, always higher, so phones accept them as updates.
+        // Builds on your own computer are 1.0.0.
+        def build = (System.getenv("GITHUB_RUN_NUMBER") ?: "0").toInteger()
+        versionCode 400 + build
+        versionName "1.0." + build
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

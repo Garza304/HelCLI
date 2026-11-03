@@ -5,6 +5,9 @@ on:
   pull_request:
   workflow_dispatch:
 
+permissions:
+  contents: write   # to publish releases from master
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -17,6 +20,28 @@ jobs:
           java-version: 17
 
       - uses: gradle/actions/setup-gradle@v4
+
+      # Sign with HelCLI's permanent key, so each build installs as an update over the last one.
+      # The key is in signing/helcli.jks.enc, encrypted; its password is the HELCLI_KEY_PASSWORD secret.
+      # Without the secret (forks, pull requests from forks) builds use a temporary key and aren't released.
+      - name: Set up the signing key
+        id: signing
+        env:
+          KEY_PASSWORD: ${{ secrets.HELCLI_KEY_PASSWORD }}
+        run: |
+          if [ -z "$KEY_PASSWORD" ]; then
+            echo "::warning::HELCLI_KEY_PASSWORD isn't set: this build uses a temporary key and won't be released"
+            echo "signed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in signing/helcli.jks.enc -out helcli.jks -pass env:KEY_PASSWORD
+          {
+            echo "storeFile=helcli.jks"
+            echo "storePassword=$KEY_PASSWORD"
+            echo "keyAlias=helcli"
+            echo "keyPassword=$KEY_PASSWORD"
+          } > local.properties
+          echo "signed=true" >> "$GITHUB_OUTPUT"
 
       - name: Check the theme gallery
         run: python3 themes/tools/build_gallery.py --check
@@ -33,3 +58,20 @@ jobs:
           path: |
             app/build/outputs/apk/fdroid/debug/*.apk
             app/build/outputs/apk/playstore/debug/*.apk
+
+      # Every signed build of master becomes a release: the "update" command installs the newest one.
+      - name: Publish a release
+        if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request' && steps.signing.outputs.signed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+        run: |
+          VERSION="1.0.${GITHUB_RUN_NUMBER}"
+          cp app/build/outputs/apk/fdroid/debug/app-fdroid-debug.apk helcli.apk
+          TITLE=$(printf '%s\n' "$COMMIT_MESSAGE" | head -n 1)
+          [ -n "$TITLE" ] || TITLE="Build ${GITHUB_RUN_NUMBER}"
+          printf '%s\n\nBuilt from %s. Install it, or run "update" in HelCLI.\n' "$TITLE" "${GITHUB_SHA:0:7}" > notes.txt
+          gh release create "v${VERSION}" helcli.apk --title "HelCLI ${VERSION}" --notes-file notes.txt --target "$GITHUB_SHA" --latest
+      - name: Remove the signing key
+        if: always()
+        run: rm -f helcli.jks local.properties
