@@ -74,7 +74,7 @@
         android:required="false" />
 
     <permission
-        android:name="ohi.andre.consolelauncher.permission.RECEIVE_CMD"
+        android:name="${applicationId}.permission.RECEIVE_CMD"
         android:protectionLevel="signature" />
 
     <application
@@ -138,7 +138,7 @@
             android:exported="false"
             android:foregroundServiceType="specialUse">
             <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_TYPE"
-                android:value="Maintains the launcher console state and provides persistent access to T-UI commands via notification."/>
+                android:value="Maintains the launcher console state and provides persistent access to HelCLI commands via notification."/>
         </service>
         <service
             android:name=".managers.music.MusicService"
@@ -228,6 +228,15 @@
                     android:scheme="file" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".commands.configeditor.ConfigEditorActivity"
+            android:excludeFromRecents="true"
+            android:label="@string/app_name"
+            android:theme="@style/Custom.Solid"
+            android:windowSoftInputMode="stateHidden|adjustResize"
+            android:configChanges="keyboardHidden|orientation|screenSize|keyboard|navigation"
+            android:exported="false" />
 
         <service
             android:name=".managers.notifications.NotificationService"

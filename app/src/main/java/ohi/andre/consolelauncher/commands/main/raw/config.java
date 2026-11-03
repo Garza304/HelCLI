@@ -1,5 +1,9 @@
 package ohi.andre.consolelauncher.commands.main.raw;
 
+import ohi.andre.consolelauncher.commands.configeditor.ConfigEditorActivity;
+import ohi.andre.consolelauncher.LauncherActivity;
+import android.content.Intent;
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.SharedPreferences;
 
@@ -83,6 +87,32 @@ public class config extends ParamCommand {
                 return "Type:" + Tuils.SPACE + save.type() + Tuils.NEWLINE
                         + "Default:" + Tuils.SPACE + save.defaultValue() + Tuils.NEWLINE
                         + save.info();
+            }
+        },
+        edit {
+            @Override
+            public int[] args() {
+                return new int[] {CommandAbstraction.CONFIG_FILE};
+            }
+
+            @Override
+            public String exec(ExecutePack pack) {
+                File file = new File(Tuils.getFolder(), pack.getString());
+
+                Intent intent = new Intent(pack.context, ConfigEditorActivity.class);
+                intent.putExtra(ConfigEditorActivity.PATH, file.getAbsolutePath());
+                ((Activity) pack.context).startActivityForResult(intent, LauncherActivity.CONFIG_EDIT_REQUEST);
+                return null;
+            }
+
+            @Override
+            public String onArgNotFound(ExecutePack pack, int index) {
+                return pack.context.getString(R.string.output_filenotfound) + Tuils.NEWLINE + editableFiles();
+            }
+
+            @Override
+            public String onNotArgEnough(ExecutePack pack, int n) {
+                return "Usage: config -edit [file]" + Tuils.NEWLINE + editableFiles();
             }
         },
         file {
@@ -329,6 +359,15 @@ public class config extends ParamCommand {
                 return null;
             }
         };
+
+        static String editableFiles() {
+            StringBuilder b = new StringBuilder("Files you can edit:");
+            for (XMLPrefsManager.XMLPrefsRoot r : XMLPrefsManager.XMLPrefsRoot.values()) b.append(Tuils.NEWLINE).append("  ").append(r.path);
+            b.append(Tuils.NEWLINE).append("  ").append(AppsManager.PATH);
+            b.append(Tuils.NEWLINE).append("  ").append(NotificationManager.PATH);
+            b.append(Tuils.NEWLINE).append("  ").append(RssManager.PATH);
+            return b.toString();
+        }
 
         static Param get(String p) {
             p = p.toLowerCase();

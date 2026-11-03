@@ -795,8 +795,7 @@ public class SuggestionsManager {
     }
 
     private void suggestThemePresets(List<Suggestion> suggestions, String afterLastSpace, String beforeLastSpace) {
-        String[] presets = {"blue", "red", "green", "pink", "bw", "cyberpunk"};
-        for (String p : presets) {
+        for (String p : ohi.andre.consolelauncher.managers.themes.ThemeGallery.knownNames()) {
             if (afterLastSpace == null || afterLastSpace.length() == 0 || p.startsWith(afterLastSpace)) {
                 suggestions.add(new Suggestion(beforeLastSpace, p, true, Suggestion.TYPE_PERMANENT));
             }

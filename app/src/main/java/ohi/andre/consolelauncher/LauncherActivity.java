@@ -57,6 +57,8 @@ import ohi.andre.consolelauncher.tuils.LongClickableSpan;
 import ohi.andre.consolelauncher.tuils.PrivateIOReceiver;
 import ohi.andre.consolelauncher.tuils.PublicIOReceiver;
 import ohi.andre.consolelauncher.tuils.SimpleMutableEntry;
+import ohi.andre.consolelauncher.managers.ThemeManager;
+import ohi.andre.consolelauncher.commands.configeditor.ConfigEditorActivity;
 import ohi.andre.consolelauncher.tuils.Tuils;
 import ohi.andre.consolelauncher.tuils.interfaces.Inputable;
 import ohi.andre.consolelauncher.tuils.interfaces.Outputable;
@@ -70,6 +72,8 @@ public class LauncherActivity extends AppCompatActivity implements Reloadable {
     public static final int LOCATION_REQUEST_PERMISSION = 13;
 
     public static final int TUIXT_REQUEST = 10;
+    public static final int THEME_IMPORT_REQUEST = 11;
+    public static final int CONFIG_EDIT_REQUEST = 12;
 
     private UIManager ui;
     private MainManager main;
@@ -269,9 +273,9 @@ public class LauncherActivity extends AppCompatActivity implements Reloadable {
 
         publicIOReceiver = new PublicIOReceiver();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            getApplicationContext().registerReceiver(publicIOReceiver, filter1, "ohi.andre.consolelauncher.permission.RECEIVE_CMD", null, Context.RECEIVER_EXPORTED);
+            getApplicationContext().registerReceiver(publicIOReceiver, filter1, BuildConfig.APPLICATION_ID + ".permission.RECEIVE_CMD", null, Context.RECEIVER_EXPORTED);
         } else {
-            getApplicationContext().registerReceiver(publicIOReceiver, filter1, "ohi.andre.consolelauncher.permission.RECEIVE_CMD", null);
+            getApplicationContext().registerReceiver(publicIOReceiver, filter1, BuildConfig.APPLICATION_ID + ".permission.RECEIVE_CMD", null);
         }
 
         int requestedOrientation = XMLPrefsManager.getInt(Behavior.orientation);
@@ -550,6 +554,23 @@ public class LauncherActivity extends AppCompatActivity implements Reloadable {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == THEME_IMPORT_REQUEST) {
+            if(resultCode == RESULT_OK && data != null && data.getData() != null) {
+                Intent i = new Intent(ThemeManager.ACTION_IMPORT);
+                i.putExtra(ThemeManager.NAME, data.getData().toString());
+                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(i);
+            }
+            return;
+        }
+
+        if(requestCode == CONFIG_EDIT_REQUEST) {
+            if(resultCode == ConfigEditorActivity.RESULT_SAVED && data != null) {
+                addMessage(getString(R.string.config_editor_saved) + Tuils.SPACE + data.getStringExtra(ConfigEditorActivity.FILE_NAME), null);
+                reload();
+            }
+            return;
+        }
 
         if(requestCode == TUIXT_REQUEST && resultCode != 0) {
             if(resultCode == TuixtActivity.BACK_PRESSED) {

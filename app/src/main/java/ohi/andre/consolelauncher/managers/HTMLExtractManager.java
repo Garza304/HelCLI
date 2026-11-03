@@ -40,6 +40,7 @@ import ohi.andre.consolelauncher.managers.xml.XMLPrefsManager;
 import ohi.andre.consolelauncher.managers.xml.options.Behavior;
 import ohi.andre.consolelauncher.managers.xml.options.Theme;
 import ohi.andre.consolelauncher.tuils.LongClickableSpan;
+import ohi.andre.consolelauncher.managers.weather.OpenMeteo;
 import ohi.andre.consolelauncher.tuils.Tuils;
 import okhttp3.CacheControl;
 import okhttp3.OkHttpClient;
@@ -282,7 +283,8 @@ public class HTMLExtractManager {
                     query(context, path, pathType, format, website, weatherArea);
                 } else if(action.equals(ACTION_WEATHER)) {
                     String url = intent.getStringExtra(XMLPrefsManager.VALUE_ATTRIBUTE);
-                    query(context, weatherFormat, url);
+                    if(OpenMeteo.isRequest(url)) queryOpenMeteo(context, url);
+                    else query(context, weatherFormat, url);
                 }
             }
         };
@@ -405,50 +407,7 @@ public class HTMLExtractManager {
 
                     if(weatherArea) {
                         String json = Tuils.inputStreamToString(inputStream);
-//                        json = json.replaceAll("\"temp\":([\\d\\.]*)", "\"temp\":-4.3");
-
-                        CharSequence o = Tuils.span(weatherFormat, weatherColor);
-
-                        Matcher m = weatherFormatPattern.matcher(weatherFormat);
-                        while(m.find()) {
-                            String name = m.group(1);
-                            String delay = m.group(2);
-                            if(delay == null || delay.length() == 0) delay = "1";
-                            String converter = m.group(3);
-
-                            int stopAt = Integer.parseInt(delay);
-
-                            Pattern p = Pattern.compile("\"" + name + "\":(?:\"([^\"]+)\"|(-?\\d+\\.?\\d*))");
-                            Matcher m1 = p.matcher(json);
-                            int c = 1;
-                            while(m1.find()) {
-                                if(c == stopAt) {
-                                    String value = m1.group(1);
-                                    if(value == null || value.length() == 0) value = m1.group(2);
-
-                                    if(converter != null && converter.length() > 0) {
-                                        try {
-                                            double d = Double.parseDouble(value);
-                                            d = Tuils.textCalculus(d, converter);
-                                            value = String.format("%.2f", d);
-                                        } catch (Exception e) {
-                                            Tuils.log(e);
-                                        }
-                                    }
-
-                                    o = TextUtils.replace(o, new String[] {m.group(0)}, new String[] {delimiterStart + value + delimiterEnd});
-
-                                    break;
-                                } else c++;
-                            }
-                        }
-
-                        o = replaceLinkColorReplace(context, o, url);
-                        o = removeDelimiter(o);
-
-                        Intent i = new Intent(UIManager.ACTION_WEATHER);
-                        i.putExtra(XMLPrefsManager.VALUE_ATTRIBUTE, o);
-                        LocalBroadcastManager.getInstance(context.getApplicationContext()).sendBroadcast(i);
+                        sendWeather(context, json, url);
                     } else if(pathType == StoreableValue.Type.xpath) {
                         HtmlCleaner cleaner = new HtmlCleaner();
                         CleanerProperties props = cleaner.getProperties();
@@ -534,6 +493,129 @@ public class HTMLExtractManager {
 
     private void query(final Context context, final String format, final String url) {
         query(context, null, null, format, url, true);
+    }
+
+    /** Fills weather_format's placeholders from a weather answer and shows the result. */
+    private void sendWeather(Context context, String json, String url) {
+        CharSequence o = Tuils.span(weatherFormat, weatherColor);
+
+        Matcher m = weatherFormatPattern.matcher(weatherFormat);
+        while(m.find()) {
+            String name = m.group(1);
+            String delay = m.group(2);
+            if(delay == null || delay.length() == 0) delay = "1";
+            String converter = m.group(3);
+
+            int stopAt = Integer.parseInt(delay);
+
+            Pattern p = Pattern.compile("\"" + name + "\":(?:\"([^\"]+)\"|(-?\\d+\\.?\\d*))");
+            Matcher m1 = p.matcher(json);
+            int c = 1;
+            while(m1.find()) {
+                if(c == stopAt) {
+                    String value = m1.group(1);
+                    if(value == null || value.length() == 0) value = m1.group(2);
+
+                    if(converter != null && converter.length() > 0) {
+                        try {
+                            double d = Double.parseDouble(value);
+                            d = Tuils.textCalculus(d, converter);
+                            value = String.format("%.2f", d);
+                        } catch (Exception e) {
+                            Tuils.log(e);
+                        }
+                    }
+
+                    o = TextUtils.replace(o, new String[] {m.group(0)}, new String[] {delimiterStart + value + delimiterEnd});
+
+                    break;
+                } else c++;
+            }
+        }
+
+        o = replaceLinkColorReplace(context, o, url);
+        o = removeDelimiter(o);
+
+        Intent i = new Intent(UIManager.ACTION_WEATHER);
+        i.putExtra(XMLPrefsManager.VALUE_ATTRIBUTE, o);
+        LocalBroadcastManager.getInstance(context.getApplicationContext()).sendBroadcast(i);
+    }
+
+    private void sendWeatherText(Context context, String text) {
+        Intent i = new Intent(UIManager.ACTION_WEATHER);
+        i.putExtra(XMLPrefsManager.VALUE_ATTRIBUTE, text);
+        LocalBroadcastManager.getInstance(context.getApplicationContext()).sendBroadcast(i);
+    }
+
+    /** Coordinates found for place names, so the geocoder is asked only once per place. */
+    private final java.util.Map<String, OpenMeteo.Place> placeCache = new java.util.HashMap<>();
+
+    /** Gets the weather from Open-Meteo (free, no API key). Request format: see {@link OpenMeteo}. */
+    private void queryOpenMeteo(final Context context, final String request) {
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
+
+                if (!Tuils.hasInternetAccess()) {
+                    sendWeatherText(context, context.getString(R.string.no_internet));
+                    return;
+                }
+
+                try {
+                    String units = XMLPrefsManager.get(Behavior.weather_temperature_measure);
+                    String placeName = OpenMeteo.placeOf(request);
+                    double[] coordinates = OpenMeteo.coordinatesOf(request);
+                    String displayName = Tuils.EMPTYSTRING;
+
+                    if (placeName != null) {
+                        OpenMeteo.Place place;
+                        synchronized (placeCache) {
+                            place = placeCache.get(placeName);
+                        }
+                        if (place == null) {
+                            String geo = get(OpenMeteo.geocodeUrl(placeName));
+                            if (geo == null) return;
+                            place = OpenMeteo.parsePlace(geo, placeName);
+                            if (place == null) {
+                                sendWeatherText(context, "Weather: can't find \"" + placeName + "\". Try: config -set weather_location lat,lon");
+                                return;
+                            }
+                            synchronized (placeCache) {
+                                placeCache.put(placeName, place);
+                            }
+                        }
+                        coordinates = new double[] {place.latitude, place.longitude};
+                        displayName = place.name;
+                    }
+                    if (coordinates == null) return;
+
+                    String forecast = get(OpenMeteo.forecastUrl(coordinates[0], coordinates[1], units));
+                    if (forecast == null) return;
+
+                    sendWeather(context, OpenMeteo.toWeatherJson(forecast, units, displayName), "https://open-meteo.com");
+                } catch (Exception e) {
+                    Tuils.log(e);
+                    sendWeatherText(context, "Weather: couldn't read the forecast");
+                }
+            }
+
+            /** Returns the body, or null after reporting the problem. */
+            private String get(String url) throws java.io.IOException {
+                Request r = new Request.Builder().url(url).cacheControl(CacheControl.FORCE_NETWORK).get().build();
+                try (Response response = client.newCall(r).execute()) {
+                    if (response.code() == 429) {
+                        LocalBroadcastManager.getInstance(context.getApplicationContext()).sendBroadcast(new Intent(UIManager.ACTION_WEATHER_DELAY));
+                        return null;
+                    }
+                    if (!response.isSuccessful() || response.body() == null) {
+                        sendWeatherText(context, context.getString(R.string.internet_error) + Tuils.SPACE + response.code());
+                        return null;
+                    }
+                    return response.body().string();
+                }
+            }
+        }.start();
     }
 
     private static void output(CharSequence s, Context context, boolean weatherArea) {

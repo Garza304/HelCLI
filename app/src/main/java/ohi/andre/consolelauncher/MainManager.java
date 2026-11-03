@@ -172,7 +172,7 @@ public class MainManager {
 //
 //                    try {
 //                        Request.Builder builder = new Request.Builder()
-//                                .url("http://api.openweathermap.org/data/2.5/weather?lat=" + lat++ + "&lon=" + lon++ + "&appid=1f798f99228596c20ccfda51b9771a86&units=metric")
+//                                (old OpenWeatherMap request removed: weather now comes from Open-Meteo)
 //                                .cacheControl(CacheControl.FORCE_NETWORK)
 //                                .get();
 //
