@@ -74,6 +74,27 @@ public class config extends ParamCommand {
                 return set.exec(pack);
             }
         },
+//        like set, then restarts HelCLI so settings that only apply at start (like system_wallpaper) take effect
+        setr {
+            @Override
+            public int[] args() {
+                return new int[] {CommandAbstraction.CONFIG_ENTRY, CommandAbstraction.PLAIN_TEXT};
+            }
+
+            @Override
+            public String exec(ExecutePack pack) {
+                String out = set.exec(pack);
+                ((Reloadable) pack.context).reload();
+                return out;
+            }
+
+            @Override
+            public String onNotArgEnough(ExecutePack pack, int n) {
+                String out = set.onNotArgEnough(pack, n);
+                ((Reloadable) pack.context).reload();
+                return out;
+            }
+        },
         info {
             @Override
             public int[] args() {

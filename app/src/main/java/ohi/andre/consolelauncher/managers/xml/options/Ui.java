@@ -351,7 +351,8 @@ public enum Ui implements XMLPrefsSave {
     system_wallpaper {
         @Override
         public String defaultValue() {
-            return "true";
+//            off, like the original T-UI: a solid background in the theme's color
+            return "false";
         }
 
         @Override
