@@ -2,6 +2,18 @@
   "version": 1,
   "themes": [
     {
+      "name": "abyss",
+      "title": "Abyss",
+      "author": "HelCLI",
+      "description": "Bioluminescent teal and blue from the deep sea",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/abyss.json",
+      "swatch": {
+        "bg": "#ff020b10",
+        "input": "#ff4dffc3",
+        "output": "#ffb8e6ef"
+      }
+    },
+    {
       "name": "amber",
       "title": "Amber CRT",
       "author": "HelCLI",
@@ -11,6 +23,30 @@
         "bg": "#ff140b00",
         "input": "#ffffcc00",
         "output": "#ffffb000"
+      }
+    },
+    {
+      "name": "aurora",
+      "title": "Aurora",
+      "author": "HelCLI",
+      "description": "Northern lights: green, teal and violet over a dark sky",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/aurora.json",
+      "swatch": {
+        "bg": "#ff0a0f14",
+        "input": "#ff5cf2a0",
+        "output": "#ffd4e8e0"
+      }
+    },
+    {
+      "name": "ayu-mirage",
+      "title": "Ayu Mirage",
+      "author": "after Ayu",
+      "description": "Bright, warm accents on slate blue",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/ayu-mirage.json",
+      "swatch": {
+        "bg": "#ff1f2430",
+        "input": "#ffd5ff80",
+        "output": "#ffcccac2"
       }
     },
     {
@@ -38,6 +74,18 @@
       }
     },
     {
+      "name": "catppuccin-latte",
+      "title": "Catppuccin Latte",
+      "author": "after Catppuccin",
+      "description": "The light flavor of Catppuccin",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/catppuccin-latte.json",
+      "swatch": {
+        "bg": "#ffeff1f5",
+        "input": "#ff1e66f5",
+        "output": "#ff4c4f69"
+      }
+    },
+    {
       "name": "catppuccin-mocha",
       "title": "Catppuccin Mocha",
       "author": "HelCLI",
@@ -62,6 +110,18 @@
       }
     },
     {
+      "name": "cotton-candy",
+      "title": "Cotton Candy",
+      "author": "HelCLI",
+      "description": "A treat: pink, blue and grape on spun sugar",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/cotton-candy.json",
+      "swatch": {
+        "bg": "#fffff0f6",
+        "input": "#ff4a6cf0",
+        "output": "#ff5b3a5e"
+      }
+    },
+    {
       "name": "cyberpunk",
       "title": "Cyberpunk",
       "author": "HelCLI",
@@ -71,6 +131,18 @@
         "bg": "#ff0d0615",
         "input": "#fffcee09",
         "output": "#ff00f0ff"
+      }
+    },
+    {
+      "name": "deep-space",
+      "title": "Deep Space",
+      "author": "HelCLI",
+      "description": "Starlight white and nebula colors on true black",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/deep-space.json",
+      "swatch": {
+        "bg": "#ff000000",
+        "input": "#ff7cf0b4",
+        "output": "#ffe8ecf5"
       }
     },
     {
@@ -86,6 +158,42 @@
       }
     },
     {
+      "name": "ember",
+      "title": "Ember",
+      "author": "HelCLI",
+      "description": "Glowing coals: orange, red and gold on charcoal",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/ember.json",
+      "swatch": {
+        "bg": "#ff120d0b",
+        "input": "#ffd6b85a",
+        "output": "#fff2d5c4"
+      }
+    },
+    {
+      "name": "espresso",
+      "title": "Espresso",
+      "author": "HelCLI",
+      "description": "Coffee browns and cream, with a little caramel",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/espresso.json",
+      "swatch": {
+        "bg": "#ff1b1410",
+        "input": "#ffa8b878",
+        "output": "#ffecdcc8"
+      }
+    },
+    {
+      "name": "everforest",
+      "title": "Everforest",
+      "author": "after Everforest",
+      "description": "Soft greens and earth tones, easy on the eyes",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/everforest.json",
+      "swatch": {
+        "bg": "#ff2d353b",
+        "input": "#ffa7c080",
+        "output": "#ffd3c6aa"
+      }
+    },
+    {
       "name": "forest",
       "title": "Forest",
       "author": "HelCLI",
@@ -95,6 +203,18 @@
         "bg": "#ff141a14",
         "input": "#ff9bc53d",
         "output": "#ffdfe6d5"
+      }
+    },
+    {
+      "name": "graphite",
+      "title": "Graphite",
+      "author": "HelCLI",
+      "description": "Shades of gray with one mint accent",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/graphite.json",
+      "swatch": {
+        "bg": "#ff121212",
+        "input": "#ff7de0b5",
+        "output": "#ffd0d0d0"
       }
     },
     {
@@ -134,6 +254,54 @@
       }
     },
     {
+      "name": "kanagawa",
+      "title": "Kanagawa",
+      "author": "after Kanagawa",
+      "description": "Ink and woodblock colors from The Great Wave",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/kanagawa.json",
+      "swatch": {
+        "bg": "#ff1f1f28",
+        "input": "#ff98bb6c",
+        "output": "#ffdcd7ba"
+      }
+    },
+    {
+      "name": "lemonade",
+      "title": "Lemonade",
+      "author": "HelCLI",
+      "description": "Fresh squeezed: citrus colors on pale yellow",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/lemonade.json",
+      "swatch": {
+        "bg": "#fffffbe6",
+        "input": "#ff2f6fd0",
+        "output": "#ff3d3a1e"
+      }
+    },
+    {
+      "name": "midnight",
+      "title": "Midnight Ink",
+      "author": "HelCLI",
+      "description": "Ink blue and silver on near-black",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/midnight.json",
+      "swatch": {
+        "bg": "#ff0b0e14",
+        "input": "#ff8fcfa8",
+        "output": "#ffc9d1e0"
+      }
+    },
+    {
+      "name": "mint-chip",
+      "title": "Mint Chip",
+      "author": "HelCLI",
+      "description": "Mint ice cream with chocolate chips",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/mint-chip.json",
+      "swatch": {
+        "bg": "#ffeffaf4",
+        "input": "#ff2d6aa8",
+        "output": "#ff3b2a20"
+      }
+    },
+    {
       "name": "monokai",
       "title": "Monokai",
       "author": "HelCLI",
@@ -146,6 +314,18 @@
       }
     },
     {
+      "name": "night-owl",
+      "title": "Night Owl",
+      "author": "after Night Owl",
+      "description": "Made for coding late at night",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/night-owl.json",
+      "swatch": {
+        "bg": "#ff011627",
+        "input": "#ffaddb67",
+        "output": "#ffd6deeb"
+      }
+    },
+    {
       "name": "nord",
       "title": "Nord",
       "author": "HelCLI",
@@ -155,6 +335,18 @@
         "bg": "#ff2e3440",
         "input": "#ff88c0d0",
         "output": "#ffd8dee9"
+      }
+    },
+    {
+      "name": "obsidian",
+      "title": "Obsidian",
+      "author": "HelCLI",
+      "description": "Volcanic glass: violet and lilac on black",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/obsidian.json",
+      "swatch": {
+        "bg": "#ff0d0a12",
+        "input": "#ff9ee6b8",
+        "output": "#ffddd3ef"
       }
     },
     {
@@ -179,6 +371,18 @@
         "bg": "#ff000000",
         "input": "#ff8c9eff",
         "output": "#ffb0b0b0"
+      }
+    },
+    {
+      "name": "one-dark",
+      "title": "One Dark",
+      "author": "after Atom One Dark",
+      "description": "The classic editor dark theme",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/one-dark.json",
+      "swatch": {
+        "bg": "#ff282c34",
+        "input": "#ff98c379",
+        "output": "#ffabb2bf"
       }
     },
     {
@@ -227,6 +431,30 @@
         "bg": "#ff210000",
         "input": "#ffff4500",
         "output": "#ffffebee"
+      }
+    },
+    {
+      "name": "rose-pine-dawn",
+      "title": "Ros\u00e9 Pine Dawn",
+      "author": "after Ros\u00e9 Pine",
+      "description": "Ros\u00e9 Pine for the morning: warm paper and soft ink",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/rose-pine-dawn.json",
+      "swatch": {
+        "bg": "#fffaf4ed",
+        "input": "#ff286983",
+        "output": "#ff575279"
+      }
+    },
+    {
+      "name": "rose-pine",
+      "title": "Ros\u00e9 Pine",
+      "author": "after Ros\u00e9 Pine",
+      "description": "Soho vibes: muted pine, rose and gold on deep purple",
+      "url": "https://raw.githubusercontent.com/Garza304/HelCLI/master/themes/rose-pine.json",
+      "swatch": {
+        "bg": "#ff191724",
+        "input": "#ff9ccfd8",
+        "output": "#ffe0def4"
       }
     },
     {

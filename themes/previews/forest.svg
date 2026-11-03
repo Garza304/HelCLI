@@ -1,18 +1,26 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="360" height="200" viewBox="0 0 360 200" role="img" aria-label="Forest theme preview">
-<rect width="360" height="200" rx="12" fill="#141a14"/>
-<g font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="13">
-<text x="16" y="28"><tspan fill="#a3c9a8">12:45</tspan><tspan fill="#9bc53d">  Battery 87%</tspan><tspan fill="#c08552">  RAM 2.1 GB</tspan></text>
-<text x="16" y="66"><tspan fill="#c08552">user@helcli</tspan><tspan fill="#dfe6d5">: </tspan><tspan fill="#9bc53d">$ ls</tspan></text>
-<text x="16" y="86" fill="#dfe6d5">Documents  Music  notes.txt</text>
-<text x="16" y="110"><tspan fill="#c08552">user@helcli</tspan><tspan fill="#dfe6d5">: </tspan><tspan fill="#9bc53d">$ open github.com</tspan></text>
-<text x="16" y="130" fill="#a3c9a8">https://github.com</text>
-<rect x="16" y="156" width="64" height="26" rx="4" fill="#4f772d"/>
-<text x="24" y="174" fill="#ffffff">Camera</text>
-<rect x="88" y="156" width="48" height="26" rx="4" fill="#9bc53d"/>
-<text x="96" y="174" fill="#141a14">help</text>
-<rect x="144" y="156" width="32" height="26" rx="4" fill="#c08552"/>
-<text x="152" y="174" fill="#141a14">ll</text>
-<rect x="184" y="156" width="56" height="26" rx="4" fill="#8fb996"/>
-<text x="192" y="174" fill="#141a14">notes</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="312" viewBox="0 0 360 312" role="img" aria-label="Forest theme preview">
+<rect width="360" height="312" rx="12" fill="#141a14"/>
+<g font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="11.5">
+<text x="14" y="26"><tspan fill="#a3c9a8">Tue Nov 3 · 9:41 PM  </tspan><tspan fill="#9bc53d">87% [███████████████░░]</tspan></text>
+<text x="14" y="41"><tspan fill="#a3c9a8">Alarm 6:45 AM (in 9h 4m)  </tspan><tspan fill="#a3c9a8">HomeNet·5G·bt</tspan></text>
+<text x="14" y="56"><tspan fill="#a3c9a8">San Antonio 64°F clear ↑71 ↓52 · rain 10%</tspan></text>
+<text x="14" y="71"><tspan fill="#c08552">ram   39% [████████████░░░░░░░░░░░░░░░░░░░░]</tspan></text>
+<text x="14" y="86"><tspan fill="#8fb996">disk  72% [███████████████████████░░░░░░░░░]</tspan></text>
+<text x="14" y="101"><tspan fill="#c08552">Claude · 5h resets 11:20 PM</tspan></text>
+<text x="14" y="116"><tspan fill="#c08552">5h    42% [█████████████░░░░░░░░░░░░░░░░░░░]</tspan></text>
+<text x="14" y="131"><tspan fill="#c08552">week  18% [██████░░░░░░░░░░░░░░░░░░░░░░░░░░]</tspan></text>
+<text x="14" y="146"><tspan fill="#8fb996">Next: Dentist · Thu 2:30 PM (in 1d 16h)</tspan></text>
+<text x="14" y="161"><tspan fill="#9bc53d">♪ Midnight City — M83</tspan></text>
+<text x="14" y="176"><tspan fill="#9bc53d">2:41 ~~~~~~~~~~~~~~~~~~~~~~♫··········· 4:03</tspan></text>
+<text x="14" y="206"><tspan fill="#c08552">user@helcli</tspan><tspan fill="#dfe6d5">: </tspan><tspan fill="#9bc53d">$ theme -apply forest</tspan></text>
+<text x="14" y="221"><tspan fill="#dfe6d5">Theme applied: Forest</tspan></text>
+<rect x="14" y="274" width="58" height="24" rx="4" fill="#4f772d"/>
+<text x="22" y="290" fill="#ffffff">Camera</text>
+<rect x="80" y="274" width="44" height="24" rx="4" fill="#9bc53d"/>
+<text x="88" y="290" fill="#141a14">help</text>
+<rect x="132" y="274" width="30" height="24" rx="4" fill="#c08552"/>
+<text x="140" y="290" fill="#141a14">ll</text>
+<rect x="170" y="274" width="51" height="24" rx="4" fill="#8fb996"/>
+<text x="178" y="290" fill="#141a14">notes</text>
 </g>
 </svg>

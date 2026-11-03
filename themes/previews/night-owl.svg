@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="312" viewBox="0 0 360 312" role="img" aria-label="Night Owl theme preview">
+<rect width="360" height="312" rx="12" fill="#011627"/>
+<g font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="11.5">
+<text x="14" y="26"><tspan fill="#82aaff">Tue Nov 3 · 9:41 PM  </tspan><tspan fill="#addb67">87% [███████████████░░]</tspan></text>
+<text x="14" y="41"><tspan fill="#7fdbca">Alarm 6:45 AM (in 9h 4m)  </tspan><tspan fill="#f78c6c">HomeNet·5G·bt</tspan></text>
+<text x="14" y="56"><tspan fill="#ecc48d">San Antonio 64°F clear ↑71 ↓52 · rain 10%</tspan></text>
+<text x="14" y="71"><tspan fill="#ef5350">ram   39% [████████████░░░░░░░░░░░░░░░░░░░░]</tspan></text>
+<text x="14" y="86"><tspan fill="#c792ea">disk  72% [███████████████████████░░░░░░░░░]</tspan></text>
+<text x="14" y="101"><tspan fill="#f78c6c">Claude · 5h resets 11:20 PM</tspan></text>
+<text x="14" y="116"><tspan fill="#f78c6c">5h    42% [█████████████░░░░░░░░░░░░░░░░░░░]</tspan></text>
+<text x="14" y="131"><tspan fill="#f78c6c">week  18% [██████░░░░░░░░░░░░░░░░░░░░░░░░░░]</tspan></text>
+<text x="14" y="146"><tspan fill="#ff5874">Next: Dentist · Thu 2:30 PM (in 1d 16h)</tspan></text>
+<text x="14" y="161"><tspan fill="#7fdbca">♪ Midnight City — M83</tspan></text>
+<text x="14" y="176"><tspan fill="#7fdbca">2:41 ~~~~~~~~~~~~~~~~~~~~~~♫··········· 4:03</tspan></text>
+<text x="14" y="206"><tspan fill="#c792ea">user@helcli</tspan><tspan fill="#d6deeb">: </tspan><tspan fill="#addb67">$ theme -apply night-owl</tspan></text>
+<text x="14" y="221"><tspan fill="#d6deeb">Theme applied: Night Owl</tspan></text>
+<rect x="14" y="274" width="58" height="24" rx="4" fill="#addb67"/>
+<text x="22" y="290" fill="#011627">Camera</text>
+<rect x="80" y="274" width="44" height="24" rx="4" fill="#82aaff"/>
+<text x="88" y="290" fill="#011627">help</text>
+<rect x="132" y="274" width="30" height="24" rx="4" fill="#c792ea"/>
+<text x="140" y="290" fill="#011627">ll</text>
+<rect x="170" y="274" width="51" height="24" rx="4" fill="#ecc48d"/>
+<text x="178" y="290" fill="#011627">notes</text>
+</g>
+</svg>

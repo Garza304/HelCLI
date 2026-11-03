@@ -90,8 +90,45 @@ def color(data, section, key):
     return value
 
 
+WIDTH_CHARS = 44   # one status line at the default text size on a phone
+
+
+def bar(percent, width, style="[\u2588\u2591]"):
+    """A loading bar like the app draws: [\u2588\u2588\u2591\u2591], or a moving marker for 3-character styles."""
+    if len(style) == 3:
+        played, mark, rest = style
+        at = round((width - 1) * percent / 100)
+        return played * at + mark + rest * (width - 1 - at)
+    left, full, empty, right = style
+    inner = width - 2
+    n = round(inner * percent / 100)
+    return left + full * n + empty * (inner - n) + right
+
+
+def home_lines(title, name):
+    """The default home screen, as lines of (text, color key) pieces."""
+    def fill(prefix, percent, suffix="", style="[\u2588\u2591]"):
+        return bar(percent, WIDTH_CHARS - len(prefix) - len(suffix), style)
+    return [
+        [("Tue Nov 3 \u00b7 9:41 PM  ", "time_color"), ("87% " + fill("Tue Nov 3 \u00b7 9:41 PM  87% ", 87), "battery_color_high")],
+        [("Alarm 6:45 AM (in 9h 4m)  ", "alarm_color"), ("HomeNet\u00b75G\u00b7bt", "network_info_color")],
+        [("San Antonio 64\u00b0F clear \u219171 \u219352 \u00b7 rain 10%", "weather_color")],
+        [("ram   39% " + fill("ram   39% ", 39), "ram_color")],
+        [("disk  72% " + fill("disk  72% ", 72), "storage_color")],
+        [("Claude \u00b7 5h resets 11:20 PM", "claude_color")],
+        [("5h    42% " + fill("5h    42% ", 42), "claude_color")],
+        [("week  18% " + fill("week  18% ", 18), "claude_color")],
+        [("Next: Dentist \u00b7 Thu 2:30 PM (in 1d 16h)", "calendar_color")],
+        [("\u266a Midnight City \u2014 M83", "music_color")],
+        [("2:41 " + fill("2:41 ", 66, " 4:03", "~\u266b\u00b7") + " 4:03", "music_color")],
+        [],
+        [("user@helcli", "device_color"), (": ", "output_color"), ("$ theme -apply " + name, "input_color")],
+        [("Theme applied: " + title, "output_color")],
+    ]
+
+
 def preview_svg(data):
-    """A small picture of the launcher in this theme: status line, two commands, suggestion buttons."""
+    """A picture of the home screen in this theme: the status lines, a command, suggestion buttons."""
     bg, alpha = rgb(color(data, "theme", "bg_color"))
     if alpha < 0.25:
         bg = "#000000"
@@ -102,31 +139,30 @@ def preview_svg(data):
         text = color(data, "suggestions", kind + "_text_color")
         return rgb(color(data, "suggestions", kind + "_bg_color"))[0], rgb(text)[0] if text else default_text
 
-    w, h = 360, 200
-    font = 'font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="13"'
-    lines = [
+    w, h, step = 360, 312, 15
+    font = 'font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="11.5"'
+    out = [
         '<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" viewBox="0 0 %d %d" role="img" aria-label="%s theme preview">'
         % (w, h, w, h, html.escape(data["title"])),
         '<rect width="%d" height="%d" rx="12" fill="%s"/>' % (w, h, bg),
         '<g %s>' % font,
-        '<text x="16" y="28"><tspan fill="%s">12:45</tspan><tspan fill="%s">  Battery 87%%</tspan><tspan fill="%s">  RAM 2.1 GB</tspan></text>'
-        % (c("time_color"), c("battery_color_high"), c("ram_color")),
-        '<text x="16" y="66"><tspan fill="%s">user@helcli</tspan><tspan fill="%s">: </tspan><tspan fill="%s">$ ls</tspan></text>'
-        % (c("device_color"), c("output_color"), c("input_color")),
-        '<text x="16" y="86" fill="%s">Documents  Music  notes.txt</text>' % c("output_color"),
-        '<text x="16" y="110"><tspan fill="%s">user@helcli</tspan><tspan fill="%s">: </tspan><tspan fill="%s">$ open github.com</tspan></text>'
-        % (c("device_color"), c("output_color"), c("input_color")),
-        '<text x="16" y="130" fill="%s">https://github.com</text>' % c("link_color"),
     ]
-    x = 16
+    y = 26
+    for line in home_lines(data["title"], data["name"]):
+        if line:
+#            non-breaking spaces: SVG viewers collapse runs of ordinary spaces, which would shift the bars
+            spans = "".join('<tspan fill="%s">%s</tspan>' % (c(key), html.escape(text).replace(" ", "\u00a0")) for text, key in line)
+            out.append('<text x="14" y="%d">%s</text>' % (y, spans))
+        y += step
+    x, y = 14, h - 38
     for label, kind in (("Camera", "apps"), ("help", "cmd"), ("ll", "alias"), ("notes", "file")):
         chip_bg, chip_fg = chip_colors(kind)
-        width = 16 + 8 * len(label)
-        lines.append('<rect x="%d" y="156" width="%d" height="26" rx="4" fill="%s"/>' % (x, width, chip_bg))
-        lines.append('<text x="%d" y="174" fill="%s">%s</text>' % (x + 8, chip_fg, label))
+        width = 16 + 7 * len(label)
+        out.append('<rect x="%d" y="%d" width="%d" height="24" rx="4" fill="%s"/>' % (x, y, width, chip_bg))
+        out.append('<text x="%d" y="%d" fill="%s">%s</text>' % (x + 8, y + 16, chip_fg, label))
         x += width + 8
-    lines += ["</g>", "</svg>", ""]
-    return "\n".join(lines)
+    out += ["</g>", "</svg>", ""]
+    return "\n".join(out)
 
 
 def build(check_only):
