@@ -398,6 +398,7 @@
         \nAPI spend: this month\'s Claude API cost, from Anthropic\'s usage and cost API (needs an Admin API key from an organization).
         \n\n-show / -hide -> show or hide the line
         \n-plan [user/gist_id] -> where your plan limits are published (-plan off to stop)
+        \n-link -> opens the Claude Console page where you make the Admin key; copy it, come back, and HelCLI saves it
         \n-key -> save the Admin API key you copied to the clipboard
         \n-forget -> delete the saved Admin API key
         \n-budget [dollars] -> monthly API budget, to show a % (0 = none)
@@ -452,6 +453,7 @@
         \n\nUsage:
         \n$ ask [question] -> e.g. ask how do I find my phone\'s IP address?
         \n$ ask -new -> start a new conversation (it also resets after 30 minutes)
+        \n$ ask -link -> opens the Claude Console page where you make an API key; copy it, come back, and HelCLI saves it
         \n$ ask -key -> save the Claude API key you copied (from the clipboard)
         \n$ ask -forget -> delete the key from HelCLI
         \n\nNeeds a Claude API key from platform.claude.com, and Android 8 or later. Each question costs a little on that account.

@@ -147,7 +147,7 @@ public class ClaudeUsageUpdater {
             spent = ClaudeUsage.parseCostDollars(body);
             apiProblem = null;
         } catch (HttpProblem e) {
-            if (e.code == 401) apiProblem = "API key rejected (usage -key)";
+            if (e.code == 401) apiProblem = "API key rejected (usage -link)";
             else if (e.code == 403) apiProblem = "API key can't read costs";
             else if (e.code == 429) apiProblem = null; // keep the last value, try again next time
             else apiProblem = "API: Anthropic answered " + e.code;

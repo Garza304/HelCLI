@@ -128,7 +128,7 @@ and weekly %) and/or this month's Claude API spend against a budget.
 ```
 usage -show                 # show the line
 usage -plan you/gist_id     # plan limits, published by tools/claude-usage/helcli_usage.py
-usage -key                  # API spend: saves the Admin API key you copied (from the clipboard)
+usage -link                 # API spend: opens the Admin keys page; copy the key, come back, done
 usage -budget 50            # monthly API budget, to show a %
 usage -status               # what's set up
 ```
@@ -192,7 +192,8 @@ Android doesn't let apps see other apps' memory, so `ram` has no per-app list.
 | `qr` | Draws a QR code to scan with another phone: `qr https://...`, or `qr` for what you copied |
 | `ask` | Ask Claude: `ask how do I ...`. Follow-ups remember the conversation; `ask -new` starts over |
 
-`ask` needs a Claude API key (copy it, then `ask -key`; it's kept in HelCLI's private storage) and
+`ask` needs a Claude API key: `ask -link` opens the page where you make one; copy it and come back,
+and HelCLI saves it in its private storage. It's a different key from the usage line's Admin key. It needs
 Android 8 or later. Each question costs a little on your Claude API account. It uses Claude Opus 5.5
 with low effort for quick answers; change `ask_model` or `ask_effort` in behavior.xml. If Claude
 declines a question, Anthropic retries it on another model automatically (server-side fallback).

@@ -520,6 +520,13 @@ public class LauncherActivity extends AppCompatActivity implements Reloadable {
         if (hasFocus && ui != null) {
             ui.focusTerminal();
         }
+
+//        back from the Claude Console after "usage -link" or "ask -link": pick up the copied key
+//        (Android only lets the app in front read the clipboard, so wait until HelCLI has focus)
+        if (hasFocus) {
+            final android.content.Context c = this;
+            getWindow().getDecorView().postDelayed(() -> ohi.andre.consolelauncher.managers.claude.KeyLink.onBack(c), 300);
+        }
     }
 
     SuggestionsManager.Suggestion suggestion;

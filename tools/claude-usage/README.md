@@ -48,7 +48,8 @@ Its data is usually up to about 4 hours behind.
      API keys), not just read costs. Make one just for HelCLI, give it a short expiration date, and revoke
      it if you lose the phone.
    - **Claude Enterprise:** a key with only the `read:analytics` scope (claude.ai > Organization settings > API).
-2. Copy it, then in HelCLI run `usage -key`. It reads the key from the clipboard, so it never shows on
+   `usage -link` in HelCLI opens that page for you.
+2. Copy it and go back to HelCLI, which picks it up from the clipboard (or run `usage -key`). It never shows on
    screen or in your command history, and clears the clipboard. The key is kept in HelCLI's private
    storage, never in the config files, so `git pull` and theme sharing can't expose it.
 3. Optional: `usage -budget 50` sets a monthly budget, to show a percentage.

@@ -8,6 +8,8 @@ import android.os.Build;
 
 import ohi.andre.consolelauncher.R;
 import ohi.andre.consolelauncher.commands.main.specific.SimpleParamCommand;
+import ohi.andre.consolelauncher.managers.ask.AskKey;
+import ohi.andre.consolelauncher.managers.claude.KeyLink;
 import ohi.andre.consolelauncher.commands.ExecutePack;
 import ohi.andre.consolelauncher.managers.xml.XMLPrefsManager;
 import ohi.andre.consolelauncher.managers.xml.options.Behavior;
@@ -19,12 +21,13 @@ import ohi.andre.consolelauncher.tuils.Tuils;
  */
 public class ask extends SimpleParamCommand {
 
-    private static final String PREFS = "helcli_ask", KEY = "api_key", WARNED = "warned";
+    private static final String PREFS = "helcli_ask", WARNED = "warned";
 
     public ask() {
+        option("link", (pack, t) -> KeyLink.start(pack.context, KeyLink.Kind.API));
         option("key", (pack, t) -> saveKey(pack.context));
         option("forget", (pack, t) -> {
-            prefs(pack.context).edit().remove(KEY).apply();
+            AskKey.forget(pack.context);
             return "Deleted the Claude API key from HelCLI";
         });
         option("new", (pack, t) -> {
@@ -51,9 +54,9 @@ public class ask extends SimpleParamCommand {
 //        the SDK's JSON library needs Android 8
         if (Build.VERSION.SDK_INT < 26) return "ask needs Android 8 or later";
 
-        final String key = prefs(c).getString(KEY, null);
+        final String key = AskKey.get(c);
         if (key == null) {
-            return "ask needs a Claude API key. Create one at platform.claude.com/settings/keys, copy it, then run: ask -key";
+            return "ask needs a Claude API key. Run ask -link to make one in the Claude Console and link it.";
         }
 
         final String model = XMLPrefsManager.get(Behavior.ask_model).trim();
@@ -81,10 +84,10 @@ public class ask extends SimpleParamCommand {
         String key = clip != null && clip.getItemCount() > 0 && clip.getItemAt(0).getText() != null
                 ? clip.getItemAt(0).getText().toString().trim() : null;
 
-        if (key == null || !key.matches("sk-ant-api\\d+-[A-Za-z0-9_-]{20,}")) {
-            return "Copy your Claude API key (sk-ant-api03-...) first, then run ask -key again. Create one at platform.claude.com/settings/keys";
+        if (!AskKey.looksLikeApiKey(key)) {
+            return "Copy your Claude API key (sk-ant-api03-...) first, then run ask -key again. Or run ask -link to make one.";
         }
-        prefs(c).edit().putString(KEY, key).apply();
+        AskKey.save(c, key);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             try {
                 clipboard.clearPrimaryClip();
