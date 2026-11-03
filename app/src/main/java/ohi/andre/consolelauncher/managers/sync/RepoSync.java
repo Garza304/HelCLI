@@ -239,6 +239,15 @@ public class RepoSync {
             return ThemeSpec.isValidColor(value) ? null : "needs a color like #RRGGBB or #AARRGGBB (got \"" + value + "\")";
         }
         if (XMLPrefsSave.INTEGER.equals(type)) {
+//            line order settings (ram_index, ...) can be decimals: 1.1 sits after 1.0 on the same line
+            if (option.label().endsWith("_index")) {
+                try {
+                    Float.parseFloat(value.trim());
+                    return null;
+                } catch (NumberFormatException e) {
+                    return "needs a number (got \"" + value + "\")";
+                }
+            }
             try {
                 Integer.parseInt(value.trim());
                 return null;

@@ -971,6 +971,86 @@ public enum Ui implements XMLPrefsSave {
         public String info() {
             return "[horizontal_margin],[vertical_margin],[horizontal_padding],[vertical_padding]";
         }
+    },
+    show_claude {
+        @Override
+        public String defaultValue() {
+            return "false";
+        }
+
+        @Override
+        public String info() {
+            return "If true, a line shows your Claude usage: plan limits and/or API spend (see the usage command)";
+        }
+
+        @Override
+        public String type() {
+            return XMLPrefsSave.BOOLEAN;
+        }
+    },
+    claude_index {
+        @Override
+        public String defaultValue() {
+            return "7.5";
+        }
+
+        @Override
+        public String info() {
+            return "This is used to order the labels on top of the screen";
+        }
+
+        @Override
+        public String type() {
+            return XMLPrefsSave.INTEGER;
+        }
+    },
+    claude_size {
+        @Override
+        public String defaultValue() {
+            return "13";
+        }
+
+        @Override
+        public String info() {
+            return "Claude usage size";
+        }
+
+        @Override
+        public String type() {
+            return XMLPrefsSave.INTEGER;
+        }
+    },
+    status_lines_gap {
+        @Override
+        public String defaultValue() {
+            return "  ";
+        }
+
+        @Override
+        public String info() {
+            return "The space added between items that share a line at the top of the screen (empty = none)";
+        }
+
+        @Override
+        public String type() {
+            return XMLPrefsSave.TEXT;
+        }
+    },
+    bar_style {
+        @Override
+        public String defaultValue() {
+            return "[\u2588\u2591]";
+        }
+
+        @Override
+        public String info() {
+            return "The characters of %bar loading bars: left end, filled, empty, right end (\"[#-]\"), or just filled and empty (\"\u2588\u2591\")";
+        }
+
+        @Override
+        public String type() {
+            return XMLPrefsSave.TEXT;
+        }
     };
 
     @Override

@@ -327,7 +327,7 @@ public enum Behavior implements XMLPrefsSave {
 
         @Override
         public String info() {
-            return "Define the RAM format";
+            return "Define the RAM format. %bar draws a bar of RAM in use that fills the rest of the line (%bar:20 = 20 characters wide)";
         }
 
         @Override
@@ -343,7 +343,7 @@ public enum Behavior implements XMLPrefsSave {
 
         @Override
         public String info() {
-            return "Define the battery format";
+            return "Define the battery format. %bar draws a battery level bar that fills the rest of the line (%bar:20 = 20 characters wide)";
         }
 
         @Override
@@ -359,7 +359,7 @@ public enum Behavior implements XMLPrefsSave {
 
         @Override
         public String info() {
-            return "Define the storage format";
+            return "Define the storage format. %bar draws a bar of internal storage in use, %ebar of external storage; they fill the rest of the line (%bar:20 = 20 characters wide)";
         }
 
         @Override
@@ -1219,6 +1219,70 @@ public enum Behavior implements XMLPrefsSave {
         @Override
         public String type() {
             return XMLPrefsSave.BOOLEAN;
+        }
+    },
+    claude_format {
+        @Override
+        public String defaultValue() {
+            return "";
+        }
+
+        @Override
+        public String info() {
+            return "The Claude usage line. Empty = automatic. Codes: %5h %7d (plan used %), %5hreset %7dreset (reset times), %spent %budget %api (API spend this month in dollars, budget, % of budget), %updated (age of the plan numbers). Bars: %5hbar %7dbar %apibar, or %bar for the highest; they fill the rest of the line (%bar:20 = 20 wide)";
+        }
+
+        @Override
+        public String type() {
+            return XMLPrefsSave.TEXT;
+        }
+    },
+    claude_plan_source {
+        @Override
+        public String defaultValue() {
+            return "";
+        }
+
+        @Override
+        public String info() {
+            return "Where your plan limits are published (a GitHub gist: user/gist_id). Set it up with tools/claude-usage in the HelCLI repo";
+        }
+
+        @Override
+        public String type() {
+            return XMLPrefsSave.TEXT;
+        }
+    },
+    claude_budget_usd {
+        @Override
+        public String defaultValue() {
+            return "0";
+        }
+
+        @Override
+        public String info() {
+            return "Your monthly Claude API budget in dollars, for %api. 0 = show the amount spent only";
+        }
+
+        @Override
+        public String type() {
+            return XMLPrefsSave.TEXT;
+        }
+    },
+    claude_update_time {
+        @Override
+        public String defaultValue() {
+            return "600";
+        }
+
+        @Override
+        public String info() {
+            return "How often the Claude usage line is updated, in seconds (at least 300)";
+        }
+
+        @Override
+        public String type() {
+            return XMLPrefsSave.INTEGER;
         }
     };
 

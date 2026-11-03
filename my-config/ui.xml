@@ -14,4 +14,14 @@
     <!-- <show_enter_button value="true"/> -->
     <!-- <statusbar_light_icons value="true"/> -->
     <!-- <display_margin_mm value="0,0,0,0"/> -->
+
+    <!-- Space between items that share a line (empty = none), and the characters of %bar loading bars:
+         left end, filled, empty, right end. Other ideas: [#-]  |=.|  [▓░] -->
+    <!-- <status_lines_gap value="  "/> -->
+    <!-- <bar_style value="[█░]"/> -->
+
+    <!-- The Claude usage line (see tools/claude-usage/README.md) -->
+    <!-- <show_claude value="true"/> -->
+    <!-- <claude_index value="7.5"/> -->
+    <!-- <claude_size value="13"/> -->
 </UI>

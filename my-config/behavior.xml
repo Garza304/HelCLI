@@ -8,16 +8,19 @@
     <!-- Device name line: %d = device name, %u = username -->
     <!-- <device_format value="%d: %u"/> -->
 
-    <!-- RAM -->
+    <!-- RAM. %bar draws a bar of RAM in use that fills the rest of the line; %bar:20 is 20 characters wide. -->
     <!-- <ram_format value="Available RAM: %avgb GB of %totgb GB (%av%%)"/> -->
+    <!-- <ram_format value="RAM %bar"/> -->
 
     <!-- Battery, and the levels (in %) where its color changes to medium and low -->
     <!-- <battery_format value="%(Charging: /)%v%"/> -->
+    <!-- <battery_format value="Battery %v% %bar"/> -->
     <!-- <battery_medium value="50"/> -->
     <!-- <battery_low value="15"/> -->
 
-    <!-- Storage -->
+    <!-- Storage. %bar = internal storage in use, %ebar = external. -->
     <!-- <storage_format value="Internal Storage: %iavgb GB / %itotgb GB (%iav%%)"/> -->
+    <!-- <storage_format value="Storage %bar"/> -->
 
     <!-- WiFi / mobile data, and how often it refreshes (milliseconds) -->
     <!-- <network_info_format value="%(WiFi - %wn/%[Mobile Data: %d3/No Internet access])"/> -->
@@ -28,6 +31,16 @@
     <!-- <weather_format value="Weather: %main, Temp: %temp"/> -->
     <!-- <weather_location value="San Antonio, Texas"/> -->
     <!-- <weather_temperature_measure value="imperial"/> -->
+
+    <!-- Claude usage (turn it on with show_claude in ui.xml; see tools/claude-usage/README.md).
+         Format codes: %5h %7d plan used %, %5hreset %7dreset reset times, %updated age of the plan numbers,
+         %spent %budget %api API dollars this month, budget, % of budget. Empty format = automatic.
+         Bars: %5hbar %7dbar %apibar, or %bar for the highest. -->
+    <!-- <claude_format value="Claude %5h% (resets %5hreset) · week %7d%"/> -->
+    <!-- <claude_format value="Claude 5h %5h% %5hbar"/> -->
+    <!-- <claude_plan_source value="yourname/gist_id"/> -->
+    <!-- <claude_budget_usd value="50"/> -->
+    <!-- <claude_update_time value="600"/> -->
 
     <!-- The line under the output when the input is empty: %u = username, %d = device, %p = folder -->
     <!-- <session_info_format value="%u@%d:%p"/> -->

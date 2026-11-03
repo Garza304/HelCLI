@@ -76,6 +76,11 @@ import ohi.andre.consolelauncher.tuils.AllowEqualsSequence;
 import ohi.andre.consolelauncher.tuils.NetworkUtils;
 import ohi.andre.consolelauncher.tuils.OutlineEditText;
 import ohi.andre.consolelauncher.tuils.OutlineTextView;
+import ohi.andre.consolelauncher.tuils.StatusBars;
+import android.text.SpannableStringBuilder;
+import android.text.TextPaint;
+import android.text.style.AbsoluteSizeSpan;
+import ohi.andre.consolelauncher.managers.claude.ClaudeUsageUpdater;
 import ohi.andre.consolelauncher.managers.weather.OpenMeteo;
 import ohi.andre.consolelauncher.tuils.Tuils;
 import ohi.andre.consolelauncher.tuils.interfaces.CommandExecuter;
@@ -109,7 +114,8 @@ public class UIManager implements OnTouchListener {
         network,
         notes,
         weather,
-        unlock
+        unlock,
+        claude
     }
 
     private final int RAM_DELAY = 3000;
@@ -228,6 +234,7 @@ public class UIManager implements OnTouchListener {
                 cp = cp.replace(m.group(0), m.groupCount() == 2 ? m.group(charging ? 1 : 2) : Tuils.EMPTYSTRING);
             }
 
+            cp = StatusBars.replaceCode(cp, "bar", percentage);
             cp = value.matcher(cp).replaceAll(String.valueOf(percentage));
             cp = Tuils.patternNewline.matcher(cp).replaceAll(Tuils.NEWLINE);
 
@@ -337,6 +344,8 @@ public class UIManager implements OnTouchListener {
             copy = storagePatterns.get(20).matcher(copy).replaceAll(Matcher.quoteReplacement(String.valueOf(Tuils.formatSize((long) etot, Tuils.KILO))));
             copy = storagePatterns.get(21).matcher(copy).replaceAll(Matcher.quoteReplacement(String.valueOf(Tuils.formatSize((long) etot, Tuils.BYTE))));
 
+            copy = StatusBars.replaceCode(copy, "ebar", etot > 0 ? 100 - (eav * 100 / etot) : Double.NaN);
+            copy = StatusBars.replaceCode(copy, "bar", itot > 0 ? 100 - (iav * 100 / itot) : Double.NaN);
             copy = storagePatterns.get(22).matcher(copy).replaceAll(Matcher.quoteReplacement(Tuils.NEWLINE));
 
             copy = storagePatterns.get(23).matcher(copy).replaceAll(Matcher.quoteReplacement(String.valueOf(Tuils.formatSize((long) iav, Tuils.GIGA))));
@@ -425,6 +434,7 @@ public class UIManager implements OnTouchListener {
             copy = ramPatterns.get(10).matcher(copy).replaceAll(Matcher.quoteReplacement(String.valueOf(Tuils.formatSize((long) tot, Tuils.BYTE))));
 
             copy = ramPatterns.get(11).matcher(copy).replaceAll(Matcher.quoteReplacement(Tuils.NEWLINE));
+            copy = StatusBars.replaceCode(copy, "bar", tot > 0 ? 100 - (av * 100 / tot) : Double.NaN);
 
             updateText(Label.ram, Tuils.span(mContext, copy, color, labelSizes[Label.ram.ordinal()]));
 
@@ -703,8 +713,14 @@ public class UIManager implements OnTouchListener {
 //    you need to use labelIndexes[i]
     private void updateText(Label l, CharSequence s) {
         labelTexts[l.ordinal()] = s;
+        renderLine((int) labelIndexes[l.ordinal()]);
+    }
 
-        int base = (int) labelIndexes[l.ordinal()];
+    private String statusLinesGap = "  ", barStyle = StatusBars.DEFAULT_STYLE;
+
+//    puts together every item on one line at the top of the screen, with a gap between items, then draws any %bar
+    private void renderLine(int base) {
+        if(base < 0 || base >= labelViews.length || labelViews[base] == null) return;
 
         List<Float> indexs = new ArrayList<>();
         for(int count = 0; count < Label.values().length; count++) {
@@ -713,24 +729,56 @@ public class UIManager implements OnTouchListener {
 //        now I'm sorting the labels on the same line for decimals (2.1, 2.0, ...)
         Collections.sort(indexs);
 
-        CharSequence sequence = Tuils.EMPTYSTRING;
+        SpannableStringBuilder sequence = new SpannableStringBuilder();
 
         for(int c = 0; c < indexs.size(); c++) {
             float i = indexs.get(c);
 
             for(int a = 0; a < Label.values().length; a++) {
-                if(i == labelIndexes[a] && labelTexts[a] != null) sequence = TextUtils.concat(sequence, labelTexts[a]);
+                if(i == labelIndexes[a] && labelTexts[a] != null && labelTexts[a].length() > 0) {
+                    sequence.append(StatusBars.gapBetween(sequence, labelTexts[a], statusLinesGap));
+                    sequence.append(labelTexts[a]);
+                }
             }
         }
 
-        if(sequence.length() == 0) labelViews[base].setVisibility(View.GONE);
-        else {
-            labelViews[base].setVisibility(View.VISIBLE);
-            labelViews[base].setText(sequence);
+        TextView view = labelViews[base];
+        if(sequence.length() == 0) {
+            view.setVisibility(View.GONE);
+            return;
+        }
+
+        if(StatusBars.hasMarkers(sequence)) drawBars(view, sequence);
+
+        view.setVisibility(View.VISIBLE);
+        view.setText(sequence);
+    }
+
+//    turns %bar markers into bars as wide as the line allows
+    private void drawBars(TextView view, SpannableStringBuilder sequence) {
+        int widthChars = 0;
+        int width = view.getWidth() - view.getTotalPaddingLeft() - view.getTotalPaddingRight();
+        if(width > 0) {
+            TextPaint paint = new TextPaint(view.getPaint());
+//            measure at the size of the text the first bar belongs to (every label sets its own size)
+            int markerAt = TextUtils.indexOf(sequence, StatusBars.START);
+            AbsoluteSizeSpan[] sizes = markerAt >= 0 ? sequence.getSpans(markerAt, markerAt + 1, AbsoluteSizeSpan.class) : null;
+            if(sizes != null && sizes.length > 0) paint.setTextSize(sizes[sizes.length - 1].getSize());
+            float charWidth = paint.measureText("0");
+//            one character spare, so a full line never wraps
+            if(charWidth > 0) widthChars = (int) (width / charWidth) - 1;
+        }
+
+        List<StatusBars.Replacement> replacements = StatusBars.layout(sequence, widthChars, barStyle);
+        for(int i = replacements.size() - 1; i >= 0; i--) {
+            StatusBars.Replacement r = replacements.get(i);
+            sequence.replace(r.start, r.end, r.bar);
         }
     }
 
     private SuggestionsManager suggestionsManager;
+
+    private ClaudeUsageUpdater claudeUpdater;
 
     private TextView terminalView;
 
@@ -757,6 +805,7 @@ public class UIManager implements OnTouchListener {
         filter.addAction(ACTION_WEATHER_GOT_LOCATION);
         filter.addAction(ACTION_WEATHER_DELAY);
         filter.addAction(ACTION_WEATHER_MANUAL_UPDATE);
+        filter.addAction(ClaudeUsageUpdater.ACTION_UPDATE);
 
         receiver = new BroadcastReceiver() {
             @Override
@@ -845,6 +894,8 @@ public class UIManager implements OnTouchListener {
                         handler.removeCallbacks(weatherRunnable);
                         handler.postDelayed(weatherRunnable, 1000 * 60);
                     }
+                } else if(action.equals(ClaudeUsageUpdater.ACTION_UPDATE)) {
+                    if(claudeUpdater != null) claudeUpdater.refresh();
                 } else if(action.equals(ACTION_WEATHER_MANUAL_UPDATE)) {
                     if (weatherRunnable != null) {
                         handler.removeCallbacks(weatherRunnable);
@@ -972,6 +1023,7 @@ public class UIManager implements OnTouchListener {
         labelSizes[Label.device.ordinal()] = XMLPrefsManager.getInt(Ui.device_size);
         labelSizes[Label.weather.ordinal()] = XMLPrefsManager.getInt(Ui.weather_size);
         labelSizes[Label.unlock.ordinal()] = XMLPrefsManager.getInt(Ui.unlock_size);
+        labelSizes[Label.claude.ordinal()] = XMLPrefsManager.getInt(Ui.claude_size);
 
         labelViews = new TextView[] {
                 (TextView) rootView.findViewById(R.id.tv0),
@@ -995,6 +1047,7 @@ public class UIManager implements OnTouchListener {
         show[Label.storage.ordinal()] = XMLPrefsManager.getBoolean(Ui.show_storage_info);
         show[Label.weather.ordinal()] = XMLPrefsManager.getBoolean(Ui.show_weather);
         show[Label.unlock.ordinal()] = XMLPrefsManager.getBoolean(Ui.show_unlock_counter);
+        show[Label.claude.ordinal()] = XMLPrefsManager.getBoolean(Ui.show_claude);
 
         float[] indexes = new float[Label.values().length];
         indexes[Label.notes.ordinal()] = show[Label.notes.ordinal()] ? XMLPrefsManager.getFloat(Ui.notes_index) : Integer.MAX_VALUE;
@@ -1006,6 +1059,7 @@ public class UIManager implements OnTouchListener {
         indexes[Label.storage.ordinal()] = show[Label.storage.ordinal()] ? XMLPrefsManager.getFloat(Ui.storage_index) : Integer.MAX_VALUE;
         indexes[Label.weather.ordinal()] = show[Label.weather.ordinal()] ? XMLPrefsManager.getFloat(Ui.weather_index) : Integer.MAX_VALUE;
         indexes[Label.unlock.ordinal()] = show[Label.unlock.ordinal()] ? XMLPrefsManager.getFloat(Ui.unlock_index) : Integer.MAX_VALUE;
+        indexes[Label.claude.ordinal()] = show[Label.claude.ordinal()] ? XMLPrefsManager.getFloat(Ui.claude_index) : Integer.MAX_VALUE;
 
         int[] statusLineAlignments = getListOfIntValues(XMLPrefsManager.get(Ui.status_lines_alignment), 9, -1);
 
@@ -1071,7 +1125,13 @@ public class UIManager implements OnTouchListener {
         margins[4] = getListOfIntValues(XMLPrefsManager.get(Ui.toolbar_margins), 4, 0);
         margins[5] = getListOfIntValues(XMLPrefsManager.get(Ui.suggestions_area_margin), 4, 0);
 
+        statusLinesGap = XMLPrefsManager.get(Ui.status_lines_gap);
+        if(statusLinesGap == null) statusLinesGap = Tuils.EMPTYSTRING;
+        barStyle = XMLPrefsManager.get(Ui.bar_style);
+
         AllowEqualsSequence sequence = new AllowEqualsSequence(indexes, Label.values());
+//        there are more labels than lines on screen: extra lines join the last one instead of disappearing
+        sequence.limitKeys(labelViews.length - 1);
 
         LinearLayout lViewsParent = (LinearLayout) labelViews[0].getParent();
 
@@ -1093,6 +1153,12 @@ public class UIManager implements OnTouchListener {
 
             if(count >= sequence.getMinKey() && count <= sequence.getMaxKey() && os.length > 0) {
                 labelViews[count].setTypeface(Tuils.getTypeface(context));
+
+//                bars fill the rest of the line, so draw them again when the line's width is known or changes
+                final int line = count;
+                labelViews[count].addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
+                    if(right - left != oldRight - oldLeft && handler != null) handler.post(() -> renderLine(line));
+                });
 
                 int ec = effectiveCount++;
 
@@ -1206,6 +1272,18 @@ public class UIManager implements OnTouchListener {
             if(weatherRunnable.fixedLocation()) handler.post(weatherRunnable);
 
             showWeatherUpdate = XMLPrefsManager.getBoolean(Behavior.show_weather_updates);
+        }
+
+        if(show[Label.claude.ordinal()]) {
+            final int claudeColor = XMLPrefsManager.getColor(Theme.claude_color);
+            final int warningColor = XMLPrefsManager.getColor(Theme.battery_color_low);
+            claudeUpdater = new ClaudeUsageUpdater(mContext, mainPack.client, handler, (line, highest) -> {
+                if (handler == null) return;
+                int color = highest >= 90 ? warningColor : claudeColor;
+                updateText(Label.claude, Tuils.span(mContext, line, color, labelSizes[Label.claude.ordinal()]));
+            });
+            updateText(Label.claude, Tuils.span(mContext, "Claude usage: loading...", claudeColor, labelSizes[Label.claude.ordinal()]));
+            claudeUpdater.start();
         }
 
         if(show[Label.unlock.ordinal()]) {
@@ -1427,6 +1505,11 @@ public class UIManager implements OnTouchListener {
     }
 
     public void dispose() {
+        if(claudeUpdater != null) {
+            claudeUpdater.stop();
+            claudeUpdater = null;
+        }
+
         if(handler != null) {
             handler.removeCallbacksAndMessages(null);
             handler = null;

@@ -393,6 +393,17 @@
         \n-status -> show the remote and the last pull
         \n-undo -> put back the settings from before the last pull
         \n\nFiles it understands: theme.xml, ui.xml, behavior.xml, suggestions.xml, toolbar.xml, cmd.xml (only the settings they contain are changed), alias.txt, and themes/*.json</string>
+    <string name="help_usage">Show your Claude usage at the top of the home screen.
+        \n\nPlan limits (claude.ai Pro/Max): the 5-hour and weekly %. A small script on the computer where you use Claude Code publishes them; see tools/claude-usage in the HelCLI repo.
+        \nAPI spend: this month\'s Claude API cost, from Anthropic\'s usage and cost API (needs an Admin API key from an organization).
+        \n\n-show / -hide -> show or hide the line
+        \n-plan [user/gist_id] -> where your plan limits are published (-plan off to stop)
+        \n-key -> save the Admin API key you copied to the clipboard
+        \n-forget -> delete the saved Admin API key
+        \n-budget [dollars] -> monthly API budget, to show a % (0 = none)
+        \n-update -> refresh now
+        \n-status -> what\'s set up
+        \n\nChange the text with the claude_format setting (behavior.xml).</string>
     <string name="help_weather">Weather comes from Open-Meteo: free, and no key or account needed.
         \n\n-update -> update the weather now
         \n-enable -> show the weather
