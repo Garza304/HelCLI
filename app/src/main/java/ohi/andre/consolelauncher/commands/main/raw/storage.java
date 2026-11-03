@@ -25,7 +25,7 @@ import java.util.Locale;
 import java.util.UUID;
 
 import ohi.andre.consolelauncher.R;
-import ohi.andre.consolelauncher.commands.CommandAbstraction;
+import ohi.andre.consolelauncher.commands.main.specific.SimpleParamCommand;
 import ohi.andre.consolelauncher.commands.ExecutePack;
 import ohi.andre.consolelauncher.managers.sysinfo.Breakdown;
 import ohi.andre.consolelauncher.managers.xml.XMLPrefsManager;
@@ -37,21 +37,22 @@ import ohi.andre.consolelauncher.tuils.Tuils;
  * and the biggest apps.
  *
  *   storage            overview and the 5 biggest apps
- *   storage apps       the 20 biggest apps ("storage apps all" for every app)
- *   storage cache      apps with the most cache, which is safe to clear
- *   storage access     opens the settings page to give HelCLI Usage access
+ *   storage -apps      the 20 biggest apps ("storage -apps all" for every app)
+ *   storage -cache     apps with the most cache, which is safe to clear
+ *   storage -access    opens the settings page to give HelCLI Usage access
  *
  * Sizes of other apps and the media categories need Usage access (Android 8 and later).
  */
-public class storage implements CommandAbstraction {
+public class storage extends SimpleParamCommand {
 
-    @Override
-    public String exec(ExecutePack pack) {
-        return run(pack.context, pack.getString());
+    public storage() {
+        optionWithText("apps", (pack, t) -> run(pack.context, "apps " + t));
+        optionWithText("cache", (pack, t) -> run(pack.context, "cache " + t));
+        option("access", (pack, t) -> openUsageAccess(pack.context));
     }
 
     @Override
-    public String onNotArgEnough(ExecutePack pack, int nArgs) {
+    public String onEmpty(ExecutePack pack) {
         return run(pack.context, "");
     }
 
@@ -66,7 +67,7 @@ public class storage implements CommandAbstraction {
 
         final boolean access = hasUsageAccess(context);
         if (!view.equals("overview") && !access) {
-            return "HelCLI needs Usage access to see other apps' sizes. Run: storage access";
+            return "HelCLI needs Usage access to see other apps' sizes. Run: storage -access";
         }
 
 //        measuring every app can take a few seconds, so it runs in the background
@@ -193,7 +194,7 @@ public class storage implements CommandAbstraction {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             return "Per-app sizes need Android 8 or later";
         }
-        if (hasUsageAccess(context)) return "HelCLI already has Usage access. Try: storage apps";
+        if (hasUsageAccess(context)) return "HelCLI already has Usage access. Try: storage -apps";
 
         Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -213,10 +214,6 @@ public class storage implements CommandAbstraction {
                 + "It lets HelCLI read app sizes and app usage. HelCLI doesn't send it anywhere.";
     }
 
-    @Override
-    public int[] argType() {
-        return new int[] {CommandAbstraction.PLAIN_TEXT};
-    }
 
     @Override
     public int priority() {
@@ -228,8 +225,4 @@ public class storage implements CommandAbstraction {
         return R.string.help_storage;
     }
 
-    @Override
-    public String onArgNotFound(ExecutePack info, int index) {
-        return null;
-    }
 }

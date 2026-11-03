@@ -7,7 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 
 import ohi.andre.consolelauncher.R;
-import ohi.andre.consolelauncher.commands.CommandAbstraction;
+import ohi.andre.consolelauncher.commands.main.specific.SimpleParamCommand;
 import ohi.andre.consolelauncher.commands.ExecutePack;
 import ohi.andre.consolelauncher.managers.xml.XMLPrefsManager;
 import ohi.andre.consolelauncher.managers.xml.options.Behavior;
@@ -17,25 +17,36 @@ import ohi.andre.consolelauncher.tuils.Tuils;
  * ask [question]: an answer from Claude, in the terminal. Needs a Claude API key (ask -key);
  * each question costs a little on that account.
  */
-public class ask implements CommandAbstraction {
+public class ask extends SimpleParamCommand {
 
     private static final String PREFS = "helcli_ask", KEY = "api_key", WARNED = "warned";
 
-    @Override
-    public String exec(ExecutePack pack) {
-        final Context c = pack.context;
-        String input = pack.getString().trim();
-        String lower = input.toLowerCase();
-
-        if (lower.equals("-key") || lower.equals("key")) return saveKey(c);
-        if (lower.equals("-forget")) {
-            prefs(c).edit().remove(KEY).apply();
+    public ask() {
+        option("key", (pack, t) -> saveKey(pack.context));
+        option("forget", (pack, t) -> {
+            prefs(pack.context).edit().remove(KEY).apply();
             return "Deleted the Claude API key from HelCLI";
-        }
-        if (lower.equals("-new") || lower.equals("new")) {
+        });
+        option("new", (pack, t) -> {
             if (Build.VERSION.SDK_INT >= 26) ohi.andre.consolelauncher.managers.ask.AskClaude.forgetConversation();
             return "Started a new conversation";
-        }
+        });
+    }
+
+//    the question is free text, so only "-words" are options ("ask new ideas?" is a question)
+    @Override
+    public boolean paramsNeedDash() {
+        return true;
+    }
+
+    @Override
+    public boolean takesText() {
+        return true;
+    }
+
+    @Override
+    public String onText(ExecutePack pack, String input) {
+        final Context c = pack.context;
 
 //        the SDK's JSON library needs Android 8
         if (Build.VERSION.SDK_INT < 26) return "ask needs Android 8 or later";
@@ -57,11 +68,6 @@ public class ask implements CommandAbstraction {
 
         new Thread(() -> Tuils.sendOutput(c, ohi.andre.consolelauncher.managers.ask.AskClaude.ask(key, model, effort, question))).start();
         return "Asking Claude..." + note;
-    }
-
-    @Override
-    public String onNotArgEnough(ExecutePack pack, int nArgs) {
-        return pack.context.getString(R.string.help_ask);
     }
 
     private static SharedPreferences prefs(Context c) {
@@ -90,10 +96,6 @@ public class ask implements CommandAbstraction {
                 + Tuils.NEWLINE + "Try: ask what's a good name for a terminal launcher?";
     }
 
-    @Override
-    public int[] argType() {
-        return new int[] {CommandAbstraction.PLAIN_TEXT};
-    }
 
     @Override
     public int priority() {
@@ -105,8 +107,4 @@ public class ask implements CommandAbstraction {
         return R.string.help_ask;
     }
 
-    @Override
-    public String onArgNotFound(ExecutePack info, int index) {
-        return null;
-    }
 }

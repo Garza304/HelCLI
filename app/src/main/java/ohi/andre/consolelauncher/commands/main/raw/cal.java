@@ -22,7 +22,7 @@ import java.util.TimeZone;
 
 import ohi.andre.consolelauncher.LauncherActivity;
 import ohi.andre.consolelauncher.R;
-import ohi.andre.consolelauncher.commands.CommandAbstraction;
+import ohi.andre.consolelauncher.commands.main.specific.SimpleParamCommand;
 import ohi.andre.consolelauncher.commands.ExecutePack;
 import ohi.andre.consolelauncher.managers.TerminalManager;
 import ohi.andre.consolelauncher.managers.sysinfo.Layouts;
@@ -33,19 +33,31 @@ import ohi.andre.consolelauncher.tuils.Tuils;
 /**
  * Calendar agenda from every calendar on the phone.
  *   cal            today and the next 6 days
- *   cal today      just today        cal tomorrow
- *   cal 14         the next 14 days (up to 60)
+ *   cal -today     just today        cal -tomorrow
+ *   cal -days 14   the next 14 days (up to 60; "cal 14" works too)
  */
-public class cal implements CommandAbstraction {
+public class cal extends SimpleParamCommand {
 
-    @Override
-    public String exec(ExecutePack pack) {
-        return run(pack.context, pack.getString());
+    public cal() {
+        option("today", (pack, t) -> run(pack.context, "today"));
+        option("tomorrow", (pack, t) -> run(pack.context, "tomorrow"));
+        optionWithText("days", (pack, t) -> run(pack.context, t.length() == 0 ? "7" : t));
     }
 
     @Override
-    public String onNotArgEnough(ExecutePack pack, int nArgs) {
+    public String onEmpty(ExecutePack pack) {
         return run(pack.context, "");
+    }
+
+//    "cal 14" still works: a number is how many days
+    @Override
+    public boolean takesText() {
+        return true;
+    }
+
+    @Override
+    public String onText(ExecutePack pack, String text) {
+        return run(pack.context, text);
     }
 
     private static String run(Context context, String arg) {
@@ -56,7 +68,7 @@ public class cal implements CommandAbstraction {
             return "HelCLI needs to read your calendar. Allow it, then run cal again.";
         }
 
-        String a = arg == null ? "" : arg.trim().toLowerCase(Locale.ROOT);
+        String a = arg == null ? "" : arg.trim().toLowerCase(Locale.ROOT).replaceAll("^-+", "");
         long now = System.currentTimeMillis();
         int days = 7, skip = 0;
         if (a.equals("today")) days = 1;
@@ -120,10 +132,6 @@ public class cal implements CommandAbstraction {
         return out;
     }
 
-    @Override
-    public int[] argType() {
-        return new int[] {CommandAbstraction.PLAIN_TEXT};
-    }
 
     @Override
     public int priority() {
@@ -135,8 +143,4 @@ public class cal implements CommandAbstraction {
         return R.string.help_cal;
     }
 
-    @Override
-    public String onArgNotFound(ExecutePack info, int index) {
-        return null;
-    }
 }

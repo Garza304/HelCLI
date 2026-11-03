@@ -404,6 +404,8 @@ public class CommandTuils {
         }
 
         String param = input.substring(0, indexOfFirstSpace).trim();
+//        commands that take free text only read a word as a param when it starts with "-"
+        if(!param.startsWith("-") && cmd.paramsNeedDash()) return new ArgInfo(null, input, false, 0);
         if(!param.startsWith("-")) param = "-".concat(param);
 
         SimpleMutableEntry<Boolean, Param> sm = cmd.getParam(pack, param);

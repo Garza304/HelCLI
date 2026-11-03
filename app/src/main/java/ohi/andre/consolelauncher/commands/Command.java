@@ -17,11 +17,15 @@ public class Command {
         info.set(mArgs);
 
         if(cmd instanceof ParamCommand) {
+            ParamCommand pCmd = (ParamCommand) cmd;
+
             if(indexNotFound == 0) {
-                return info.context.getString(R.string.output_invalid_param) + Tuils.SPACE + mArgs[0];
+                String text = mArgs != null && mArgs.length > 0 && mArgs[0] != null ? mArgs[0].toString().trim() : Tuils.EMPTYSTRING;
+                if(text.length() == 0) return pCmd.onEmpty(info);
+                if(pCmd.takesText()) return pCmd.onText(info, text);
+                return info.context.getString(R.string.output_invalid_param) + Tuils.SPACE + text;
             }
 
-            ParamCommand pCmd = (ParamCommand) cmd;
             Param param = (Param) mArgs[0];
 
             int[] args = param.args();

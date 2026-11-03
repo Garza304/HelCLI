@@ -411,22 +411,22 @@
     <string name="help_storage">A breakdown of storage: apps, images, videos, audio, other files, system, free space, and SD cards.
         \n\nUsage:
         \n$ storage -> overview and the 5 biggest apps
-        \n$ storage apps -> the 20 biggest apps (storage apps all: every app)
-        \n$ storage cache -> apps with the most cache, which is safe to clear (storage cache all: every app)
-        \n$ storage access -> give HelCLI Usage access, which Android needs for app sizes and the image/video/audio split</string>
+        \n$ storage -apps -> the 20 biggest apps (storage -apps all: every app)
+        \n$ storage -cache -> apps with the most cache, which is safe to clear (storage -cache all: every app)
+        \n$ storage -access -> give HelCLI Usage access, which Android needs for app sizes and the image/video/audio split</string>
     <string name="help_sysinfo">A summary of the phone, neofetch style: Android version, model, uptime, theme, CPU, RAM, storage and battery, with the theme\'s colors.
         \n\nUsage:
         \n$ sysinfo</string>
     <string name="help_cal">Your calendar agenda, from every calendar on the phone. Asks for calendar access the first time.
         \n\nUsage:
         \n$ cal -> today and the next 6 days
-        \n$ cal today
-        \n$ cal tomorrow
-        \n$ cal 14 -> the next 14 days (up to 60)</string>
+        \n$ cal -today
+        \n$ cal -tomorrow
+        \n$ cal -days 14 -> the next 14 days (up to 60; cal 14 works too)</string>
     <string name="help_ip">Network details: WiFi or mobile, signal, addresses, gateway, DNS, and whether the internet is working.
         \n\nUsage:
         \n$ ip
-        \n$ ip public -> the address the internet sees (asks api.ipify.org)</string>
+        \n$ ip -public -> the address the internet sees (asks api.ipify.org)</string>
     <string name="help_ping">Checks whether a host answers, and how fast.
         \n\nUsage:
         \n$ ping -> checks your router, then the internet (finds out whether a problem is the WiFi or beyond)
@@ -439,10 +439,10 @@
         \n$ at 22:00 theme -apply oled -> today at 22:00 (tomorrow if that\'s passed)
         \n$ at 7:30pm flash, at 7pm ... -> 12-hour times work too
         \n$ at +30m vibrate 500, at 2h ..., at 1h30m ... -> from now
-        \n$ at daily 7am cal today -> every day
-        \n$ at -> list the jobs
-        \n$ at cancel [number] -> cancel one; at clear -> cancel all
-        \n$ at exact -> let jobs run on time (Android 12+)</string>
+        \n$ at daily 7am cal -today -> every day
+        \n$ at -list (or just at) -> list the jobs
+        \n$ at -cancel [number] -> cancel one; at -clear -> cancel all
+        \n$ at -exact -> let jobs run on time (Android 12+)</string>
     <string name="help_qr">Draws a QR code you can scan with another phone\'s camera.
         \n\nUsage:
         \n$ qr [text] -> e.g. qr https://github.com/Garza304/HelCLI
@@ -459,14 +459,14 @@
     <string name="help_reset">Puts every setting back to HelCLI\'s defaults: the theme, the layout, text and colors at the top of the screen, suggestions and the toolbar.
         \n\nUsage:
         \n$ reset -> what it does and what it keeps
-        \n$ reset now -> reset everything and restart HelCLI
-        \n$ reset undo -> put back the settings from before the reset
+        \n$ reset -now -> reset everything and restart HelCLI
+        \n$ reset -undo -> put back the settings from before the reset
         \n\nYour weather location and units, Claude usage setup, username, aliases, notes, apps and saved themes are kept. HelCLI saves every setting into its files the first time it runs, so after an update, reset is how to get the new defaults.</string>
     <string name="help_update">Updates HelCLI to the newest release on GitHub.
         \n\nUsage:
-        \n$ update -> check whether there\'s a newer version
-        \n$ update install -> download it, check it, and open the installer
-        \n$ update reinstall -> the same, even if you have the newest version
+        \n$ update (or update -check) -> check whether there\'s a newer version
+        \n$ update -install -> download it, check it, and open the installer
+        \n$ update -reinstall -> the same, even if you have the newest version
         \n\nBefore installing, HelCLI checks the download\'s size and checksum and that it\'s signed with the same key as yours. Your settings stay as they are. The first time, Android asks you to allow HelCLI to install apps.</string>
     <string name="help_weather">Weather comes from Open-Meteo: free, and no key or account needed.
         \n\n-update -> update the weather now

@@ -9,33 +9,52 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import ohi.andre.consolelauncher.R;
-import ohi.andre.consolelauncher.commands.CommandAbstraction;
+import ohi.andre.consolelauncher.commands.main.specific.SimpleParamCommand;
 import ohi.andre.consolelauncher.commands.ExecutePack;
 import ohi.andre.consolelauncher.managers.at.AtJobs;
 import ohi.andre.consolelauncher.managers.at.AtScheduler;
 import ohi.andre.consolelauncher.managers.status.StatusFormats;
 import ohi.andre.consolelauncher.tuils.Tuils;
 
-/** Runs a HelCLI command later: at 22:00 theme -apply oled, at +30m flash, at daily 7am cal today. */
-public class at implements CommandAbstraction {
+/** Runs a HelCLI command later: at 22:00 theme -apply oled, at +30m flash, at daily 7am cal -today. */
+public class at extends SimpleParamCommand {
 
-    @Override
-    public String exec(ExecutePack pack) {
-        String input = pack.getString().trim();
-        String lower = input.toLowerCase(Locale.ROOT).replaceAll("^-+", "");
-        boolean use24h = android.text.format.DateFormat.is24HourFormat(pack.context);
-
-        if (lower.equals("list")) return onNotArgEnough(pack, 0);
-        if (lower.matches("(cancel|rm) \\d+")) {
-            int id = Integer.parseInt(lower.replaceAll("\\D", ""));
-            return AtScheduler.cancel(pack.context, id) ? "Cancelled job " + id : "There's no job " + id + ". See them with: at";
-        }
-        if (lower.equals("clear")) {
+    public at() {
+        option("list", (pack, t) -> list(pack));
+        optionWithText("cancel", (pack, t) -> cancel(pack, t));
+        option("clear", (pack, t) -> {
             int n = AtScheduler.clear(pack.context);
             return "Cancelled " + n + (n == 1 ? " job" : " jobs");
-        }
+        });
+        option("exact", (pack, t) -> openExactSettings(pack));
+    }
+
+//    "at 22:00 theme -apply oled": the time and the command are free text, so only "-words" are options
+    @Override
+    public boolean paramsNeedDash() {
+        return true;
+    }
+
+    @Override
+    public boolean takesText() {
+        return true;
+    }
+
+    @Override
+    public String onEmpty(ExecutePack pack) {
+        return list(pack);
+    }
+
+    @Override
+    public String onText(ExecutePack pack, String input) {
+        String lower = input.toLowerCase(Locale.ROOT);
+//        the older forms without a dash still work
+        if (lower.equals("list")) return list(pack);
+        if (lower.matches("(cancel|rm) \\d+")) return cancel(pack, lower.replaceAll("\\D", ""));
+        if (lower.equals("clear")) return AtScheduler.clear(pack.context) + " jobs cancelled";
         if (lower.equals("exact")) return openExactSettings(pack);
 
+        boolean use24h = android.text.format.DateFormat.is24HourFormat(pack.context);
         AtJobs.Parsed p = AtJobs.parse(input, AtJobs.nextId(AtScheduler.jobs(pack.context)), System.currentTimeMillis(), TimeZone.getDefault());
         if (p.error != null) return p.error;
 
@@ -44,15 +63,20 @@ public class at implements CommandAbstraction {
         String out = "Job " + j.id + ": " + j.command + Tuils.NEWLINE + "runs at " + when + (j.daily ? " every day" : "")
                 + " (in " + StatusFormats.duration(j.at - System.currentTimeMillis()) + ")";
         if (!AtScheduler.exact(pack.context)) {
-            out += Tuils.NEWLINE + "It may run a few minutes late. To run on time: at exact";
+            out += Tuils.NEWLINE + "It may run a few minutes late. To run on time: at -exact";
         }
         return out;
     }
 
-    @Override
-    public String onNotArgEnough(ExecutePack pack, int nArgs) {
+    private static String list(ExecutePack pack) {
         return AtJobs.list(AtScheduler.jobs(pack.context), System.currentTimeMillis(), TimeZone.getDefault(),
                 android.text.format.DateFormat.is24HourFormat(pack.context));
+    }
+
+    private static String cancel(ExecutePack pack, String number) {
+        if (!number.matches("\\d+")) return "Which job? Like: at -cancel 2 (at -list shows the numbers)";
+        int id = Integer.parseInt(number);
+        return AtScheduler.cancel(pack.context, id) ? "Cancelled job " + id : "There's no job " + id + ". See them with: at -list";
     }
 
     private static String openExactSettings(ExecutePack pack) {
@@ -68,10 +92,6 @@ public class at implements CommandAbstraction {
         }
     }
 
-    @Override
-    public int[] argType() {
-        return new int[] {CommandAbstraction.PLAIN_TEXT};
-    }
 
     @Override
     public int priority() {
@@ -83,8 +103,4 @@ public class at implements CommandAbstraction {
         return R.string.help_at;
     }
 
-    @Override
-    public String onArgNotFound(ExecutePack info, int index) {
-        return null;
-    }
 }
