@@ -27,6 +27,14 @@ The [theme file format](#theme-file-format) is described at the end of this page
 
 ## Themes
 
+### Abyss
+
+`theme -apply abyss` · by HelCLI
+
+Bioluminescent teal and blue from the deep sea
+
+<img src="previews/abyss.svg" width="360" alt="Abyss theme preview">
+
 ### Amber CRT
 
 `theme -apply amber` · by HelCLI
@@ -34,6 +42,22 @@ The [theme file format](#theme-file-format) is described at the end of this page
 Warm monochrome, like an old amber monitor
 
 <img src="previews/amber.svg" width="360" alt="Amber CRT theme preview">
+
+### Aurora
+
+`theme -apply aurora` · by HelCLI
+
+Northern lights: green, teal and violet over a dark sky
+
+<img src="previews/aurora.svg" width="360" alt="Aurora theme preview">
+
+### Ayu Mirage
+
+`theme -apply ayu-mirage` · by after Ayu
+
+Bright, warm accents on slate blue
+
+<img src="previews/ayu-mirage.svg" width="360" alt="Ayu Mirage theme preview">
 
 ### Blue
 
@@ -51,6 +75,14 @@ Pure black and white, nothing else
 
 <img src="previews/bw.svg" width="360" alt="Black &amp; White theme preview">
 
+### Catppuccin Latte
+
+`theme -apply catppuccin-latte` · by after Catppuccin
+
+The light flavor of Catppuccin
+
+<img src="previews/catppuccin-latte.svg" width="360" alt="Catppuccin Latte theme preview">
+
 ### Catppuccin Mocha
 
 `theme -apply catppuccin-mocha` · by HelCLI
@@ -67,6 +99,14 @@ The original look: green prompt, white text, orange device name
 
 <img src="previews/classic.svg" width="360" alt="Classic theme preview">
 
+### Cotton Candy
+
+`theme -apply cotton-candy` · by HelCLI
+
+A treat: pink, blue and grape on spun sugar
+
+<img src="previews/cotton-candy.svg" width="360" alt="Cotton Candy theme preview">
+
 ### Cyberpunk
 
 `theme -apply cyberpunk` · by HelCLI
@@ -74,6 +114,14 @@ The original look: green prompt, white text, orange device name
 Neon yellow, cyan and red on a dark violet night
 
 <img src="previews/cyberpunk.svg" width="360" alt="Cyberpunk theme preview">
+
+### Deep Space
+
+`theme -apply deep-space` · by HelCLI
+
+Starlight white and nebula colors on true black
+
+<img src="previews/deep-space.svg" width="360" alt="Deep Space theme preview">
 
 ### Dracula
 
@@ -83,6 +131,30 @@ The dark purple palette loved by coders
 
 <img src="previews/dracula.svg" width="360" alt="Dracula theme preview">
 
+### Ember
+
+`theme -apply ember` · by HelCLI
+
+Glowing coals: orange, red and gold on charcoal
+
+<img src="previews/ember.svg" width="360" alt="Ember theme preview">
+
+### Espresso
+
+`theme -apply espresso` · by HelCLI
+
+Coffee browns and cream, with a little caramel
+
+<img src="previews/espresso.svg" width="360" alt="Espresso theme preview">
+
+### Everforest
+
+`theme -apply everforest` · by after Everforest
+
+Soft greens and earth tones, easy on the eyes
+
+<img src="previews/everforest.svg" width="360" alt="Everforest theme preview">
+
 ### Forest
 
 `theme -apply forest` · by HelCLI
@@ -90,6 +162,14 @@ The dark purple palette loved by coders
 Moss green and bark brown, calm and earthy
 
 <img src="previews/forest.svg" width="360" alt="Forest theme preview">
+
+### Graphite
+
+`theme -apply graphite` · by HelCLI
+
+Shades of gray with one mint accent
+
+<img src="previews/graphite.svg" width="360" alt="Graphite theme preview">
 
 ### Green
 
@@ -115,6 +195,38 @@ Maximum readability: white and yellow on black
 
 <img src="previews/high-contrast.svg" width="360" alt="High Contrast theme preview">
 
+### Kanagawa
+
+`theme -apply kanagawa` · by after Kanagawa
+
+Ink and woodblock colors from The Great Wave
+
+<img src="previews/kanagawa.svg" width="360" alt="Kanagawa theme preview">
+
+### Lemonade
+
+`theme -apply lemonade` · by HelCLI
+
+Fresh squeezed: citrus colors on pale yellow
+
+<img src="previews/lemonade.svg" width="360" alt="Lemonade theme preview">
+
+### Midnight Ink
+
+`theme -apply midnight` · by HelCLI
+
+Ink blue and silver on near-black
+
+<img src="previews/midnight.svg" width="360" alt="Midnight Ink theme preview">
+
+### Mint Chip
+
+`theme -apply mint-chip` · by HelCLI
+
+Mint ice cream with chocolate chips
+
+<img src="previews/mint-chip.svg" width="360" alt="Mint Chip theme preview">
+
 ### Monokai
 
 `theme -apply monokai` · by HelCLI
@@ -123,6 +235,14 @@ Bright pink, green and orange on charcoal
 
 <img src="previews/monokai.svg" width="360" alt="Monokai theme preview">
 
+### Night Owl
+
+`theme -apply night-owl` · by after Night Owl
+
+Made for coding late at night
+
+<img src="previews/night-owl.svg" width="360" alt="Night Owl theme preview">
+
 ### Nord
 
 `theme -apply nord` · by HelCLI
@@ -130,6 +250,14 @@ Bright pink, green and orange on charcoal
 Cool arctic blues and soft frost
 
 <img src="previews/nord.svg" width="360" alt="Nord theme preview">
+
+### Obsidian
+
+`theme -apply obsidian` · by HelCLI
+
+Volcanic glass: violet and lilac on black
+
+<img src="previews/obsidian.svg" width="360" alt="Obsidian theme preview">
 
 ### Ocean
 
@@ -146,6 +274,14 @@ Deep sea blue with teal and coral
 True black to save battery, with gentle gray text
 
 <img src="previews/oled.svg" width="360" alt="OLED Black theme preview">
+
+### One Dark
+
+`theme -apply one-dark` · by after Atom One Dark
+
+The classic editor dark theme
+
+<img src="previews/one-dark.svg" width="360" alt="One Dark theme preview">
 
 ### Paper
 
@@ -178,6 +314,22 @@ Plum background with candy-pink text
 Dark crimson with hot orange-red text
 
 <img src="previews/red.svg" width="360" alt="Red theme preview">
+
+### Rosé Pine Dawn
+
+`theme -apply rose-pine-dawn` · by after Rosé Pine
+
+Rosé Pine for the morning: warm paper and soft ink
+
+<img src="previews/rose-pine-dawn.svg" width="360" alt="Rosé Pine Dawn theme preview">
+
+### Rosé Pine
+
+`theme -apply rose-pine` · by after Rosé Pine
+
+Soho vibes: muted pine, rose and gold on deep purple
+
+<img src="previews/rose-pine.svg" width="360" alt="Rosé Pine theme preview">
 
 ### Sakura
 

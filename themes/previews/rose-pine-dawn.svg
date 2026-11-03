@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="312" viewBox="0 0 360 312" role="img" aria-label="Rosé Pine Dawn theme preview">
+<rect width="360" height="312" rx="12" fill="#faf4ed"/>
+<g font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="11.5">
+<text x="14" y="26"><tspan fill="#286983">Tue Nov 3 · 9:41 PM  </tspan><tspan fill="#3e7f5a">87% [███████████████░░]</tspan></text>
+<text x="14" y="41"><tspan fill="#3f7f8a">Alarm 6:45 AM (in 9h 4m)  </tspan><tspan fill="#b8613a">HomeNet·5G·bt</tspan></text>
+<text x="14" y="56"><tspan fill="#a8650f">San Antonio 64°F clear ↑71 ↓52 · rain 10%</tspan></text>
+<text x="14" y="71"><tspan fill="#b4637a">ram   39% [████████████░░░░░░░░░░░░░░░░░░░░]</tspan></text>
+<text x="14" y="86"><tspan fill="#7d6698">disk  72% [███████████████████████░░░░░░░░░]</tspan></text>
+<text x="14" y="101"><tspan fill="#b8613a">Claude · 5h resets 11:20 PM</tspan></text>
+<text x="14" y="116"><tspan fill="#b8613a">5h    42% [█████████████░░░░░░░░░░░░░░░░░░░]</tspan></text>
+<text x="14" y="131"><tspan fill="#b8613a">week  18% [██████░░░░░░░░░░░░░░░░░░░░░░░░░░]</tspan></text>
+<text x="14" y="146"><tspan fill="#b4637a">Next: Dentist · Thu 2:30 PM (in 1d 16h)</tspan></text>
+<text x="14" y="161"><tspan fill="#3f7f8a">♪ Midnight City — M83</tspan></text>
+<text x="14" y="176"><tspan fill="#3f7f8a">2:41 ~~~~~~~~~~~~~~~~~~~~~~♫··········· 4:03</tspan></text>
+<text x="14" y="206"><tspan fill="#7d6698">user@helcli</tspan><tspan fill="#575279">: </tspan><tspan fill="#286983">$ theme -apply rose-pine-dawn</tspan></text>
+<text x="14" y="221"><tspan fill="#575279">Theme applied: Rosé Pine Dawn</tspan></text>
+<rect x="14" y="274" width="58" height="24" rx="4" fill="#3e7f5a"/>
+<text x="22" y="290" fill="#ffffff">Camera</text>
+<rect x="80" y="274" width="44" height="24" rx="4" fill="#286983"/>
+<text x="88" y="290" fill="#faf4ed">help</text>
+<rect x="132" y="274" width="30" height="24" rx="4" fill="#7d6698"/>
+<text x="140" y="290" fill="#faf4ed">ll</text>
+<rect x="170" y="274" width="51" height="24" rx="4" fill="#a8650f"/>
+<text x="178" y="290" fill="#ffffff">notes</text>
+</g>
+</svg>

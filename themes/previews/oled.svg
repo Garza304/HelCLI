@@ -1,18 +1,26 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="360" height="200" viewBox="0 0 360 200" role="img" aria-label="OLED Black theme preview">
-<rect width="360" height="200" rx="12" fill="#000000"/>
-<g font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="13">
-<text x="16" y="28"><tspan fill="#8c9eff">12:45</tspan><tspan fill="#81c784">  Battery 87%</tspan><tspan fill="#9575cd">  RAM 2.1 GB</tspan></text>
-<text x="16" y="66"><tspan fill="#7c7c7c">user@helcli</tspan><tspan fill="#b0b0b0">: </tspan><tspan fill="#8c9eff">$ ls</tspan></text>
-<text x="16" y="86" fill="#b0b0b0">Documents  Music  notes.txt</text>
-<text x="16" y="110"><tspan fill="#7c7c7c">user@helcli</tspan><tspan fill="#b0b0b0">: </tspan><tspan fill="#8c9eff">$ open github.com</tspan></text>
-<text x="16" y="130" fill="#8c9eff">https://github.com</text>
-<rect x="16" y="156" width="64" height="26" rx="4" fill="#3949ab"/>
-<text x="24" y="174" fill="#ffffff">Camera</text>
-<rect x="88" y="156" width="48" height="26" rx="4" fill="#8c9eff"/>
-<text x="96" y="174" fill="#000000">help</text>
-<rect x="144" y="156" width="32" height="26" rx="4" fill="#5e35b1"/>
-<text x="152" y="174" fill="#ffffff">ll</text>
-<rect x="184" y="156" width="56" height="26" rx="4" fill="#4fc3f7"/>
-<text x="192" y="174" fill="#000000">notes</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="312" viewBox="0 0 360 312" role="img" aria-label="OLED Black theme preview">
+<rect width="360" height="312" rx="12" fill="#000000"/>
+<g font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="11.5">
+<text x="14" y="26"><tspan fill="#8c9eff">Tue Nov 3 · 9:41 PM  </tspan><tspan fill="#81c784">87% [███████████████░░]</tspan></text>
+<text x="14" y="41"><tspan fill="#8c9eff">Alarm 6:45 AM (in 9h 4m)  </tspan><tspan fill="#4fc3f7">HomeNet·5G·bt</tspan></text>
+<text x="14" y="56"><tspan fill="#8c9eff">San Antonio 64°F clear ↑71 ↓52 · rain 10%</tspan></text>
+<text x="14" y="71"><tspan fill="#9575cd">ram   39% [████████████░░░░░░░░░░░░░░░░░░░░]</tspan></text>
+<text x="14" y="86"><tspan fill="#7986cb">disk  72% [███████████████████████░░░░░░░░░]</tspan></text>
+<text x="14" y="101"><tspan fill="#7c7c7c">Claude · 5h resets 11:20 PM</tspan></text>
+<text x="14" y="116"><tspan fill="#7c7c7c">5h    42% [█████████████░░░░░░░░░░░░░░░░░░░]</tspan></text>
+<text x="14" y="131"><tspan fill="#7c7c7c">week  18% [██████░░░░░░░░░░░░░░░░░░░░░░░░░░]</tspan></text>
+<text x="14" y="146"><tspan fill="#80cbc4">Next: Dentist · Thu 2:30 PM (in 1d 16h)</tspan></text>
+<text x="14" y="161"><tspan fill="#a5d6a7">♪ Midnight City — M83</tspan></text>
+<text x="14" y="176"><tspan fill="#a5d6a7">2:41 ~~~~~~~~~~~~~~~~~~~~~~♫··········· 4:03</tspan></text>
+<text x="14" y="206"><tspan fill="#7c7c7c">user@helcli</tspan><tspan fill="#b0b0b0">: </tspan><tspan fill="#8c9eff">$ theme -apply oled</tspan></text>
+<text x="14" y="221"><tspan fill="#b0b0b0">Theme applied: OLED Black</tspan></text>
+<rect x="14" y="274" width="58" height="24" rx="4" fill="#3949ab"/>
+<text x="22" y="290" fill="#ffffff">Camera</text>
+<rect x="80" y="274" width="44" height="24" rx="4" fill="#8c9eff"/>
+<text x="88" y="290" fill="#000000">help</text>
+<rect x="132" y="274" width="30" height="24" rx="4" fill="#5e35b1"/>
+<text x="140" y="290" fill="#ffffff">ll</text>
+<rect x="170" y="274" width="51" height="24" rx="4" fill="#4fc3f7"/>
+<text x="178" y="290" fill="#000000">notes</text>
 </g>
 </svg>

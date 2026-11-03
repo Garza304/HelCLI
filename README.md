@@ -40,9 +40,13 @@ T-UI used to download themes from a community website that has since gone offlin
 | `theme -import` | Pick a theme file on your phone (or `theme -import https://...`) |
 | `theme -delete mytheme` | Delete a theme you saved |
 
-It starts with 24 themes: the original T-UI look, the six 2026 presets, retro monitors (amber, green
-phosphor), popular coding palettes (Dracula, Gruvbox, Nord, Solarized, Monokai, Tokyo Night,
-Catppuccin), and High Contrast, OLED Black, Paper, Ocean, Sakura, Forest and Vaporwave.
+It has 43 themes, mostly dark: the original T-UI look, the six 2026 presets, retro monitors (amber,
+green phosphor), popular coding palettes (Dracula, Gruvbox, Nord, Solarized, Monokai, Tokyo Night,
+Catppuccin, Rosé Pine, Kanagawa, Everforest, One Dark, Ayu Mirage, Night Owl), HelCLI's own
+(Midnight Ink, Ember, Abyss, Obsidian, Espresso, Aurora, Deep Space, Graphite), High Contrast,
+OLED Black, Ocean, Sakura, Forest and Vaporwave, plus a few light ones: Paper, Solarized Light,
+Rosé Pine Dawn, Catppuccin Latte, Cotton Candy, Lemonade and Mint Chip. Every theme colors each
+line at the top of the home screen.
 Adding a theme is one JSON file: see [the gallery page](themes/README.md#theme-file-format).
 
 ### 📝 Built-in config editor

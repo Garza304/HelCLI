@@ -32,7 +32,11 @@
     "app_installed_color": "#ff00ff41",
     "app_uninstalled_color": "#ffff5252",
     "statusbar_color": "#ff001b00",
-    "navigationbar_color": "#ff001b00"
+    "navigationbar_color": "#ff001b00",
+    "alarm_color": "#ff00e676",
+    "claude_color": "#ff2ecc71",
+    "calendar_color": "#ff64ffda",
+    "music_color": "#ffb9f6ca"
   },
   "suggestions": {
     "default_bg_color": "#ff00ff41",

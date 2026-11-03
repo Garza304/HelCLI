@@ -1,18 +1,26 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="360" height="200" viewBox="0 0 360 200" role="img" aria-label="Vaporwave theme preview">
-<rect width="360" height="200" rx="12" fill="#1a0b2e"/>
-<g font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="13">
-<text x="16" y="28"><tspan fill="#01cdfe">12:45</tspan><tspan fill="#05ffa1">  Battery 87%</tspan><tspan fill="#b967ff">  RAM 2.1 GB</tspan></text>
-<text x="16" y="66"><tspan fill="#01cdfe">user@helcli</tspan><tspan fill="#f2e9ff">: </tspan><tspan fill="#ff71ce">$ ls</tspan></text>
-<text x="16" y="86" fill="#f2e9ff">Documents  Music  notes.txt</text>
-<text x="16" y="110"><tspan fill="#01cdfe">user@helcli</tspan><tspan fill="#f2e9ff">: </tspan><tspan fill="#ff71ce">$ open github.com</tspan></text>
-<text x="16" y="130" fill="#01cdfe">https://github.com</text>
-<rect x="16" y="156" width="64" height="26" rx="4" fill="#ff71ce"/>
-<text x="24" y="174" fill="#1a0b2e">Camera</text>
-<rect x="88" y="156" width="48" height="26" rx="4" fill="#01cdfe"/>
-<text x="96" y="174" fill="#1a0b2e">help</text>
-<rect x="144" y="156" width="32" height="26" rx="4" fill="#b967ff"/>
-<text x="152" y="174" fill="#1a0b2e">ll</text>
-<rect x="184" y="156" width="56" height="26" rx="4" fill="#05ffa1"/>
-<text x="192" y="174" fill="#1a0b2e">notes</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="312" viewBox="0 0 360 312" role="img" aria-label="Vaporwave theme preview">
+<rect width="360" height="312" rx="12" fill="#1a0b2e"/>
+<g font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="11.5">
+<text x="14" y="26"><tspan fill="#01cdfe">Tue Nov 3 · 9:41 PM  </tspan><tspan fill="#05ffa1">87% [███████████████░░]</tspan></text>
+<text x="14" y="41"><tspan fill="#01cdfe">Alarm 6:45 AM (in 9h 4m)  </tspan><tspan fill="#05ffa1">HomeNet·5G·bt</tspan></text>
+<text x="14" y="56"><tspan fill="#fffb96">San Antonio 64°F clear ↑71 ↓52 · rain 10%</tspan></text>
+<text x="14" y="71"><tspan fill="#b967ff">ram   39% [████████████░░░░░░░░░░░░░░░░░░░░]</tspan></text>
+<text x="14" y="86"><tspan fill="#ff71ce">disk  72% [███████████████████████░░░░░░░░░]</tspan></text>
+<text x="14" y="101"><tspan fill="#01cdfe">Claude · 5h resets 11:20 PM</tspan></text>
+<text x="14" y="116"><tspan fill="#01cdfe">5h    42% [█████████████░░░░░░░░░░░░░░░░░░░]</tspan></text>
+<text x="14" y="131"><tspan fill="#01cdfe">week  18% [██████░░░░░░░░░░░░░░░░░░░░░░░░░░]</tspan></text>
+<text x="14" y="146"><tspan fill="#05ffa1">Next: Dentist · Thu 2:30 PM (in 1d 16h)</tspan></text>
+<text x="14" y="161"><tspan fill="#fffb96">♪ Midnight City — M83</tspan></text>
+<text x="14" y="176"><tspan fill="#fffb96">2:41 ~~~~~~~~~~~~~~~~~~~~~~♫··········· 4:03</tspan></text>
+<text x="14" y="206"><tspan fill="#01cdfe">user@helcli</tspan><tspan fill="#f2e9ff">: </tspan><tspan fill="#ff71ce">$ theme -apply vaporwave</tspan></text>
+<text x="14" y="221"><tspan fill="#f2e9ff">Theme applied: Vaporwave</tspan></text>
+<rect x="14" y="274" width="58" height="24" rx="4" fill="#ff71ce"/>
+<text x="22" y="290" fill="#1a0b2e">Camera</text>
+<rect x="80" y="274" width="44" height="24" rx="4" fill="#01cdfe"/>
+<text x="88" y="290" fill="#1a0b2e">help</text>
+<rect x="132" y="274" width="30" height="24" rx="4" fill="#b967ff"/>
+<text x="140" y="290" fill="#1a0b2e">ll</text>
+<rect x="170" y="274" width="51" height="24" rx="4" fill="#05ffa1"/>
+<text x="178" y="290" fill="#1a0b2e">notes</text>
 </g>
 </svg>

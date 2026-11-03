@@ -1,18 +1,26 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="360" height="200" viewBox="0 0 360 200" role="img" aria-label="Cyberpunk theme preview">
-<rect width="360" height="200" rx="12" fill="#0d0615"/>
-<g font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="13">
-<text x="16" y="28"><tspan fill="#00f0ff">12:45</tspan><tspan fill="#39ff14">  Battery 87%</tspan><tspan fill="#bc00ff">  RAM 2.1 GB</tspan></text>
-<text x="16" y="66"><tspan fill="#ff003c">user@helcli</tspan><tspan fill="#00f0ff">: </tspan><tspan fill="#fcee09">$ ls</tspan></text>
-<text x="16" y="86" fill="#00f0ff">Documents  Music  notes.txt</text>
-<text x="16" y="110"><tspan fill="#ff003c">user@helcli</tspan><tspan fill="#00f0ff">: </tspan><tspan fill="#fcee09">$ open github.com</tspan></text>
-<text x="16" y="130" fill="#00f0ff">https://github.com</text>
-<rect x="16" y="156" width="64" height="26" rx="4" fill="#ff003c"/>
-<text x="24" y="174" fill="#ffffff">Camera</text>
-<rect x="88" y="156" width="48" height="26" rx="4" fill="#00f0ff"/>
-<text x="96" y="174" fill="#0d0615">help</text>
-<rect x="144" y="156" width="32" height="26" rx="4" fill="#fcee09"/>
-<text x="152" y="174" fill="#0d0615">ll</text>
-<rect x="184" y="156" width="56" height="26" rx="4" fill="#39ff14"/>
-<text x="192" y="174" fill="#0d0615">notes</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="312" viewBox="0 0 360 312" role="img" aria-label="Cyberpunk theme preview">
+<rect width="360" height="312" rx="12" fill="#0d0615"/>
+<g font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="11.5">
+<text x="14" y="26"><tspan fill="#00f0ff">Tue Nov 3 · 9:41 PM  </tspan><tspan fill="#39ff14">87% [███████████████░░]</tspan></text>
+<text x="14" y="41"><tspan fill="#00f0ff">Alarm 6:45 AM (in 9h 4m)  </tspan><tspan fill="#39ff14">HomeNet·5G·bt</tspan></text>
+<text x="14" y="56"><tspan fill="#00f0ff">San Antonio 64°F clear ↑71 ↓52 · rain 10%</tspan></text>
+<text x="14" y="71"><tspan fill="#bc00ff">ram   39% [████████████░░░░░░░░░░░░░░░░░░░░]</tspan></text>
+<text x="14" y="86"><tspan fill="#ff00a0">disk  72% [███████████████████████░░░░░░░░░]</tspan></text>
+<text x="14" y="101"><tspan fill="#ff003c">Claude · 5h resets 11:20 PM</tspan></text>
+<text x="14" y="116"><tspan fill="#ff003c">5h    42% [█████████████░░░░░░░░░░░░░░░░░░░]</tspan></text>
+<text x="14" y="131"><tspan fill="#ff003c">week  18% [██████░░░░░░░░░░░░░░░░░░░░░░░░░░]</tspan></text>
+<text x="14" y="146"><tspan fill="#ff00a0">Next: Dentist · Thu 2:30 PM (in 1d 16h)</tspan></text>
+<text x="14" y="161"><tspan fill="#39ff14">♪ Midnight City — M83</tspan></text>
+<text x="14" y="176"><tspan fill="#39ff14">2:41 ~~~~~~~~~~~~~~~~~~~~~~♫··········· 4:03</tspan></text>
+<text x="14" y="206"><tspan fill="#ff003c">user@helcli</tspan><tspan fill="#00f0ff">: </tspan><tspan fill="#fcee09">$ theme -apply cyberpunk</tspan></text>
+<text x="14" y="221"><tspan fill="#00f0ff">Theme applied: Cyberpunk</tspan></text>
+<rect x="14" y="274" width="58" height="24" rx="4" fill="#ff003c"/>
+<text x="22" y="290" fill="#ffffff">Camera</text>
+<rect x="80" y="274" width="44" height="24" rx="4" fill="#00f0ff"/>
+<text x="88" y="290" fill="#0d0615">help</text>
+<rect x="132" y="274" width="30" height="24" rx="4" fill="#fcee09"/>
+<text x="140" y="290" fill="#0d0615">ll</text>
+<rect x="170" y="274" width="51" height="24" rx="4" fill="#39ff14"/>
+<text x="178" y="290" fill="#0d0615">notes</text>
 </g>
 </svg>
