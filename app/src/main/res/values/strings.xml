@@ -404,6 +404,16 @@
         \n-update -> refresh now
         \n-status -> what\'s set up
         \n\nChange the text with the claude_format setting (behavior.xml).</string>
+    <string name="help_ram">A breakdown of the phone\'s memory: in use, cached (freed when apps need it), free, and swap.
+        \n\nUsage:
+        \n$ ram
+        \n\nAndroid doesn\'t let apps see how much memory other apps use, so there\'s no per-app list.</string>
+    <string name="help_storage">A breakdown of storage: apps, images, videos, audio, other files, system, free space, and SD cards.
+        \n\nUsage:
+        \n$ storage -> overview and the 5 biggest apps
+        \n$ storage apps -> the 20 biggest apps (storage apps all: every app)
+        \n$ storage cache -> apps with the most cache, which is safe to clear (storage cache all: every app)
+        \n$ storage access -> give HelCLI Usage access, which Android needs for app sizes and the image/video/audio split</string>
     <string name="help_weather">Weather comes from Open-Meteo: free, and no key or account needed.
         \n\n-update -> update the weather now
         \n-enable -> show the weather
