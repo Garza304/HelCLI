@@ -25,7 +25,7 @@ Made a mistake? `git undo` puts back the settings from before the last pull.
 - Each setting is checked first. A typo, an unknown setting, or a value of the wrong kind (like
   `maybe` for a true/false setting) is skipped with a warning instead of breaking the launcher.
 - Files HelCLI pulls:
-  - `theme.xml`, `ui.xml`, `behavior.xml`, `suggestions.xml`, `toolbar.xml`, `cmd.xml`
+  - `theme.xml` (colors), `ui.xml` (what the home screen shows, where, and how big), `behavior.xml` (the text of each line: clock, RAM, WiFi, battery, weather), `suggestions.xml`, `toolbar.xml`, `cmd.xml`
   - `alias.txt` (replaces all your aliases)
   - `themes/*.json`, saved as themes for `theme -apply` (same format as the [theme gallery](../themes/README.md))
 - Every setting and what it does: run `config -ls ui.xml` (or `theme.xml`, ...) on the phone,
