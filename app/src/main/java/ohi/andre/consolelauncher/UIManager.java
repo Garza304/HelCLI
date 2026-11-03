@@ -80,6 +80,11 @@ import ohi.andre.consolelauncher.tuils.StatusBars;
 import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
 import android.text.style.AbsoluteSizeSpan;
+import android.app.AlarmManager;
+import androidx.core.content.ContextCompat;
+import java.util.TimeZone;
+import ohi.andre.consolelauncher.managers.status.NowPlayingWatcher;
+import ohi.andre.consolelauncher.managers.status.StatusFormats;
 import ohi.andre.consolelauncher.managers.claude.ClaudeUsageUpdater;
 import ohi.andre.consolelauncher.managers.weather.OpenMeteo;
 import ohi.andre.consolelauncher.tuils.Tuils;
@@ -115,7 +120,9 @@ public class UIManager implements OnTouchListener {
         notes,
         weather,
         unlock,
-        claude
+        claude,
+        alarm,
+        music
     }
 
     private final int RAM_DELAY = 3000;
@@ -780,6 +787,40 @@ public class UIManager implements OnTouchListener {
 
     private ClaudeUsageUpdater claudeUpdater;
 
+    private NowPlayingWatcher nowPlaying;
+
+    private String alarmFormat;
+    private int alarmColor;
+    private BroadcastReceiver alarmReceiver;
+//    the next alarm, redrawn at the start of every minute so "in 7h 20m" stays right
+    private final Runnable alarmRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if(handler == null) return;
+            long trigger = 0;
+            String app = null;
+            AlarmManager am = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
+            AlarmManager.AlarmClockInfo next = am != null ? am.getNextAlarmClock() : null;
+            if(next != null) {
+                trigger = next.getTriggerTime();
+                try {
+                    if(next.getShowIntent() != null) {
+                        String pkg = next.getShowIntent().getCreatorPackage();
+                        PackageManager pm = mContext.getPackageManager();
+                        app = pm.getApplicationLabel(pm.getApplicationInfo(pkg, 0)).toString();
+                    }
+                } catch (Exception ignored) {}
+            }
+
+            String text = StatusFormats.alarm(alarmFormat, trigger, System.currentTimeMillis(), TimeZone.getDefault(),
+                    android.text.format.DateFormat.is24HourFormat(mContext), app);
+            updateText(Label.alarm, Tuils.span(mContext, text, alarmColor, labelSizes[Label.alarm.ordinal()]));
+
+            handler.removeCallbacks(this);
+            handler.postDelayed(this, 60_000 - System.currentTimeMillis() % 60_000 + 50);
+        }
+    };
+
     private TextView terminalView;
 
     private String doubleTapCmd;
@@ -1024,6 +1065,8 @@ public class UIManager implements OnTouchListener {
         labelSizes[Label.weather.ordinal()] = XMLPrefsManager.getInt(Ui.weather_size);
         labelSizes[Label.unlock.ordinal()] = XMLPrefsManager.getInt(Ui.unlock_size);
         labelSizes[Label.claude.ordinal()] = XMLPrefsManager.getInt(Ui.claude_size);
+        labelSizes[Label.alarm.ordinal()] = XMLPrefsManager.getInt(Ui.alarm_size);
+        labelSizes[Label.music.ordinal()] = XMLPrefsManager.getInt(Ui.music_size);
 
         labelViews = new TextView[] {
                 (TextView) rootView.findViewById(R.id.tv0),
@@ -1048,6 +1091,8 @@ public class UIManager implements OnTouchListener {
         show[Label.weather.ordinal()] = XMLPrefsManager.getBoolean(Ui.show_weather);
         show[Label.unlock.ordinal()] = XMLPrefsManager.getBoolean(Ui.show_unlock_counter);
         show[Label.claude.ordinal()] = XMLPrefsManager.getBoolean(Ui.show_claude);
+        show[Label.alarm.ordinal()] = XMLPrefsManager.getBoolean(Ui.show_alarm);
+        show[Label.music.ordinal()] = XMLPrefsManager.getBoolean(Ui.show_music);
 
         float[] indexes = new float[Label.values().length];
         indexes[Label.notes.ordinal()] = show[Label.notes.ordinal()] ? XMLPrefsManager.getFloat(Ui.notes_index) : Integer.MAX_VALUE;
@@ -1060,6 +1105,8 @@ public class UIManager implements OnTouchListener {
         indexes[Label.weather.ordinal()] = show[Label.weather.ordinal()] ? XMLPrefsManager.getFloat(Ui.weather_index) : Integer.MAX_VALUE;
         indexes[Label.unlock.ordinal()] = show[Label.unlock.ordinal()] ? XMLPrefsManager.getFloat(Ui.unlock_index) : Integer.MAX_VALUE;
         indexes[Label.claude.ordinal()] = show[Label.claude.ordinal()] ? XMLPrefsManager.getFloat(Ui.claude_index) : Integer.MAX_VALUE;
+        indexes[Label.alarm.ordinal()] = show[Label.alarm.ordinal()] ? XMLPrefsManager.getFloat(Ui.alarm_index) : Integer.MAX_VALUE;
+        indexes[Label.music.ordinal()] = show[Label.music.ordinal()] ? XMLPrefsManager.getFloat(Ui.music_index) : Integer.MAX_VALUE;
 
         int[] statusLineAlignments = getListOfIntValues(XMLPrefsManager.get(Ui.status_lines_alignment), 9, -1);
 
@@ -1272,6 +1319,30 @@ public class UIManager implements OnTouchListener {
             if(weatherRunnable.fixedLocation()) handler.post(weatherRunnable);
 
             showWeatherUpdate = XMLPrefsManager.getBoolean(Behavior.show_weather_updates);
+        }
+
+        if(show[Label.alarm.ordinal()]) {
+            alarmFormat = XMLPrefsManager.get(Behavior.alarm_format);
+            alarmColor = XMLPrefsManager.getColor(Theme.alarm_color);
+            alarmReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context c, Intent intent) {
+                    if(handler != null) {
+                        handler.removeCallbacks(alarmRunnable);
+                        handler.post(alarmRunnable);
+                    }
+                }
+            };
+            ContextCompat.registerReceiver(mContext, alarmReceiver, new IntentFilter(AlarmManager.ACTION_NEXT_ALARM_CLOCK_CHANGED), ContextCompat.RECEIVER_NOT_EXPORTED);
+            handler.post(alarmRunnable);
+        }
+
+        if(show[Label.music.ordinal()]) {
+            final int musicColor = XMLPrefsManager.getColor(Theme.music_color);
+            nowPlaying = new NowPlayingWatcher(mContext, handler, XMLPrefsManager.get(Behavior.music_format),
+                    XMLPrefsManager.getBoolean(Ui.music_show_paused),
+                    text -> updateText(Label.music, Tuils.span(mContext, text, musicColor, labelSizes[Label.music.ordinal()])));
+            nowPlaying.start();
         }
 
         if(show[Label.claude.ordinal()]) {
@@ -1505,6 +1576,17 @@ public class UIManager implements OnTouchListener {
     }
 
     public void dispose() {
+        if(nowPlaying != null) {
+            nowPlaying.stop();
+            nowPlaying = null;
+        }
+        if(alarmReceiver != null) {
+            try {
+                mContext.unregisterReceiver(alarmReceiver);
+            } catch (Exception ignored) {}
+            alarmReceiver = null;
+        }
+
         if(claudeUpdater != null) {
             claudeUpdater.stop();
             claudeUpdater = null;

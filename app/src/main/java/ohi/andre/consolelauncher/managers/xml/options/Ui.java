@@ -1051,7 +1051,120 @@ public enum Ui implements XMLPrefsSave {
         public String type() {
             return XMLPrefsSave.TEXT;
         }
-    };
+    },
+    show_alarm {
+        @Override
+        public String defaultValue() {
+            return "false";
+        }
+
+        @Override
+        public String info() {
+            return "If true, the next alarm is shown (see alarm_format)";
+        }
+
+        @Override
+        public String type() {
+            return XMLPrefsSave.BOOLEAN;
+        }
+    },
+    alarm_index {
+        @Override
+        public String defaultValue() {
+            return "3.5";
+        }
+
+        @Override
+        public String info() {
+            return "This is used to order the labels on top of the screen";
+        }
+
+        @Override
+        public String type() {
+            return XMLPrefsSave.INTEGER;
+        }
+    },
+    alarm_size {
+        @Override
+        public String defaultValue() {
+            return "13";
+        }
+
+        @Override
+        public String info() {
+            return "Next alarm size";
+        }
+
+        @Override
+        public String type() {
+            return XMLPrefsSave.INTEGER;
+        }
+    },
+    show_music {
+        @Override
+        public String defaultValue() {
+            return "false";
+        }
+
+        @Override
+        public String info() {
+            return "If true, the song playing in any app is shown (needs notification access: notifications -access)";
+        }
+
+        @Override
+        public String type() {
+            return XMLPrefsSave.BOOLEAN;
+        }
+    },
+    music_index {
+        @Override
+        public String defaultValue() {
+            return "9";
+        }
+
+        @Override
+        public String info() {
+            return "This is used to order the labels on top of the screen";
+        }
+
+        @Override
+        public String type() {
+            return XMLPrefsSave.INTEGER;
+        }
+    },
+    music_size {
+        @Override
+        public String defaultValue() {
+            return "13";
+        }
+
+        @Override
+        public String info() {
+            return "Now playing size";
+        }
+
+        @Override
+        public String type() {
+            return XMLPrefsSave.INTEGER;
+        }
+    },
+    music_show_paused {
+        @Override
+        public String defaultValue() {
+            return "true";
+        }
+
+        @Override
+        public String info() {
+            return "If false, the now playing line hides while music is paused";
+        }
+
+        @Override
+        public String type() {
+            return XMLPrefsSave.BOOLEAN;
+        }
+    }
+    ;
 
     @Override
     public XMLPrefsElement parent() {

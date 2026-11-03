@@ -14,7 +14,9 @@ public class OpenMeteoTest {
             + "\"current\":{\"time\":\"2026-11-03T14:00\",\"temperature_2m\":8.4,\"relative_humidity_2m\":81,"
             + "\"apparent_temperature\":5.9,\"precipitation\":0.2,\"weather_code\":61,\"cloud_cover\":100,"
             + "\"surface_pressure\":1003.6,\"wind_speed_10m\":4.3,\"wind_direction_10m\":245},"
-            + "\"daily\":{\"time\":[\"2026-11-03\"],\"temperature_2m_max\":[9.1],\"temperature_2m_min\":[4.2]}}";
+            + "\"daily\":{\"time\":[\"2026-11-03\"],\"temperature_2m_max\":[9.1],\"temperature_2m_min\":[4.2],"
+            + "\"sunrise\":[\"2026-11-03T06:58\"],\"sunset\":[\"2026-11-03T16:31\"],\"daylight_duration\":[34380.0],"
+            + "\"uv_index_max\":[1.35],\"precipitation_probability_max\":[65]}}";
 
     @Test
     public void rewritesTheForecastForTheWeatherFormat() throws Exception {
@@ -41,6 +43,45 @@ public class OpenMeteoTest {
         String json = OpenMeteo.toWeatherJson(FORECAST, "metric", "");
         assertTrue(json.contains("\"main\":\"Rain\""));
         assertTrue(json.matches("(?s).*\"temp\":8\\.4.*"));
+    }
+
+    @Test
+    public void addsTheExtraCodes() throws Exception {
+        JSONObject o = new JSONObject(OpenMeteo.toWeatherJson(FORECAST, "metric", "Berlin", true));
+        assertEquals("06:58", o.getString("sunrise"));
+        assertEquals("16:31", o.getString("sunset"));
+        assertEquals("9h 33m", o.getString("daylight"));
+        assertEquals(65, o.getInt("rain_chance"));
+        assertEquals(1.4, o.getDouble("uv"), 0.001);
+        assertEquals("SW", o.getString("wind_dir"));   // 245 degrees
+        assertEquals("°C", o.getString("unit"));
+        assertEquals("m/s", o.getString("wind_unit"));
+
+        JSONObject us = new JSONObject(OpenMeteo.toWeatherJson(FORECAST, "imperial", "", false));
+        assertEquals("6:58 AM", us.getString("sunrise"));
+        assertEquals("4:31 PM", us.getString("sunset"));
+        assertEquals("°F", us.getString("unit"));
+        assertEquals("mph", us.getString("wind_unit"));
+        assertEquals("K", new JSONObject(OpenMeteo.toWeatherJson(FORECAST, "standard", "")).getString("unit"));
+    }
+
+    @Test
+    public void readsClockTimesAndDirections() {
+        assertEquals("12:05 AM", OpenMeteo.clock("2026-11-03T00:05", false));
+        assertEquals("12:00 PM", OpenMeteo.clock("2026-11-03T12:00", false));
+        assertEquals(null, OpenMeteo.clock("bad", true));
+        assertEquals("N", OpenMeteo.compass(359));
+        assertEquals("E", OpenMeteo.compass(90));
+        assertEquals("-", OpenMeteo.compass(Double.NaN));
+    }
+
+    @Test
+    public void extraCodesDontClashWithTheWeatherFormatLookup() throws Exception {
+//        the launcher finds "%unit" with "\"unit\":"; "wind_unit" must not be found instead
+        String json = OpenMeteo.toWeatherJson(FORECAST, "imperial", "", true);
+        java.util.regex.Matcher m = java.util.regex.Pattern.compile("\"unit\":(?:\"([^\"]+)\"|(-?\\d+\\.?\\d*))").matcher(json);
+        assertTrue(m.find());
+        assertEquals("°F", m.group(1));
     }
 
     @Test

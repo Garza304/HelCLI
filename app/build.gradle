@@ -65,6 +65,8 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+        // the Claude SDK uses java.time, which older Android versions need backported
+        coreLibraryDesugaringEnabled true
     }
 
     lint {
@@ -103,6 +105,11 @@ dependencies {
     implementation 'com.jayway.jsonpath:json-path:2.9.0'
     implementation 'org.jsoup:jsoup:1.17.2'
     implementation 'it.andreuzzi:CompareString2:1.0.9'
+    // "qr": QR code encoder (MIT, no dependencies)
+    implementation 'io.nayuki:qrcodegen:1.8.0'
+    // "ask": Anthropic's official Java SDK for the Claude API
+    implementation 'com.anthropic:anthropic-java:3.4.0'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.json:json:20231013'

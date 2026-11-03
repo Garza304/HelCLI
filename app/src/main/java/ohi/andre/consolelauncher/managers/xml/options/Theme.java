@@ -542,6 +542,28 @@ public enum Theme implements XMLPrefsSave {
         public String info() {
             return "Claude usage color";
         }
+    },
+    alarm_color {
+        @Override
+        public String defaultValue() {
+            return "#ff03a9f4";
+        }
+
+        @Override
+        public String info() {
+            return "Next alarm color";
+        }
+    },
+    music_color {
+        @Override
+        public String defaultValue() {
+            return "#ff1de9b6";
+        }
+
+        @Override
+        public String info() {
+            return "Now playing color";
+        }
     }
     ;
 
