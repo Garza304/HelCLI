@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Colors. Use #RRGGBB, or #AARRGGBB where AA is opacity (ff = solid, 00 = invisible).
+     To use a setting, remove the comment marks around it. -->
+<THEME>
+    <!-- <bg_color value="#ff101010"/> -->
+    <!-- <overlay_color value="#b0101010"/> -->
+    <!-- <input_color value="#ff00ff00"/> -->
+    <!-- <output_color value="#ffffffff"/> -->
+    <!-- <device_color value="#ffff9800"/> -->
+    <!-- <time_color value="#ff03a9f4"/> -->
+    <!-- <ram_color value="#fff44336"/> -->
+    <!-- <battery_color_high value="#ff4caf50"/> -->
+    <!-- <link_color value="#ff40c4ff"/> -->
+    <!-- <statusbar_color value="#ff000000"/> -->
+    <!-- <navigationbar_color value="#ff000000"/> -->
+</THEME>

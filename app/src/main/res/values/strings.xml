@@ -386,6 +386,13 @@
         \n\t* silent -> 0
         \n\t* vibrate -> 1
         \n\t* normal -> 2</string>
+    <string name="help_git">Pull your HelCLI settings from a folder in a public GitHub repository.
+        \nEdit the files on GitHub, then run git pull on the phone.
+        \n\n-remote [owner/repo/folder] -> choose where to pull from (also owner/repo/folder@branch, or a github.com link)
+        \n-pull -> apply the newest settings from the remote and reload
+        \n-status -> show the remote and the last pull
+        \n-undo -> put back the settings from before the last pull
+        \n\nFiles it understands: theme.xml, ui.xml, behavior.xml, suggestions.xml, toolbar.xml, cmd.xml (only the settings they contain are changed), alias.txt, and themes/*.json</string>
     <string name="help_weather">Weather comes from Open-Meteo: free, and no key or account needed.
         \n\n-update -> update the weather now
         \n-enable -> show the weather

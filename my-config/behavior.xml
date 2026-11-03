@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- The text shown at the top of the home screen. To use a setting, remove the comment marks around it.
+     On the phone, "config -info ram_format" (or any setting) explains the % codes. -->
+<BEHAVIOR>
+    <!-- Clock. Formats are separated by time_format_separator (@); the first one is shown. -->
+    <!-- <time_format value="d MMM yyyy HH:mm:ss@HH:mm:ss"/> -->
+
+    <!-- Device name line: %d = device name, %u = username -->
+    <!-- <device_format value="%d: %u"/> -->
+
+    <!-- RAM -->
+    <!-- <ram_format value="Available RAM: %avgb GB of %totgb GB (%av%%)"/> -->
+
+    <!-- Battery, and the levels (in %) where its color changes to medium and low -->
+    <!-- <battery_format value="%(Charging: /)%v%"/> -->
+    <!-- <battery_medium value="50"/> -->
+    <!-- <battery_low value="15"/> -->
+
+    <!-- Storage -->
+    <!-- <storage_format value="Internal Storage: %iavgb GB / %itotgb GB (%iav%%)"/> -->
+
+    <!-- WiFi / mobile data, and how often it refreshes (milliseconds) -->
+    <!-- <network_info_format value="%(WiFi - %wn/%[Mobile Data: %d3/No Internet access])"/> -->
+    <!-- <network_info_update_ms value="3500"/> -->
+
+    <!-- Weather (turn it on with show_weather in ui.xml). Location: a city, lat,lon, or null for the phone's location.
+         Units: metric, imperial or standard (Kelvin). -->
+    <!-- <weather_format value="Weather: %main, Temp: %temp"/> -->
+    <!-- <weather_location value="San Antonio, Texas"/> -->
+    <!-- <weather_temperature_measure value="imperial"/> -->
+
+    <!-- The line under the output when the input is empty: %u = username, %d = device, %p = folder -->
+    <!-- <session_info_format value="%u@%d:%p"/> -->
+</BEHAVIOR>
