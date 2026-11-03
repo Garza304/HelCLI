@@ -90,6 +90,22 @@ default), `[#-]` or `|=.|`. Items that share a line now get a small gap between 
 set by `status_lines_gap` (two spaces by default; empty for none). Examples are in
 [my-config/behavior.xml](my-config/behavior.xml) and [my-config/ui.xml](my-config/ui.xml).
 
+### `ram` and `storage`
+
+Breakdowns of the phone's memory and storage, drawn with the same loading bars as the status lines.
+
+```
+ram               in use, cached (freed when apps need it), free, swap
+storage           apps, images, videos, audio, other files, system, free, SD cards, biggest apps
+storage apps      the 20 biggest apps (storage apps all: every app)
+storage cache     apps with the most cache, which is safe to clear
+storage access    give HelCLI Usage access
+```
+
+App sizes and the image/video/audio split need **Usage access** (Android 8 and later), which you turn
+on once with `storage access`. HelCLI only reads sizes with it and doesn't send them anywhere.
+Android doesn't let apps see other apps' memory, so `ram` has no per-app list.
+
 ### Weather
 
 Weather now comes from [Open-Meteo](https://open-meteo.com): free, with no API key or account.
