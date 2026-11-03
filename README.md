@@ -71,6 +71,19 @@ breaking the launcher. Pulls `theme.xml`, `ui.xml`, `behavior.xml`, `suggestions
 to get started. Works with any public repository and no account. It isn't full git: it
 downloads the files at the newest commit.
 
+### `reset` to the defaults
+
+```
+reset          # what it does and what it keeps
+reset now      # every setting back to the defaults, then restart
+reset undo     # put back the settings from before the reset
+```
+
+HelCLI saves every setting into its files the first time it runs, so after an update your phone
+keeps the old defaults. `reset now` gets the new ones: the theme, the layout, text and colors at the
+top of the screen, suggestions and the toolbar. It keeps your weather location and units, Claude
+usage setup and username, plus your aliases, notes, apps and saved themes.
+
 ### The top of the home screen
 
 New installs start with this layout, one color per item:
