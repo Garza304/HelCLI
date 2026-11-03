@@ -389,6 +389,11 @@ public class ThemeManager {
         context.getSharedPreferences(NAME_PREFS, Context.MODE_PRIVATE).edit().putString(NAME_KEY, name).apply();
     }
 
+    /** Forgets the applied theme's name (after "reset", the theme is HelCLI's own again). */
+    public static void forgetName(Context context) {
+        context.getSharedPreferences(NAME_PREFS, Context.MODE_PRIVATE).edit().remove(NAME_KEY).apply();
+    }
+
     /** The name of the theme applied last, for sysinfo. */
     public static String currentThemeName(Context context) {
         return context.getSharedPreferences(NAME_PREFS, Context.MODE_PRIVATE).getString(NAME_KEY, "Classic");

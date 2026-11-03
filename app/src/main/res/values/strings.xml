@@ -456,6 +456,12 @@
         \n$ ask -forget -> delete the key from HelCLI
         \n\nNeeds a Claude API key from platform.claude.com, and Android 8 or later. Each question costs a little on that account.
         \nSettings: ask_model (default claude-opus-5-5) and ask_effort (default low) in behavior.xml.</string>
+    <string name="help_reset">Puts every setting back to HelCLI\'s defaults: the theme, the layout, text and colors at the top of the screen, suggestions and the toolbar.
+        \n\nUsage:
+        \n$ reset -> what it does and what it keeps
+        \n$ reset now -> reset everything and restart HelCLI
+        \n$ reset undo -> put back the settings from before the reset
+        \n\nYour weather location and units, Claude usage setup, username, aliases, notes, apps and saved themes are kept. HelCLI saves every setting into its files the first time it runs, so after an update, reset is how to get the new defaults.</string>
     <string name="help_update">Updates HelCLI to the newest release on GitHub.
         \n\nUsage:
         \n$ update -> check whether there\'s a newer version
