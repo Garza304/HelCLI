@@ -76,6 +76,10 @@ import ohi.andre.consolelauncher.tuils.AllowEqualsSequence;
 import ohi.andre.consolelauncher.tuils.NetworkUtils;
 import ohi.andre.consolelauncher.tuils.OutlineEditText;
 import ohi.andre.consolelauncher.tuils.OutlineTextView;
+import ohi.andre.consolelauncher.tuils.StatusBars;
+import android.text.SpannableStringBuilder;
+import android.text.TextPaint;
+import android.text.style.AbsoluteSizeSpan;
 import ohi.andre.consolelauncher.managers.claude.ClaudeUsageUpdater;
 import ohi.andre.consolelauncher.managers.weather.OpenMeteo;
 import ohi.andre.consolelauncher.tuils.Tuils;
@@ -230,6 +234,7 @@ public class UIManager implements OnTouchListener {
                 cp = cp.replace(m.group(0), m.groupCount() == 2 ? m.group(charging ? 1 : 2) : Tuils.EMPTYSTRING);
             }
 
+            cp = StatusBars.replaceCode(cp, "bar", percentage);
             cp = value.matcher(cp).replaceAll(String.valueOf(percentage));
             cp = Tuils.patternNewline.matcher(cp).replaceAll(Tuils.NEWLINE);
 
@@ -339,6 +344,8 @@ public class UIManager implements OnTouchListener {
             copy = storagePatterns.get(20).matcher(copy).replaceAll(Matcher.quoteReplacement(String.valueOf(Tuils.formatSize((long) etot, Tuils.KILO))));
             copy = storagePatterns.get(21).matcher(copy).replaceAll(Matcher.quoteReplacement(String.valueOf(Tuils.formatSize((long) etot, Tuils.BYTE))));
 
+            copy = StatusBars.replaceCode(copy, "ebar", etot > 0 ? 100 - (eav * 100 / etot) : Double.NaN);
+            copy = StatusBars.replaceCode(copy, "bar", itot > 0 ? 100 - (iav * 100 / itot) : Double.NaN);
             copy = storagePatterns.get(22).matcher(copy).replaceAll(Matcher.quoteReplacement(Tuils.NEWLINE));
 
             copy = storagePatterns.get(23).matcher(copy).replaceAll(Matcher.quoteReplacement(String.valueOf(Tuils.formatSize((long) iav, Tuils.GIGA))));
@@ -427,6 +434,7 @@ public class UIManager implements OnTouchListener {
             copy = ramPatterns.get(10).matcher(copy).replaceAll(Matcher.quoteReplacement(String.valueOf(Tuils.formatSize((long) tot, Tuils.BYTE))));
 
             copy = ramPatterns.get(11).matcher(copy).replaceAll(Matcher.quoteReplacement(Tuils.NEWLINE));
+            copy = StatusBars.replaceCode(copy, "bar", tot > 0 ? 100 - (av * 100 / tot) : Double.NaN);
 
             updateText(Label.ram, Tuils.span(mContext, copy, color, labelSizes[Label.ram.ordinal()]));
 
@@ -705,8 +713,14 @@ public class UIManager implements OnTouchListener {
 //    you need to use labelIndexes[i]
     private void updateText(Label l, CharSequence s) {
         labelTexts[l.ordinal()] = s;
+        renderLine((int) labelIndexes[l.ordinal()]);
+    }
 
-        int base = (int) labelIndexes[l.ordinal()];
+    private String statusLinesGap = "  ", barStyle = StatusBars.DEFAULT_STYLE;
+
+//    puts together every item on one line at the top of the screen, with a gap between items, then draws any %bar
+    private void renderLine(int base) {
+        if(base < 0 || base >= labelViews.length || labelViews[base] == null) return;
 
         List<Float> indexs = new ArrayList<>();
         for(int count = 0; count < Label.values().length; count++) {
@@ -715,20 +729,50 @@ public class UIManager implements OnTouchListener {
 //        now I'm sorting the labels on the same line for decimals (2.1, 2.0, ...)
         Collections.sort(indexs);
 
-        CharSequence sequence = Tuils.EMPTYSTRING;
+        SpannableStringBuilder sequence = new SpannableStringBuilder();
 
         for(int c = 0; c < indexs.size(); c++) {
             float i = indexs.get(c);
 
             for(int a = 0; a < Label.values().length; a++) {
-                if(i == labelIndexes[a] && labelTexts[a] != null) sequence = TextUtils.concat(sequence, labelTexts[a]);
+                if(i == labelIndexes[a] && labelTexts[a] != null && labelTexts[a].length() > 0) {
+                    sequence.append(StatusBars.gapBetween(sequence, labelTexts[a], statusLinesGap));
+                    sequence.append(labelTexts[a]);
+                }
             }
         }
 
-        if(sequence.length() == 0) labelViews[base].setVisibility(View.GONE);
-        else {
-            labelViews[base].setVisibility(View.VISIBLE);
-            labelViews[base].setText(sequence);
+        TextView view = labelViews[base];
+        if(sequence.length() == 0) {
+            view.setVisibility(View.GONE);
+            return;
+        }
+
+        if(StatusBars.hasMarkers(sequence)) drawBars(view, sequence);
+
+        view.setVisibility(View.VISIBLE);
+        view.setText(sequence);
+    }
+
+//    turns %bar markers into bars as wide as the line allows
+    private void drawBars(TextView view, SpannableStringBuilder sequence) {
+        int widthChars = 0;
+        int width = view.getWidth() - view.getTotalPaddingLeft() - view.getTotalPaddingRight();
+        if(width > 0) {
+            TextPaint paint = new TextPaint(view.getPaint());
+//            measure at the size of the text the first bar belongs to (every label sets its own size)
+            int markerAt = TextUtils.indexOf(sequence, StatusBars.START);
+            AbsoluteSizeSpan[] sizes = markerAt >= 0 ? sequence.getSpans(markerAt, markerAt + 1, AbsoluteSizeSpan.class) : null;
+            if(sizes != null && sizes.length > 0) paint.setTextSize(sizes[sizes.length - 1].getSize());
+            float charWidth = paint.measureText("0");
+//            one character spare, so a full line never wraps
+            if(charWidth > 0) widthChars = (int) (width / charWidth) - 1;
+        }
+
+        List<StatusBars.Replacement> replacements = StatusBars.layout(sequence, widthChars, barStyle);
+        for(int i = replacements.size() - 1; i >= 0; i--) {
+            StatusBars.Replacement r = replacements.get(i);
+            sequence.replace(r.start, r.end, r.bar);
         }
     }
 
@@ -1081,6 +1125,10 @@ public class UIManager implements OnTouchListener {
         margins[4] = getListOfIntValues(XMLPrefsManager.get(Ui.toolbar_margins), 4, 0);
         margins[5] = getListOfIntValues(XMLPrefsManager.get(Ui.suggestions_area_margin), 4, 0);
 
+        statusLinesGap = XMLPrefsManager.get(Ui.status_lines_gap);
+        if(statusLinesGap == null) statusLinesGap = Tuils.EMPTYSTRING;
+        barStyle = XMLPrefsManager.get(Ui.bar_style);
+
         AllowEqualsSequence sequence = new AllowEqualsSequence(indexes, Label.values());
 //        there are more labels than lines on screen: extra lines join the last one instead of disappearing
         sequence.limitKeys(labelViews.length - 1);
@@ -1105,6 +1153,12 @@ public class UIManager implements OnTouchListener {
 
             if(count >= sequence.getMinKey() && count <= sequence.getMaxKey() && os.length > 0) {
                 labelViews[count].setTypeface(Tuils.getTypeface(context));
+
+//                bars fill the rest of the line, so draw them again when the line's width is known or changes
+                final int line = count;
+                labelViews[count].addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
+                    if(right - left != oldRight - oldLeft && handler != null) handler.post(() -> renderLine(line));
+                });
 
                 int ec = effectiveCount++;
 

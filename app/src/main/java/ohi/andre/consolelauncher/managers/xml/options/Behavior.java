@@ -327,7 +327,7 @@ public enum Behavior implements XMLPrefsSave {
 
         @Override
         public String info() {
-            return "Define the RAM format";
+            return "Define the RAM format. %bar draws a bar of RAM in use that fills the rest of the line (%bar:20 = 20 characters wide)";
         }
 
         @Override
@@ -343,7 +343,7 @@ public enum Behavior implements XMLPrefsSave {
 
         @Override
         public String info() {
-            return "Define the battery format";
+            return "Define the battery format. %bar draws a battery level bar that fills the rest of the line (%bar:20 = 20 characters wide)";
         }
 
         @Override
@@ -359,7 +359,7 @@ public enum Behavior implements XMLPrefsSave {
 
         @Override
         public String info() {
-            return "Define the storage format";
+            return "Define the storage format. %bar draws a bar of internal storage in use, %ebar of external storage; they fill the rest of the line (%bar:20 = 20 characters wide)";
         }
 
         @Override
@@ -1229,7 +1229,7 @@ public enum Behavior implements XMLPrefsSave {
 
         @Override
         public String info() {
-            return "The Claude usage line. Empty = automatic. Codes: %5h %7d (plan used %), %5hreset %7dreset (reset times), %spent %budget %api (API spend this month in dollars, budget, % of budget), %updated (age of the plan numbers)";
+            return "The Claude usage line. Empty = automatic. Codes: %5h %7d (plan used %), %5hreset %7dreset (reset times), %spent %budget %api (API spend this month in dollars, budget, % of budget), %updated (age of the plan numbers). Bars: %5hbar %7dbar %apibar, or %bar for the highest; they fill the rest of the line (%bar:20 = 20 wide)";
         }
 
         @Override

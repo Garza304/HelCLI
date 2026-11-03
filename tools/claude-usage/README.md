@@ -70,4 +70,14 @@ All in `behavior.xml`, `ui.xml` and `theme.xml` (so they work with `git pull` an
 | `claude_budget_usd` (behavior) | Monthly API budget (`usage -budget` sets it) |
 | `claude_update_time` (behavior) | Seconds between updates (at least 300) |
 
-Example: `<claude_format value="Claude %5h% (resets %5hreset) · week %7d%"/>`
+Bars: `%5hbar`, `%7dbar` and `%apibar` draw a loading bar for each value, and `%bar` for the highest.
+A bar fills the rest of its line, or `%5hbar:12` makes it 12 characters wide.
+
+Examples:
+
+```xml
+<claude_format value="Claude %5h% (resets %5hreset) · week %7d%"/>
+<claude_format value="Claude 5h %5h% %5hbar"/>
+```
+
+shows `Claude 5h 24% [████░░░░░░░░░░░░░░░░░]`, filling the line.

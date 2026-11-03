@@ -74,6 +74,22 @@ Plan limits come from Claude Code's documented status line data, through a small
 computer and a secret gist. API spend comes from Anthropic's Usage and Cost Analytics API.
 Setup, privacy notes and every setting: [tools/claude-usage/](tools/claude-usage/README.md).
 
+### Loading bars and spacing on the status lines
+
+Add `%bar` to `ram_format`, `storage_format` (`%ebar` for external storage), `battery_format` or
+`claude_format` (`%5hbar`, `%7dbar`, `%apibar`) to draw a text loading bar. It fills the rest of
+its line, or `%bar:20` makes it 20 characters wide:
+
+```
+RAM [██████████░░░░░░░░░░░░░░░░░░░░░░]
+Storage 64% [████████████████████░░░░░░░░░░░]
+```
+
+`bar_style` (ui.xml) sets the characters: left end, filled, empty, right end, like `[█░]` (the
+default), `[#-]` or `|=.|`. Items that share a line now get a small gap between them,
+set by `status_lines_gap` (two spaces by default; empty for none). Examples are in
+[my-config/behavior.xml](my-config/behavior.xml) and [my-config/ui.xml](my-config/ui.xml).
+
 ### Weather
 
 Weather now comes from [Open-Meteo](https://open-meteo.com): free, with no API key or account.

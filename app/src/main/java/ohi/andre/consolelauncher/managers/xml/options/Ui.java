@@ -1019,6 +1019,38 @@ public enum Ui implements XMLPrefsSave {
         public String type() {
             return XMLPrefsSave.INTEGER;
         }
+    },
+    status_lines_gap {
+        @Override
+        public String defaultValue() {
+            return "  ";
+        }
+
+        @Override
+        public String info() {
+            return "The space added between items that share a line at the top of the screen (empty = none)";
+        }
+
+        @Override
+        public String type() {
+            return XMLPrefsSave.TEXT;
+        }
+    },
+    bar_style {
+        @Override
+        public String defaultValue() {
+            return "[\u2588\u2591]";
+        }
+
+        @Override
+        public String info() {
+            return "The characters of %bar loading bars: left end, filled, empty, right end (\"[#-]\"), or just filled and empty (\"\u2588\u2591\")";
+        }
+
+        @Override
+        public String type() {
+            return XMLPrefsSave.TEXT;
+        }
     };
 
     @Override

@@ -94,6 +94,19 @@ public class ClaudeUsageTest {
     }
 
     @Test
+    public void addsBars() throws Exception {
+        ClaudeUsage.Plan p = ClaudeUsage.parsePlan(PLAN, 1738421000L);
+        String line = ClaudeUsage.format("5h %5hbar:10 week %7dbar:10 api %apibar:6", p, 25d, 50, 0, UTC);
+        assertEquals("5h [██░░░░░░] week [███░░░░░] api [██░░]",
+                ohi.andre.consolelauncher.tuils.StatusBars.render(line, 80, "[█░]"));
+
+//        %bar follows the highest value; without data it's empty
+        String top = ClaudeUsage.format("%bar:6", p, null, 0, 0, UTC);
+        assertEquals("[██░░]", ohi.andre.consolelauncher.tuils.StatusBars.render(top, 80, "[█░]"));
+        assertEquals("[░░░░]", ohi.andre.consolelauncher.tuils.StatusBars.render(ClaudeUsage.format("%bar:6", null, null, 0, 0, UTC), 80, "[█░]"));
+    }
+
+    @Test
     public void picksTheHighestPercentage() {
         ClaudeUsage.Plan p = new ClaudeUsage.Plan(10d, null, 85d, null, null);
         assertEquals(85, ClaudeUsage.highest(p, 20d, 100), 0.001);

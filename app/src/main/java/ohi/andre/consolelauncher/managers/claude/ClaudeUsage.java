@@ -13,6 +13,8 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import ohi.andre.consolelauncher.tuils.StatusBars;
+
 /**
  * The Claude usage line on the home screen. It combines two sources, either of which can be missing:
  *
@@ -182,6 +184,16 @@ public class ClaudeUsage {
      * @param budgetUsd  0 or less means no budget
      */
     public static String format(String format, Plan plan, Double spentUsd, double budgetUsd, long nowMillis, TimeZone zone) {
+//        bars first: their codes start like the others (%5hbar would otherwise read as %5h + "bar")
+        double fiveP = plan != null && plan.fiveHour != null ? plan.fiveHour : Double.NaN;
+        double sevenP = plan != null && plan.sevenDay != null ? plan.sevenDay : Double.NaN;
+        double apiP = spentUsd != null && budgetUsd > 0 ? spentUsd / budgetUsd * 100 : Double.NaN;
+        double top = highest(plan, spentUsd, budgetUsd);
+        format = StatusBars.replaceCode(format, "5hbar", fiveP);
+        format = StatusBars.replaceCode(format, "7dbar", sevenP);
+        format = StatusBars.replaceCode(format, "apibar", apiP);
+        format = StatusBars.replaceCode(format, "bar", top < 0 ? Double.NaN : top);
+
         String five = plan != null && plan.fiveHour != null ? percent(plan.fiveHour) : "-";
         String seven = plan != null && plan.sevenDay != null ? percent(plan.sevenDay) : "-";
         String fiveReset = plan != null && plan.fiveHourReset != null ? time(plan.fiveHourReset, "HH:mm", zone) : "-";
