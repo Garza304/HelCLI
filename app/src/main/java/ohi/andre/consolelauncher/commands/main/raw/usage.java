@@ -15,6 +15,7 @@ import ohi.andre.consolelauncher.commands.main.MainPack;
 import ohi.andre.consolelauncher.commands.main.specific.ParamCommand;
 import ohi.andre.consolelauncher.managers.claude.ClaudeUsage;
 import ohi.andre.consolelauncher.managers.claude.ClaudeUsageUpdater;
+import ohi.andre.consolelauncher.managers.claude.ClipboardKey;
 import ohi.andre.consolelauncher.managers.claude.KeyLink;
 import ohi.andre.consolelauncher.managers.xml.XMLPrefsManager;
 import ohi.andre.consolelauncher.managers.xml.classes.XMLPrefsSave;
@@ -106,13 +107,16 @@ public class usage extends ParamCommand {
             @Override
             public String exec(ExecutePack pack) {
 //                read the key from the clipboard, so it never appears on screen or in the command history
-                ClipboardManager clipboard = (ClipboardManager) pack.context.getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = clipboard == null ? null : clipboard.getPrimaryClip();
-                String key = clip != null && clip.getItemCount() > 0 && clip.getItemAt(0).getText() != null
-                        ? clip.getItemAt(0).getText().toString().trim() : null;
+                String clip = ClipboardKey.read(pack.context);
+                String key = ClipboardKey.find(clip);
 
-                if (!ClaudeUsage.looksLikeAdminKey(key)) {
-                    return "Copy the key first, then run usage -key again (or run usage -link to make one and link it)." + Tuils.NEWLINE
+                if (key != null && !ClaudeUsage.looksLikeAdminKey(key)) {
+                    return "That's an ordinary API key (" + ClaudeUsage.maskKey(key) + "), which can't read costs. It works for ask (ask -key)."
+                            + " The usage line needs an Admin key: usage -link.";
+                }
+                if (key == null) {
+                    return ClipboardKey.describe(clip) + Tuils.NEWLINE
+                            + "Copy the key first, then run usage -key again (or run usage -link to make one and link it)." + Tuils.NEWLINE
                             + "Claude Console: an Admin API key (sk-ant-admin01-...) from platform.claude.com/settings/admin-keys."
                             + " It needs an organization and the admin role, and it can manage your whole organization,"
                             + " so give HelCLI its own key with a short expiration date." + Tuils.NEWLINE
@@ -120,15 +124,10 @@ public class usage extends ParamCommand {
                 }
 
                 ClaudeUsageUpdater.saveAdminKey(pack.context, key);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    try {
-                        clipboard.clearPrimaryClip();
-                    } catch (Exception ignored) {
-                    }
-                }
+                boolean cleared = ClipboardKey.clear(pack.context);
                 LocalBroadcastManager.getInstance(pack.context.getApplicationContext()).sendBroadcast(new Intent(ClaudeUsageUpdater.ACTION_UPDATE));
                 return "Saved key " + ClaudeUsage.maskKey(key) + " (kept in HelCLI's private storage, not in the config files)."
-                        + (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P ? " The clipboard was cleared." : " Clear your clipboard now.")
+                        + (cleared ? " The clipboard was cleared." : " Clear your clipboard now.")
                         + (XMLPrefsManager.getBoolean(Ui.show_claude) ? "" : Tuils.NEWLINE + "Show the line with: usage -show");
             }
         },

@@ -46,8 +46,8 @@ public class KeyLink {
 
     /** Plain Java, so it can be unit tested. */
     public static Found classify(Kind waitingFor, String clip) {
-        if (clip == null) return Found.NOTHING;
-        String c = clip.trim();
+        String c = ClipboardKey.find(clip);
+        if (c == null) return Found.NOTHING;
         boolean admin = ClaudeUsage.looksLikeAdminKey(c), api = AskKey.looksLikeApiKey(c);
         if (waitingFor == Kind.ADMIN && admin) return Found.KEY;
 //        a Claude Enterprise analytics key (sk-ant-api01-) also looks like an API key: usage takes it
@@ -104,13 +104,7 @@ public class KeyLink {
             return;
         }
 
-        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-        String clip = null;
-        try {
-            ClipData data = clipboard == null ? null : clipboard.getPrimaryClip();
-            if (data != null && data.getItemCount() > 0 && data.getItemAt(0).getText() != null) clip = data.getItemAt(0).getText().toString().trim();
-        } catch (Exception ignored) {
-        }
+        String clip = ClipboardKey.find(ClipboardKey.read(context));
 
         Found found = classify(kind, clip);
         if (found == Found.KEY) {
@@ -121,7 +115,7 @@ public class KeyLink {
             } else {
                 AskKey.save(context, clip);
             }
-            boolean cleared = clear(clipboard);
+            boolean cleared = ClipboardKey.clear(context);
             Tuils.sendOutput(context, "Linked: saved the " + kind.name + " " + ClaudeUsage.maskKey(clip)
                     + " in HelCLI's private storage." + (cleared ? " The clipboard was cleared." : " Clear your clipboard now.")
                     + Tuils.NEWLINE + (kind == Kind.ADMIN ? "The usage line updates now." : "Try: ask what can you do?"));
@@ -138,16 +132,6 @@ public class KeyLink {
         } else {
             Tuils.sendOutput(context, "Waiting for the " + kind.name + ": tap Copy on the key page, then come back to HelCLI."
                     + " (" + (kind == Kind.ADMIN ? "usage" : "ask") + " -link opens the page again.)");
-        }
-    }
-
-    private static boolean clear(ClipboardManager clipboard) {
-        if (clipboard == null || Build.VERSION.SDK_INT < Build.VERSION_CODES.P) return false;
-        try {
-            clipboard.clearPrimaryClip();
-            return true;
-        } catch (Exception e) {
-            return false;
         }
     }
 
