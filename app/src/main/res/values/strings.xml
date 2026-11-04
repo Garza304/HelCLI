@@ -398,7 +398,8 @@
         \nAPI spend: this month\'s Claude API cost, from Anthropic\'s usage and cost API (needs an Admin API key from an organization).
         \n\n-show / -hide -> show or hide the line
         \n-plan [user/gist_id] -> where your plan limits are published (-plan off to stop)
-        \n-link -> opens the Claude Console page where you make the Admin key; copy it, come back, and HelCLI saves it
+        \n-link plan -> your Pro/Max limits: opens the setup guide (works with a personal account)
+        \n-link api -> API spend: opens the Admin keys page (organizations only); copy the key, come back, and HelCLI saves it
         \n-key -> save the Admin API key you copied to the clipboard
         \n-forget -> delete the saved Admin API key
         \n-budget [dollars] -> monthly API budget, to show a % (0 = none)

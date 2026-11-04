@@ -368,6 +368,49 @@ public class TerminalManager {
         writeToView(s);
     }
 
+    /** Marks the text of a live line, so the next update finds it. */
+    private static final class LiveSpan {
+        final String id;
+
+        LiveSpan(String id) {
+            this.id = id;
+        }
+    }
+
+    /**
+     * A line that changes in place: the first call adds it at the end of the terminal, later calls
+     * with the same id replace its text. After the call with last = true it stays as it is.
+     * If the line is gone (the terminal was cleared), it's added again.
+     */
+    public void setLive(final String id, final CharSequence text, int color, final boolean last) {
+        final int c = color == NO_COLOR ? XMLPrefsManager.getColor(Theme.output_color) : color;
+        mTerminalView.post(() -> {
+            CharSequence current = mTerminalView.getText();
+            if(!(current instanceof android.text.Editable)) mTerminalView.setText(current, TextView.BufferType.EDITABLE);
+            android.text.Editable e = mTerminalView.getEditableText();
+            if(e == null) return;
+
+            SpannableString s = new SpannableString(text);
+            s.setSpan(new ForegroundColorSpan(c), 0, s.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            LiveSpan found = null;
+            for(LiveSpan l : e.getSpans(0, e.length(), LiveSpan.class)) if(l.id.equals(id)) found = l;
+
+            if(found != null) {
+                int start = e.getSpanStart(found), end = e.getSpanEnd(found);
+                e.removeSpan(found);
+                e.replace(start, end, s);
+                if(!last) e.setSpan(new LiveSpan(id), start, start + s.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            } else {
+                e.append(Tuils.NEWLINE);
+                int start = e.length();
+                e.append(s);
+                if(!last) e.setSpan(new LiveSpan(id), start, e.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                scrollToEnd();
+            }
+        });
+    }
+
     public String getTerminalText() {
         return mTerminalView.getText().toString();
     }

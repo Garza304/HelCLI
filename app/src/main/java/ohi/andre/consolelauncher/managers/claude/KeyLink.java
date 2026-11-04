@@ -76,7 +76,7 @@ public class KeyLink {
                     + "1. Click Create admin key, name it HelCLI and pick a short expiration (it can manage your whole organization)." + Tuils.NEWLINE
                     + "2. Tap Copy, then come back to HelCLI. It picks the key up from the clipboard." + Tuils.NEWLINE
                     + "Needs the admin role in a Claude Console organization. Personal account? Set one up first at"
-                    + " platform.claude.com/settings/organization, or skip API spend: for your Pro/Max limits use usage -plan." + Tuils.NEWLINE
+                    + " platform.claude.com/settings/organization, or skip API spend: for your Pro/Max limits use usage -link plan." + Tuils.NEWLINE
                     + "Claude Enterprise: create a key with only the read:analytics scope in claude.ai > Organization settings > API,"
                     + " copy it, and come back.";
         }

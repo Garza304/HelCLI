@@ -30,6 +30,29 @@ import ohi.andre.consolelauncher.tuils.interfaces.Reloadable;
  */
 public class usage extends ParamCommand {
 
+    static final String PLAN_GUIDE = "https://github.com/Garza304/HelCLI/blob/master/tools/claude-usage/README.md#plan-limits-claudeai-pro-max-ultra";
+
+    private static String linkChoices() {
+        return "Which usage should the home screen show?" + Tuils.NEWLINE
+                + "  usage -link plan -> your Pro/Max limits (5-hour and weekly %). Works with a personal account:"
+                + " a small script on the computer where you use Claude Code publishes them." + Tuils.NEWLINE
+                + "  usage -link api -> this month's API spend. Needs a Claude Console organization where you're an admin;"
+                + " personal accounts don't have the Admin keys page.";
+    }
+
+    private static String openPlanGuide(ExecutePack pack) {
+        try {
+            android.content.Intent i = new android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(PLAN_GUIDE));
+            i.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
+            pack.context.startActivity(i);
+        } catch (Exception e) {
+            return "Open " + PLAN_GUIDE;
+        }
+        return "Opening the setup guide for plan limits." + Tuils.NEWLINE
+                + "On your computer: run the script it describes once, and it prints a gist name." + Tuils.NEWLINE
+                + "Then here: usage -plan yourname/gist_id";
+    }
+
     private static String write(ExecutePack pack, XMLPrefsSave save, String value) {
         save.parent().write(save, value);
         ((Reloadable) pack.context).addMessage(save.parent().path(), save.label() + " -> " + value);
@@ -99,8 +122,24 @@ public class usage extends ParamCommand {
         },
         link {
             @Override
+            public int[] args() {
+                return new int[] {CommandAbstraction.PLAIN_TEXT};
+            }
+
+            @Override
             public String exec(ExecutePack pack) {
-                return KeyLink.start(pack.context, KeyLink.Kind.ADMIN);
+                String what = pack.getString().trim().toLowerCase(java.util.Locale.ROOT);
+                if (what.startsWith("api") || what.startsWith("admin") || what.startsWith("cost")) {
+                    return KeyLink.start(pack.context, KeyLink.Kind.ADMIN);
+                }
+                if (what.startsWith("plan") || what.startsWith("limit")) return openPlanGuide(pack);
+                return linkChoices();
+            }
+
+//            the Admin keys page only exists for organizations, so ask first instead of opening it
+            @Override
+            public String onNotArgEnough(ExecutePack pack, int n) {
+                return linkChoices();
             }
         },
         key {
