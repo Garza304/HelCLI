@@ -9,6 +9,8 @@ import android.os.Build;
 import ohi.andre.consolelauncher.R;
 import ohi.andre.consolelauncher.commands.main.specific.SimpleParamCommand;
 import ohi.andre.consolelauncher.managers.ask.AskKey;
+import ohi.andre.consolelauncher.managers.claude.ClaudeUsage;
+import ohi.andre.consolelauncher.managers.claude.ClipboardKey;
 import ohi.andre.consolelauncher.managers.claude.KeyLink;
 import ohi.andre.consolelauncher.commands.ExecutePack;
 import ohi.andre.consolelauncher.managers.xml.XMLPrefsManager;
@@ -51,6 +53,11 @@ public class ask extends SimpleParamCommand {
     public String onText(ExecutePack pack, String input) {
         final Context c = pack.context;
 
+//        the one-word forms without a dash still work ("ask key")
+        String word = input.trim().toLowerCase(java.util.Locale.ROOT);
+        if (word.equals("key")) return saveKey(c);
+        if (word.equals("link")) return KeyLink.start(c, KeyLink.Kind.API);
+
 //        the SDK's JSON library needs Android 8
         if (Build.VERSION.SDK_INT < 26) return "ask needs Android 8 or later";
 
@@ -79,23 +86,24 @@ public class ask extends SimpleParamCommand {
 
     /** Reads the key from the clipboard, so it never appears on screen or in the command history. */
     private static String saveKey(Context c) {
-        ClipboardManager clipboard = (ClipboardManager) c.getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clip = clipboard == null ? null : clipboard.getPrimaryClip();
-        String key = clip != null && clip.getItemCount() > 0 && clip.getItemAt(0).getText() != null
-                ? clip.getItemAt(0).getText().toString().trim() : null;
+        String clip = ClipboardKey.read(c);
+        String key = ClipboardKey.find(clip);
 
+        if (key == null) {
+            return ClipboardKey.describe(clip) + Tuils.NEWLINE
+                    + "Copy your Claude API key (sk-ant-api03-...), then run ask -key again. Or run ask -link to make one.";
+        }
+        if (key.startsWith("sk-ant-admin")) {
+            return "That's an Admin key (" + ClaudeUsage.maskKey(key) + "), which can't ask Claude questions; it's for the usage line"
+                    + " (usage -key). ask needs an ordinary API key (sk-ant-api03-...): ask -link makes one.";
+        }
         if (!AskKey.looksLikeApiKey(key)) {
-            return "Copy your Claude API key (sk-ant-api03-...) first, then run ask -key again. Or run ask -link to make one.";
+            return "That isn't an API key (" + ClaudeUsage.maskKey(key) + "). ask needs one that starts with sk-ant-api03-: ask -link makes one.";
         }
         AskKey.save(c, key);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            try {
-                clipboard.clearPrimaryClip();
-            } catch (Exception ignored) {
-            }
-        }
-        return "Saved your Claude API key (kept in HelCLI's private storage, not in the config files)."
-                + (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P ? " The clipboard was cleared." : " Clear your clipboard now.")
+        boolean cleared = ClipboardKey.clear(c);
+        return "Saved your Claude API key " + ClaudeUsage.maskKey(key) + " (kept in HelCLI's private storage, not in the config files)."
+                + (cleared ? " The clipboard was cleared." : " Clear your clipboard now.")
                 + Tuils.NEWLINE + "Try: ask what's a good name for a terminal launcher?";
     }
 
