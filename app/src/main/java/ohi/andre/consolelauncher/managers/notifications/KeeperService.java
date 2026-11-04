@@ -186,7 +186,7 @@ public class KeeperService extends Service {
             }
 
             NotificationCompat.Builder builder = new NotificationCompat.Builder(c, BuildConfig.APPLICATION_ID)
-                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setSmallIcon(R.drawable.ic_stat_helcli)
                     .setTicker(c.getString(R.string.start_notification))
                     .setWhen(System.currentTimeMillis())
                     .setPriority(priority)
@@ -225,7 +225,7 @@ public class KeeperService extends Service {
             Intent i = new Intent(PublicIOReceiver.ACTION_CMD);
 
             NotificationCompat.Action.Builder actionBuilder = new NotificationCompat.Action.Builder(
-                    R.mipmap.ic_launcher,
+                    R.drawable.ic_stat_helcli,
                     cmdLabel,
                     PendingIntent.getBroadcast(c.getApplicationContext(), 40, i, Tuils.pendingIntentFlags(PendingIntent.FLAG_UPDATE_CURRENT)))
                         .addRemoteInput(remoteInput);
@@ -235,7 +235,7 @@ public class KeeperService extends Service {
             return builder.build();
         } else {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(c)
-                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setSmallIcon(R.drawable.ic_stat_helcli)
                     .setTicker(c.getString(R.string.start_notification))
                     .setWhen(System.currentTimeMillis())
                     .setPriority(priority)
