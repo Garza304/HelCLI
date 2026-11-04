@@ -128,7 +128,8 @@ and weekly %) and/or this month's Claude API spend against a budget.
 ```
 usage -show                 # show the line
 usage -plan you/gist_id     # plan limits, published by tools/claude-usage/helcli_usage.py
-usage -link                 # API spend: opens the Admin keys page; copy the key, come back, done
+usage -link plan            # Pro/Max limits: opens the setup guide (works with a personal account)
+usage -link api             # API spend (organizations): opens the Admin keys page; copy the key, come back
 usage -budget 50            # monthly API budget, to show a %
 usage -status               # what's set up
 ```

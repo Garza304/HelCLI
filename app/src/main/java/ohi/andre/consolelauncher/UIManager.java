@@ -115,6 +115,10 @@ public class UIManager implements OnTouchListener {
     public static String ACTION_WEATHER_DELAY = BuildConfig.APPLICATION_ID + "ui_weather_delay";
     public static String ACTION_WEATHER_MANUAL_UPDATE = BuildConfig.APPLICATION_ID + "ui_weather_update";
 
+//    a line in the terminal that changes in place (the "Claude is thinking" line)
+    public static final String ACTION_LIVE_LINE = BuildConfig.APPLICATION_ID + ".ui_live_line";
+    public static final String LIVE_ID = "live_id", LIVE_TEXT = "live_text", LIVE_COLOR = "live_color", LIVE_LAST = "live_last";
+
     public static String FILE_NAME = "fileName";
     public static String PREFS_NAME = "ui";
 
@@ -928,6 +932,7 @@ public class UIManager implements OnTouchListener {
 //        filter.addAction(ACTION_CLEAR_SUGGESTIONS);
         filter.addAction(ACTION_LOGTOFILE);
         filter.addAction(ACTION_CLEAR);
+        filter.addAction(ACTION_LIVE_LINE);
         filter.addAction(ACTION_WEATHER);
         filter.addAction(ACTION_WEATHER_GOT_LOCATION);
         filter.addAction(ACTION_WEATHER_DELAY);
@@ -965,6 +970,12 @@ public class UIManager implements OnTouchListener {
                         Tuils.sendOutput(context, "Logged to " + file.getAbsolutePath());
                     } catch (Exception e) {
                         Tuils.sendOutput(Color.RED, context, e.toString());
+                    }
+                } else if(action.equals(ACTION_LIVE_LINE)) {
+                    String id = intent.getStringExtra(LIVE_ID);
+                    String text = intent.getStringExtra(LIVE_TEXT);
+                    if(id != null && text != null) {
+                        mTerminalAdapter.setLive(id, text, intent.getIntExtra(LIVE_COLOR, TerminalManager.NO_COLOR), intent.getBooleanExtra(LIVE_LAST, true));
                     }
                 } else if(action.equals(ACTION_CLEAR)) {
                     mTerminalAdapter.clear();

@@ -74,11 +74,19 @@ public class ask extends SimpleParamCommand {
         String note = "";
         if (!prefs(c).getBoolean(WARNED, false)) {
             prefs(c).edit().putBoolean(WARNED, true).apply();
-            note = " (each question costs a little on your Claude API account)";
+            note = "(Each question costs a little on your Claude API account.)";
         }
 
-        new Thread(() -> Tuils.sendOutput(c, ohi.andre.consolelauncher.managers.ask.AskClaude.ask(key, AskKey.workspace(c), model, effort, question))).start();
-        return "Asking Claude..." + note;
+//        a line in the Claude color that shows it's working, then how long it took
+        if (note.length() > 0) Tuils.sendOutput(c, note.trim());
+        final ohi.andre.consolelauncher.managers.ask.Thinking thinking = ohi.andre.consolelauncher.managers.ask.Thinking.start(c,
+                XMLPrefsManager.getColor(ohi.andre.consolelauncher.managers.xml.options.Theme.claude_color));
+        new Thread(() -> {
+            String answer = ohi.andre.consolelauncher.managers.ask.AskClaude.ask(key, AskKey.workspace(c), model, effort, question);
+            thinking.stop();
+            Tuils.sendOutput(c, answer);
+        }).start();
+        return null;
     }
 
     private static SharedPreferences prefs(Context c) {
