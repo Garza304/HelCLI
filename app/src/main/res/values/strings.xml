@@ -455,6 +455,7 @@
         \n$ ask -new -> start a new conversation (it also resets after 30 minutes)
         \n$ ask -link -> opens the Claude Console page where you make an API key; copy it, come back, and HelCLI saves it
         \n$ ask -key -> save the Claude API key you copied (from the clipboard)
+        \n$ ask -workspace wrkspc_... -> only for a key that isn\'t tied to one workspace: which workspace to use (ask -workspace off to stop)
         \n$ ask -forget -> delete the key from HelCLI
         \n\nNeeds a Claude API key from platform.claude.com, and Android 8 or later. Each question costs a little on that account.
         \nSettings: ask_model (default claude-opus-5-5) and ask_effort (default low) in behavior.xml.</string>

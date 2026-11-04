@@ -42,4 +42,13 @@ public class AskClaudeTest {
         assertEquals(BetaOutputConfig.Effort.LOW, AskClaude.effort("nonsense"));
         assertEquals(BetaOutputConfig.Effort.XHIGH, AskClaude.effort(" XHigh "));
     }
+
+    @Test
+    public void explainsTheWorkspaceErrors() {
+        String notScoped = "This API key is not scoped to a workspace, so this request must include the anthropic-workspace-id header with the ID of the workspace to use.";
+        org.junit.Assert.assertTrue(AskClaude.workspaceHelp(notScoped).contains("ask -workspace"));
+        org.junit.Assert.assertTrue(AskClaude.workspaceHelp("Workspace `wrkspc_01abc` not found.").contains("doesn't know that workspace"));
+        org.junit.Assert.assertNull(AskClaude.workspaceHelp("max_tokens: too large"));
+        org.junit.Assert.assertNull(AskClaude.workspaceHelp(null));
+    }
 }
