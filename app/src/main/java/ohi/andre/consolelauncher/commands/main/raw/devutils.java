@@ -34,7 +34,7 @@ public class devutils extends ParamCommand {
 
                 NotificationManagerCompat.from(pack.context).notify(200,
                         new NotificationCompat.Builder(pack.context)
-                            .setSmallIcon(R.mipmap.ic_launcher)
+                            .setSmallIcon(R.drawable.ic_stat_helcli)
                             .setContentTitle(title)
                             .setContentText(txt)
                             .build());

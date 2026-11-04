@@ -184,7 +184,7 @@ public class MusicService extends Service implements
         Notification not;
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId);
         builder.setContentIntent(pendInt)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.drawable.ic_stat_helcli)
                 .setTicker(songTitle)
                 .setOngoing(true)
                 .setContentTitle("Playing")
@@ -199,7 +199,7 @@ public class MusicService extends Service implements
             Intent i = new Intent(PublicIOReceiver.ACTION_CMD);
             i.putExtra(MainManager.MUSIC_SERVICE, true);
 
-            NotificationCompat.Action action = new NotificationCompat.Action.Builder(R.mipmap.ic_launcher, label,
+            NotificationCompat.Action action = new NotificationCompat.Action.Builder(R.drawable.ic_stat_helcli, label,
                     PendingIntent.getBroadcast(context.getApplicationContext(), 10, i, Tuils.pendingIntentFlags(PendingIntent.FLAG_UPDATE_CURRENT)))
                     .addRemoteInput(remoteInput)
                     .build();
