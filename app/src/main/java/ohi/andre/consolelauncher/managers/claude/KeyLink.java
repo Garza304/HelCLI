@@ -81,7 +81,7 @@ public class KeyLink {
                     + " copy it, and come back.";
         }
         return where + Tuils.NEWLINE
-                + "1. Click Create key and name it HelCLI." + Tuils.NEWLINE
+                + "1. Click Create key, name it HelCLI, and pick one workspace for it (Default is fine), so HelCLI doesn't need a workspace ID." + Tuils.NEWLINE
                 + "2. Tap Copy, then come back to HelCLI. It picks the key up from the clipboard." + Tuils.NEWLINE
                 + "Questions are billed to that Claude Console account; a Claude Pro or Max plan doesn't cover the API.";
     }
@@ -128,7 +128,7 @@ public class KeyLink {
         if (found == Found.OTHER_KIND) {
             Tuils.sendOutput(context, kind == Kind.ADMIN
                     ? "That's an ordinary API key, not an Admin key, so it can't read costs. (It works for ask: ask -link.) Copy the Admin key and come back."
-                    : "That's an Admin key, which can't ask Claude questions. Copy an ordinary API key (sk-ant-api03-...) and come back.");
+                    : "That's an Admin key, which can't ask Claude questions. Copy an ordinary API key and come back.");
         } else {
             Tuils.sendOutput(context, "Waiting for the " + kind.name + ": tap Copy on the key page, then come back to HelCLI."
                     + " (" + (kind == Kind.ADMIN ? "usage" : "ask") + " -link opens the page again.)");

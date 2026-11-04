@@ -128,6 +128,7 @@ public class ClaudeUsageTest {
         assertTrue(ClaudeUsage.looksLikeAdminKey("sk-ant-api01-abcdefghijklmnopqrstuvwxyz0123")); // Enterprise, read:analytics
         assertFalse(ClaudeUsage.looksLikeAdminKey("sk-ant-api03-abcdefghijklmnopqrstuvwxyz0123")); // ordinary API key
         assertFalse(ClaudeUsage.looksLikeAdminKey("hello"));
+        assertTrue(ClaudeUsage.looksLikeAdminKey("sk-ant-usr-1sabcdefghijklmnopqrstuvwxyz0123")); // personal key, all workspaces
         assertEquals("sk-ant-admin01-…0123", ClaudeUsage.maskKey("sk-ant-admin01-abcdefghijklmnopqrstuvwxyz0123"));
     }
 }

@@ -9,6 +9,7 @@ public class KeyLinkTest {
     private static final String ADMIN = "sk-ant-admin01-abcdefghijklmnopqrstuvwxyz0123456789";
     private static final String API = "sk-ant-api03-abcdefghijklmnopqrstuvwxyz0123456789";
     private static final String ENTERPRISE = "sk-ant-api01-abcdefghijklmnopqrstuvwxyz0123456789";
+    private static final String PERSONAL = "sk-ant-usr-1sAbcdefghijklmnopqrstuvwxyz0123456789";
 
     @Test
     public void usageTakesAdminAndEnterpriseKeys() {
@@ -20,6 +21,9 @@ public class KeyLinkTest {
     @Test
     public void askTakesOrdinaryApiKeys() {
         assertEquals(KeyLink.Found.KEY, KeyLink.classify(KeyLink.Kind.API, API));
+//        the personal keys the API keys page makes now
+        assertEquals(KeyLink.Found.KEY, KeyLink.classify(KeyLink.Kind.API, PERSONAL));
+        assertEquals(KeyLink.Found.KEY, KeyLink.classify(KeyLink.Kind.ADMIN, PERSONAL));
         assertEquals(KeyLink.Found.OTHER_KIND, KeyLink.classify(KeyLink.Kind.API, ADMIN));
     }
 

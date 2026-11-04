@@ -28,6 +28,7 @@ public class ask extends SimpleParamCommand {
     public ask() {
         option("link", (pack, t) -> KeyLink.start(pack.context, KeyLink.Kind.API));
         option("key", (pack, t) -> saveKey(pack.context));
+        optionWithText("workspace", (pack, t) -> workspace(pack.context, t));
         option("forget", (pack, t) -> {
             AskKey.forget(pack.context);
             return "Deleted the Claude API key from HelCLI";
@@ -76,12 +77,30 @@ public class ask extends SimpleParamCommand {
             note = " (each question costs a little on your Claude API account)";
         }
 
-        new Thread(() -> Tuils.sendOutput(c, ohi.andre.consolelauncher.managers.ask.AskClaude.ask(key, model, effort, question))).start();
+        new Thread(() -> Tuils.sendOutput(c, ohi.andre.consolelauncher.managers.ask.AskClaude.ask(key, AskKey.workspace(c), model, effort, question))).start();
         return "Asking Claude..." + note;
     }
 
     private static SharedPreferences prefs(Context c) {
         return c.getApplicationContext().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+    }
+
+    /** ask -workspace wrkspc_...: the workspace to use with a key that isn't tied to one. "off" stops sending one. */
+    private static String workspace(Context c, String id) {
+        String t = id == null ? "" : id.trim();
+        if (t.length() == 0) {
+            String now = AskKey.workspace(c);
+            return (now == null ? "No workspace set." : "Workspace: " + now) + Tuils.NEWLINE
+                    + "Only needed for a key that isn't tied to one workspace. Copy the ID (wrkspc_...) from"
+                    + " platform.claude.com/settings/workspaces, then run: ask -workspace wrkspc_...";
+        }
+        if (t.equalsIgnoreCase("off") || t.equalsIgnoreCase("none")) {
+            AskKey.saveWorkspace(c, null);
+            return "ask no longer names a workspace";
+        }
+        if (!AskKey.looksLikeWorkspace(t)) return "A workspace ID starts with wrkspc_. Find it at platform.claude.com/settings/workspaces";
+        AskKey.saveWorkspace(c, t);
+        return "ask now uses workspace " + t;
     }
 
     /** Reads the key from the clipboard, so it never appears on screen or in the command history. */
@@ -91,14 +110,14 @@ public class ask extends SimpleParamCommand {
 
         if (key == null) {
             return ClipboardKey.describe(clip) + Tuils.NEWLINE
-                    + "Copy your Claude API key (sk-ant-api03-...), then run ask -key again. Or run ask -link to make one.";
+                    + "Copy your Claude API key (sk-ant-usr-... or sk-ant-api03-...), then run ask -key again. Or run ask -link to make one.";
         }
         if (key.startsWith("sk-ant-admin")) {
             return "That's an Admin key (" + ClaudeUsage.maskKey(key) + "), which can't ask Claude questions; it's for the usage line"
-                    + " (usage -key). ask needs an ordinary API key (sk-ant-api03-...): ask -link makes one.";
+                    + " (usage -key). ask needs an ordinary API key (sk-ant-usr-... or sk-ant-api03-...): ask -link makes one.";
         }
         if (!AskKey.looksLikeApiKey(key)) {
-            return "That isn't an API key (" + ClaudeUsage.maskKey(key) + "). ask needs one that starts with sk-ant-api03-: ask -link makes one.";
+            return "That isn't a Claude API key (" + ClaudeUsage.maskKey(key) + "). ask -link makes one.";
         }
         AskKey.save(c, key);
         boolean cleared = ClipboardKey.clear(c);

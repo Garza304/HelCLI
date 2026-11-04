@@ -155,7 +155,8 @@ public class ClaudeUsage {
      * created with the read:analytics scope. Ordinary API keys (sk-ant-api03-...) can't read costs.
      */
     public static boolean looksLikeAdminKey(String key) {
-        return key != null && key.trim().matches("sk-ant-(admin[0-9]*|api01)-[A-Za-z0-9_-]{20,}");
+//        a personal key (sk-ant-usr-) also works when it isn't tied to one workspace and you're an admin
+        return key != null && key.trim().matches("sk-ant-(admin[0-9]*|api01|usr[0-9]*)-[A-Za-z0-9_-]{20,}");
     }
 
     /** "sk-ant-admin01-…a1b2", safe to print. */
